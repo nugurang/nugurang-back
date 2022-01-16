@@ -370,6 +370,7 @@ type Query {
     # getTaskReviewByTask(id: ID!): TaskReview!
     getTeam(id: ID!): Team
     getTeamByName(name: String!): Team
+    getTeamsByName(name: String!, page: Int!, pageSize: Int!): [Team]!
     getTeamInvitation(id: ID!): TeamInvitation
     getThread(id: ID!): Thread
     getThreadsByBoards(boards: [ID]!, page: Int!, pageSize: Int!): [Thread]!
@@ -378,6 +379,7 @@ type Query {
     getUser(id: ID!): User
     getUserByName(name: String!): User
     getUsers(page: Int!, pageSize: Int!): [User]!
+    getUsersByName(name: String!, page: Int!, pageSize: Int!): [User]!
     getVoteTypeByName(name: String!): VoteType
     getWork(id: ID!): Work
 }
@@ -385,57 +387,58 @@ type Query {
 type Mutation {
 
     """CREATE"""
-    createArticle(article: ArticleInput!, thread: ID!, parent: ID): Article
-    createBoard(board: BoardInput!): Board
-    createEvent(event: EventInput!): Event
-    createFollowing(user: ID!): Boolean
-    createImage(address: String!): Image
-    createMatchRequest(request: MatchRequestInput!): MatchRequest
-    createPosition(position: PositionInput!): Position
-    createProject(project: ProjectInput!, team: ID!): Project
+    createArticle(article: ArticleInput!, thread: ID!, parent: ID): Article!
+    createBoard(board: BoardInput!): Board!
+    createEvent(event: EventInput!): Event!
+    createFollowing(user: ID!): Boolean!
+    createImage(address: String!): Image!
+    createMatchRequest(request: MatchRequestInput!): MatchRequest!
+    createPosition(position: PositionInput!): Position!
+    createProject(project: ProjectInput!, team: ID!): Project!
     createProjectInvitations(invitation: ProjectInvitationInput!): [ProjectInvitation]!
-    createTag(tag: TagInput!): Tag
-    createTask(task: TaskInput!, work: ID!): Task
-    createTeam(team: TeamInput!): Team
+    createTag(tag: TagInput!): Tag!
+    createTask(task: TaskInput!, work: ID!): Task!
+    createTeam(team: TeamInput!): Team!
     createTeamInvitations(invitation: TeamInvitationInput!): [TeamInvitation]!
-    createThread(thread: ThreadInput!, board: ID!): Thread
-    createUser(user: UserInput!): User
-    createVote(vote: VoteInput!): Vote
-    createWork(work: WorkInput!, project: ID!): Work
+    createThread(thread: ThreadInput!, board: ID!): Thread!
+    createCurrentUser(user: UserInput!): User!
+    createVote(vote: VoteInput!): Vote!
+    createWork(work: WorkInput!, project: ID!): Work!
 
     """UPDATE"""
-    updateArticle(article: ArticleInput!, id: ID!): Article
-    updateBoard(board: BoardInput!, id: ID!): Board
-    updateEvent(event: EventInput!, id: ID!): Event
-    updateProject(project: ProjectInput!, id: ID!): Project
+    updateArticle(article: ArticleInput!, id: ID!): Article!
+    updateBoard(board: BoardInput!, id: ID!): Board!
+    updateEvent(event: EventInput!, id: ID!): Event!
+    updateProject(project: ProjectInput!, id: ID!): Project!
     updateProjectFinish(id: ID!): Boolean!
     updateProjectInvitationAccepted(id: ID!): Boolean!
     updateProjectInvitationDenied(id: ID!): Boolean!
-    updateTask(task: TaskInput!, id: ID!): Task
+    updateTask(task: TaskInput!, id: ID!): Task!
     updateTaskReview(taskReview: TaskReviewInput!): Boolean!
-    updateTeam(team: TeamInput!, id: ID!): Team
+    updateTeam(team: TeamInput!, id: ID!): Team!
     updateTeamInvitationAccepted(id: ID!): Boolean!
     updateTeamInvitationDenied(id: ID!): Boolean!
-    updateThread(thread: ThreadInput!, id: ID!): Thread
-    updateUser(user: UserInput!): User
+    updateThread(thread: ThreadInput!, id: ID!): Thread!
+    updateCurrentUser(user: UserInput!): User!
     updateUserReviews(reviews: [UserReviewInput]!, evaluation: ID!): Boolean!
-    updateVote(vote: ID!, voteTypes: [ID]!): Vote
-    updateWork(work: WorkInput!, id: ID!): Work
+    updateVote(vote: VoteInput!, id: ID!): Vote!
+    updateWork(work: WorkInput!, id: ID!): Work!
 
     """DELETE"""
-    deleteArticle(id: ID!): Boolean!
-    deleteBoard(id: ID!): Boolean!
-    deleteEvent(id: ID!): Boolean!
-    deleteFollowing(id: ID!): Boolean
-    deleteImage(id: ID!): Boolean!
-    deleteProject(id: ID!): Boolean!
-    deleteRole(id: ID!): Boolean!
-    deleteTag(id: ID!): Boolean!
-    deleteTask(id: ID!): Boolean!
-    deleteTeam(id: ID!): Boolean!
-    deleteThread(id: ID!): Boolean!
-    deleteUser(id: ID!): Boolean!
-    deleteVote(id: ID!): Boolean!
-    deleteVoteType(id: ID!): Boolean!
-    deleteWork(id: ID!): Boolean!
+    deleteArticle(id: ID!): ID!
+    deleteBoard(id: ID!): ID!
+    deleteEvent(id: ID!): ID!
+    deleteFollowing(id: ID!): ID!
+    deleteImage(id: ID!): ID!
+    deleteProject(id: ID!): ID!
+    deleteRole(id: ID!): ID!
+    deleteTag(id: ID!): ID!
+    deleteTask(id: ID!): ID!
+    deleteTeam(id: ID!): ID!
+    deleteThread(id: ID!): ID!
+    deleteCurrentUser: ID!
+    deleteUser(id: ID!): ID!
+    deleteVote(id: ID!): ID!
+    deleteVoteType(id: ID!): ID!
+    deleteWork(id: ID!): ID!
 }

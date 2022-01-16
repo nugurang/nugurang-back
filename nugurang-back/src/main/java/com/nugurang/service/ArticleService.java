@@ -10,7 +10,6 @@ import com.nugurang.entity.XrefArticleImageEntity;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +28,11 @@ public class ArticleService {
         Long thread,
         Optional<Long> parent
     ) {
-        val articleEntity = articleDao.save(
+        final var articleEntity = articleDao.save(
             ArticleEntity
             .builder()
             .title(articleInputDto.getTitle().orElse(null))
             .content(articleInputDto.getContent())
-            .viewCount(0L)
             .user(userService.getCurrentUser().get())
             .thread(threadDao.findById(thread).get())
             .parent(
@@ -60,5 +58,18 @@ public class ArticleService {
         );
 
         return articleEntity;
+    }
+
+    public Optional<ArticleEntity> getArticle(Long articleId) {
+        return articleDao.findById(articleId);
+    }
+
+    public ArticleEntity updateArticle(ArticleInputDto articleInputDto, Long id)  {
+        return null;
+    }
+
+    public Long deleteArticle(Long articleId) {
+        articleDao.deleteById(articleId);
+        return articleId;
     }
 }

@@ -13,14 +13,16 @@ import com.nugurang.entity.TeamEntity;
 import com.nugurang.entity.TeamInvitationEntity;
 import com.nugurang.entity.UserEntity;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
     private final NotificationDao notificationDao;
     private final NotificationDataDao notificationDataDao;
@@ -32,7 +34,7 @@ public class NotificationService {
         NotificationTypeName type,
         List<String> data
     ) {
-        val notificationEntity = notificationDao.save(
+        final var notificationEntity = notificationDao.save(
             NotificationEntity
             .builder()
             .isRead(false)
@@ -89,6 +91,7 @@ public class NotificationService {
         EventEntity eventEntity,
         TeamEntity teamEntity
     ) {
+        log.info("Match " + eventEntity.getId() + " successfully created matchmaking.");
         return createNotification(
             userEntity,
             NotificationTypeName.MATCH_SUCCESS,
@@ -105,6 +108,7 @@ public class NotificationService {
         MatchTypeEntity matchTypeEntity,
         EventEntity eventEntity
     ) {
+        log.info("Match " + eventEntity.getId() + " failed to create matchmaking.");
         return createNotification(
             userEntity,
             NotificationTypeName.MATCH_FAILURE,
@@ -113,5 +117,9 @@ public class NotificationService {
                 eventEntity.getId().toString()
             )
         );
+    }
+
+    public Optional<NotificationEntity> getNotification(Long notificationId) {
+        return notificationDao.findById(notificationId);
     }
 }

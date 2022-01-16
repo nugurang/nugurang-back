@@ -1,10 +1,10 @@
 package com.nugurang.service;
 
 import java.util.Map;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 @Builder
 @Data
 class OAuth2Attributes {
-    @NotNull
+    @NonNull
     private String name;
-    @NotNull
+    @NonNull
     private String email;
 
     public static OAuth2Attributes ofGithub(Map<String, Object> oauth2Attributes) {
@@ -47,14 +47,6 @@ public class OAuth2Service {
 
     private final OAuth2AuthorizedClientService authorizedClientService;
 
-    private OAuth2AuthenticationToken getOAuth2AuthToken() {
-        OAuth2AuthenticationToken oauth2AuthToken = (OAuth2AuthenticationToken)
-            SecurityContextHolder
-            .getContext()
-            .getAuthentication();
-        return oauth2AuthToken;
-    }
-
     private OAuth2AuthorizedClient getOAuth2Client() {
         OAuth2AuthenticationToken oauth2AuthToken = getOAuth2AuthToken();
         return authorizedClientService.loadAuthorizedClient(
@@ -78,6 +70,12 @@ public class OAuth2Service {
         default:
             return null;
         }
+    }
+
+    public OAuth2AuthenticationToken getOAuth2AuthToken() {
+        return (OAuth2AuthenticationToken) SecurityContextHolder
+            .getContext()
+            .getAuthentication();
     }
 
     public String getProvider() {

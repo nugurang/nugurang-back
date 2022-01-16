@@ -1,10 +1,10 @@
 plugins {
     id 'checkstyle'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id "io.freefair.lombok" version "5.2.1"
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "io.freefair.lombok" version "6.1.0"
     id 'java'
     id 'java-library'
-    id 'org.springframework.boot' version '2.3.4.RELEASE'
+    id 'org.springframework.boot' version '2.5.0'
     id 'org.liquibase.gradle' version '2.0.4'
     id 'pmd'
     id 'com.github.spotbugs' version '4.0.0'
@@ -15,7 +15,7 @@ def pmdVersion = '6.+'
 
 group = 'com.nugurang'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '14'
+sourceCompatibility = '11'
 
 configurations {
     compileOnly {
@@ -61,8 +61,8 @@ dependencies {
 
     implementation(
         'com.google.guava:guava:29.+',
-        'com.graphql-java-kickstart:graphql-spring-boot-starter:7.+',
-        'com.graphql-java-kickstart:voyager-spring-boot-starter:7.+',
+        'com.graphql-java-kickstart:graphql-spring-boot-starter:12.+',
+        'com.graphql-java-kickstart:voyager-spring-boot-starter:11.+',
         'com.graphql-java:graphql-java-extended-scalars:1.+',
         'com.graphql-java:graphql-java-spring-boot-starter-webmvc:1.+',
         'com.vladmihalcea:hibernate-types-52:2.+',
@@ -77,9 +77,11 @@ dependencies {
         'org.springframework.boot:spring-boot-starter-security',
         'org.springframework.boot:spring-boot-starter-validation',
         'org.springframework.boot:spring-boot-starter-web',
+        'org.springframework.security:spring-security-acl',
         'net.time4j:time4j-base:5.7',
         'net.time4j:time4j-sqlxml:5.7',
-        'net.time4j:time4j-tzdata:5.0-2020a'
+        'net.time4j:time4j-tzdata:5.0-2020a',
+        'net.sf.ehcache:ehcache-core:2.+'
     )
 
     liquibaseRuntime(
@@ -98,7 +100,7 @@ dependencies {
     }
 
     testImplementation(
-        'com.graphql-java-kickstart:graphql-spring-boot-starter-test:7.0.1',
+        'com.graphql-java-kickstart:graphql-spring-boot-starter-test:12.+',
         'org.springframework.batch:spring-batch-test',
         'org.springframework.security:spring-security-test'
     )
@@ -122,9 +124,11 @@ checkstyle {
     maxErrors = 0
 }
 
+/*
 checkstyleMain {
     logging.setLevel(LogLevel.LIFECYCLE)
 }
+*/
 
 checkstyleTest {
     enabled = false

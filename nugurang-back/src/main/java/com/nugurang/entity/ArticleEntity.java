@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
 @Setter
@@ -37,9 +38,6 @@ public class ArticleEntity implements BaseEntity<ArticleDto> {
 
     @Column(nullable = false)
     private String content;
-
-    @Column(nullable = false)
-    private Long viewCount;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -68,7 +66,6 @@ public class ArticleEntity implements BaseEntity<ArticleDto> {
             .id(id)
             .title(Optional.ofNullable(title))
             .content(content)
-            .viewCount(viewCount)
             .createdAt(getCreatedAt())
             .modifiedAt(getModifiedAt())
             .build();
