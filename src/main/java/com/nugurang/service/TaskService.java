@@ -14,14 +14,11 @@ import com.nugurang.entity.XrefTaskPositionEntity;
 import com.nugurang.entity.XrefUserTaskEntity;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class TaskService {
-
     private final PositionDao positionDao;
     private final ProgressDao progressDao;
     private final TaskDao taskDao;
@@ -32,63 +29,9 @@ public class TaskService {
 
     @Transactional
     public TaskEntity createTask(TaskInputDto taskInputDto, Long work) {
-        TaskEntity taskEntity = taskDao.save(
-            TaskEntity
-            .builder()
-            .name(taskInputDto.getName())
-            .order(
-                taskInputDto
-                .getOrder()
-                .orElseGet(() ->
-                    taskDao
-                    .findFirstByOrderByOrderDesc()
-                    .map((prevTaskEntity) -> prevTaskEntity.getOrder() + 1)
-                    .orElse(0)
-                )
-            )
-            .difficulty(taskInputDto.getDifficulty().orElse(1))
-            .work(workDao.findById(work).get())
-            .progress(
-                taskInputDto
-                .getProgress()
-                .map((progressId) -> progressDao.findById(progressId).get())
-                .orElseGet(() -> progressDao.findByName(ProgressName.TODO.name()).get())
-            )
-            .build()
-        );
-
-        xrefUserTaskDao.saveAll(
-            taskInputDto
-            .getUsers()
-            .stream()
-            .map((userId) -> userDao.findById(userId).get())
-            .map((userEntity) ->
-                XrefUserTaskEntity
-                .builder()
-                .user(userEntity)
-                .task(taskEntity)
-                .build()
-            )
-            .collect(Collectors.toList())
-        );
-
-        xrefTaskPositionDao.saveAll(
-            taskInputDto
-            .getPositions()
-            .stream()
-            .map((positionId) ->
-                positionDao.findById(positionId).get()
-            )
-            .map((positionEntity) ->
-                XrefTaskPositionEntity
-                .builder()
-                .task(taskEntity)
-                .position(positionEntity)
-                .build()
-            )
-            .collect(Collectors.toList())
-        );
-
+        TaskEntity taskEntity = taskDao.save(TaskEntity.builder().name(taskInputDto.getName()).order(taskInputDto.getOrder().orElseGet(() -> taskDao.findFirstByOrderByOrderDesc().map(prevTaskEntity -> prevTaskEntity.getOrder() + 1).orElse(0))).difficulty(taskInputDto.getDifficulty().orElse(1)).work(workDao.findById(work).get()).progress(taskInputDto.getProgress().map(progressId -> progressDao.findById(progressId).get()).orElseGet(() -> progressDao.findByName(ProgressName.TODO.name()).get())).build());
+        xrefUserTaskDao.saveAll(taskInputDto.getUsers().stream().map(userId -> userDao.findById(userId).get()).map(userEntity -> XrefUserTaskEntity.builder().user(userEntity).task(taskEntity).build()).collect(Collectors.toList()));
+        xrefTaskPositionDao.saveAll(taskInputDto.getPositions().stream().map(positionId -> positionDao.findById(positionId).get()).map(positionEntity -> XrefTaskPositionEntity.builder().task(taskEntity).position(positionEntity).build()).collect(Collectors.toList()));
         return taskEntity;
     }
 
@@ -98,19 +41,11 @@ public class TaskService {
 
     public TaskEntity updateTask(TaskInputDto taskInputDto, Long taskId) {
         TaskEntity taskEntity = taskDao.findById(taskId).get();
-
         taskEntity.setName(taskInputDto.getName());
-
-        if (taskInputDto.getOrder().isPresent())
-            taskEntity.setOrder(taskInputDto.getOrder().get());
-
-        if (taskInputDto.getDifficulty().isPresent())
-            taskEntity.setDifficulty(taskInputDto.getDifficulty().get());
-
+        if (taskInputDto.getOrder().isPresent()) taskEntity.setOrder(taskInputDto.getOrder().get());
+        if (taskInputDto.getDifficulty().isPresent()) taskEntity.setDifficulty(taskInputDto.getDifficulty().get());
         if (taskInputDto.getProgress().isPresent()) {
-            taskEntity.setProgress(
-                progressDao.findById(taskInputDto.getProgress().get()).get()
-            );
+            taskEntity.setProgress(progressDao.findById(taskInputDto.getProgress().get()).get());
         }
         return taskDao.save(taskEntity);
     }
@@ -119,4 +54,18 @@ public class TaskService {
         taskDao.deleteById(taskId);
         return taskId;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public TaskService(final PositionDao positionDao, final ProgressDao progressDao, final TaskDao taskDao, final UserDao userDao, final WorkDao workDao, final XrefTaskPositionDao xrefTaskPositionDao, final XrefUserTaskDao xrefUserTaskDao) {
+        this.positionDao = positionDao;
+        this.progressDao = progressDao;
+        this.taskDao = taskDao;
+        this.userDao = userDao;
+        this.workDao = workDao;
+        this.xrefTaskPositionDao = xrefTaskPositionDao;
+        this.xrefUserTaskDao = xrefUserTaskDao;
+    }
+    //</editor-fold>
 }

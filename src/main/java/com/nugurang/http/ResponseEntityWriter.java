@@ -3,12 +3,10 @@ package com.nugurang.http;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
 public class ResponseEntityWriter {
     private final ObjectMapper objectMapper;
@@ -20,4 +18,12 @@ public class ResponseEntityWriter {
         servletServerHttpResponse.getBody().write(objectMapper.writeValueAsBytes(responseEntity.getBody()));
         servletServerHttpResponse.getBody().flush();
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public ResponseEntityWriter(final ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+    //</editor-fold>
 }

@@ -1,7 +1,6 @@
 package com.nugurang.config;
 
 import javax.sql.DataSource;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
@@ -22,9 +21,7 @@ import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Configuration
-@RequiredArgsConstructor
 public class AclConfig {
-
     private final DataSource dataSource;
 
     @Bean
@@ -74,4 +71,11 @@ public class AclConfig {
         return new JdbcMutableAclService(dataSource, lookupStrategy(), aclCache());
     }
 
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public AclConfig(final DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+    //</editor-fold>
 }

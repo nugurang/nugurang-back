@@ -1,17 +1,22 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 val checkstyleVersion = "9.2.1"
 val pmdVersion = "6.+"
+
+group = "com.nugurang"
+version = "0.0.1-SNAPSHOT"
 
 plugins {
     java
     `java-library`
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("io.freefair.lombok") version "6.1.0"
-    id("org.springframework.boot") version "2.5.0"
+    id("org.springframework.boot") version "2.6.2"
+    kotlin("jvm") version "1.6.10"
+    kotlin("plugin.spring") version "1.6.10"
 }
 
 java {
-    group = "com.nugurang"
-    version = "0.0.1-SNAPSHOT"
     sourceCompatibility = JavaVersion.VERSION_14
     targetCompatibility = JavaVersion.VERSION_14
 }
@@ -63,7 +68,10 @@ dependencies {
         "net.time4j:time4j-base:5.8",
         "net.time4j:time4j-sqlxml:5.8",
         "net.time4j:time4j-tzdata:5.0-2020a",
-        "net.sf.ehcache:ehcache-core:2.6.11"
+        "net.sf.ehcache:ehcache-core:2.6.11",
+        "org.jetbrains.kotlin:kotlin-reflect",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
+        "org.springframework.boot:spring-boot-starter-test"
     ).map(::implementation)
 
     arrayOf(
@@ -93,6 +101,13 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "14"
+    }
 }
 
 tasks.withType<JavaCompile> {

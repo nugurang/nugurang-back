@@ -4,13 +4,10 @@ import com.nugurang.dto.TeamDto;
 import com.nugurang.dto.TeamInputDto;
 import com.nugurang.service.TeamService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TeamMutation implements GraphQLMutationResolver {
-
     private final TeamService teamService;
 
     public TeamDto createTeam(TeamInputDto teamInputDto) {
@@ -25,4 +22,12 @@ public class TeamMutation implements GraphQLMutationResolver {
         teamService.deleteTeam(teamId);
         return teamId;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public TeamMutation(final TeamService teamService) {
+        this.teamService = teamService;
+    }
+    //</editor-fold>
 }

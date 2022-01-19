@@ -4,7 +4,6 @@ import com.nugurang.dto.SigninRequestDto;
 import java.time.Instant;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -25,7 +24,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class OAuth2SigninService {
     private final OAuth2AuthorizedClientService oauth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
@@ -33,20 +31,8 @@ public class OAuth2SigninService {
     private final AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
 
     public Authentication signin(HttpServletRequest request, SigninRequestDto signinRequestDto) throws AuthenticationException {
-        final var accessToken = new OAuth2AccessToken(
-            OAuth2AccessToken.TokenType.BEARER,
-            signinRequestDto.getAccessToken().getTokenValue(),
-            Instant.now(),
-            Instant.MAX,
-            signinRequestDto.getAccessToken().getScopes()
-        );
-
-        final var refreshToken = new OAuth2RefreshToken(
-            signinRequestDto.getRefreshToken().getTokenValue(),
-            Instant.now(),
-            Instant.MAX
-        );
-
+        final var accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, signinRequestDto.getAccessToken().getTokenValue(), Instant.now(), Instant.MAX, signinRequestDto.getAccessToken().getScopes());
+        final var refreshToken = new OAuth2RefreshToken(signinRequestDto.getRefreshToken().getTokenValue(), Instant.now(), Instant.MAX);
         final var clientRegistrationId = signinRequestDto.getClientRegistrationId();
         final var clientRegistration = clientRegistrationRepository.findByRegistrationId(clientRegistrationId);
         final var additionalParameters = new HashMap<String, Object>();
@@ -59,23 +45,25 @@ public class OAuth2SigninService {
         SecurityContextHolder
                 .getContext()
                 .setAuthentication(oauth2AuthenticationToken);*/
-
         return oauth2AuthenticationToken;
     }
 
     public void refresh() {
         final var oauth2AuthenticationToken = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        var oauth2AuthorizedClient = oauth2AuthorizedClientService.loadAuthorizedClient(
-            oauth2AuthenticationToken.getAuthorizedClientRegistrationId(),
-            oauth2AuthenticationToken.getPrincipal().getName()
-        );
-        final var oauth2AuthorizationContext = OAuth2AuthorizationContext
-            .withAuthorizedClient(oauth2AuthorizedClient)
-            .principal(oauth2AuthenticationToken)
-            .build();
+        var oauth2AuthorizedClient = oauth2AuthorizedClientService.loadAuthorizedClient(oauth2AuthenticationToken.getAuthorizedClientRegistrationId(), oauth2AuthenticationToken.getPrincipal().getName());
+        final var oauth2AuthorizationContext = OAuth2AuthorizationContext.withAuthorizedClient(oauth2AuthorizedClient).principal(oauth2AuthenticationToken).build();
         final var oauth2AuthorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder().refreshToken().build();
         oauth2AuthorizedClient = oauth2AuthorizedClientProvider.authorize(oauth2AuthorizationContext);
         oauth2AuthorizedClientService.saveAuthorizedClient(oauth2AuthorizedClient, oauth2AuthenticationToken);
         //DefaultRefreshTokenTokenResponseClient?
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public OAuth2SigninService(final OAuth2AuthorizedClientService oauth2AuthorizedClientService, final ClientRegistrationRepository clientRegistrationRepository) {
+        this.oauth2AuthorizedClientService = oauth2AuthorizedClientService;
+        this.clientRegistrationRepository = clientRegistrationRepository;
+    }
+    //</editor-fold>
 }

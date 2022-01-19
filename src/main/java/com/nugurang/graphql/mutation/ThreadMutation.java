@@ -5,24 +5,17 @@ import com.nugurang.dto.ThreadInputDto;
 import com.nugurang.exception.NotFoundException;
 import com.nugurang.service.ThreadService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class ThreadMutation implements GraphQLMutationResolver {
-
     private final ThreadService threadService;
 
     public ThreadDto createThread(ThreadInputDto threadInputDto, Long board) {
         try {
             return threadService.createThread(threadInputDto, board).toDto();
         } catch (NotFoundException nfe) {
-            throw com.nugurang.graphql.exception.NotFoundException
-                .builder()
-                .message(nfe.getMessage())
-                .objectName(nfe.getObjectName())
-                .build();
+            throw com.nugurang.graphql.exception.NotFoundException.builder().message(nfe.getMessage()).objectName(nfe.getObjectName()).build();
         }
     }
 
@@ -34,4 +27,12 @@ public class ThreadMutation implements GraphQLMutationResolver {
         threadService.deleteThread(id);
         return id;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public ThreadMutation(final ThreadService threadService) {
+        this.threadService = threadService;
+    }
+    //</editor-fold>
 }

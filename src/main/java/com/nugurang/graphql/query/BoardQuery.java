@@ -7,13 +7,10 @@ import graphql.kickstart.tools.GraphQLQueryResolver;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class BoardQuery implements GraphQLQueryResolver {
-
     private final BoardService boardService;
 
     Optional<BoardDto> getBoard(Long id) {
@@ -33,16 +30,18 @@ public class BoardQuery implements GraphQLQueryResolver {
     }
 
     List<BoardDto> boards() {
-        return boardService.getBoards()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return boardService.getBoards().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     List<BoardDto> getBoardsByNames(List<String> names) {
-        return boardService.getBoards(names)
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return boardService.getBoards(names).stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public BoardQuery(final BoardService boardService) {
+        this.boardService = boardService;
+    }
+    //</editor-fold>
 }

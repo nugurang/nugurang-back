@@ -6,7 +6,6 @@ import com.nugurang.entity.BoardEntity;
 import com.nugurang.exception.NotFoundException;
 import java.util.List;
 import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
@@ -14,22 +13,14 @@ import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class BoardService {
-
     private final BoardDao boardDao;
     private final MutableAclService mutableAclService;
     private final OAuth2Service oauth2Service;
 
     @Transactional
     public BoardEntity createBoard(BoardInputDto boardInputDto) {
-        final var board = boardDao.save(
-            BoardEntity
-            .builder()
-            .name(boardInputDto.getName())
-            .build()
-        );
-
+        final var board = boardDao.save(BoardEntity.builder().name(boardInputDto.getName()).build());
         final var oid = new ObjectIdentityImpl(BoardEntity.class, board.getId());
         final var acl = mutableAclService.createAcl(oid);
         final var auth = oauth2Service.getOAuth2AuthToken();
@@ -46,25 +37,11 @@ public class BoardService {
     }
 
     public BoardEntity getBoard(Long id) throws NotFoundException {
-        return boardDao
-            .findById(id)
-            .orElseThrow(() -> NotFoundException
-                .builder()
-                .message("Board not found")
-                .objectName("Board")
-                .build()
-            );
+        return boardDao.findById(id).orElseThrow(() -> NotFoundException.builder().message("Board not found").objectName("Board").build());
     }
 
     public BoardEntity getBoard(String name) throws NotFoundException {
-        return boardDao
-            .findByName(name)
-            .orElseThrow(() -> NotFoundException
-                .builder()
-                .message("Board not found")
-                .objectName("Board")
-                .build()
-            );
+        return boardDao.findByName(name).orElseThrow(() -> NotFoundException.builder().message("Board not found").objectName("Board").build());
     }
 
     public List<BoardEntity> getBoards() {
@@ -84,4 +61,14 @@ public class BoardService {
     public void deleteBoard(Long id) {
         boardDao.deleteById(id);
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public BoardService(final BoardDao boardDao, final MutableAclService mutableAclService, final OAuth2Service oauth2Service) {
+        this.boardDao = boardDao;
+        this.mutableAclService = mutableAclService;
+        this.oauth2Service = oauth2Service;
+    }
+    //</editor-fold>
 }

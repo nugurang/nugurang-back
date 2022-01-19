@@ -9,10 +9,8 @@ import com.nugurang.dto.TagDto;
 import graphql.kickstart.tools.GraphQLResolver;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
 public class EventResolver implements GraphQLResolver<EventDto> {
     private final ImageDao imageDao;
@@ -27,10 +25,15 @@ public class EventResolver implements GraphQLResolver<EventDto> {
     }
 
     public List<MatchRequestDto> matchRequests(EventDto eventDto) {
-        return matchRequestDao
-            .findAllByEventId(eventDto.getId())
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return matchRequestDao.findAllByEventId(eventDto.getId()).stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public EventResolver(final ImageDao imageDao, final MatchRequestDao matchRequestDao) {
+        this.imageDao = imageDao;
+        this.matchRequestDao = matchRequestDao;
+    }
+    //</editor-fold>
 }

@@ -26,11 +26,9 @@ import graphql.kickstart.tools.GraphQLQueryResolver;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class Query implements GraphQLQueryResolver {
     private final OAuth2Service oauth2Service;
     private final UserService userService;
@@ -50,87 +48,69 @@ public class Query implements GraphQLQueryResolver {
     }
 
     Optional<OAuth2UserDto> currentOAuth2User() {
-        return Optional.of(
-            OAuth2UserDto
-            .builder()
-            .provider(oauth2Service.getProvider())
-            .id(oauth2Service.getId())
-            .name(oauth2Service.getName())
-            .email(oauth2Service.getEmail())
-            .build()
-        );
+        return Optional.of(OAuth2UserDto.builder().provider(oauth2Service.getProvider()).id(oauth2Service.getId()).name(oauth2Service.getName()).email(oauth2Service.getEmail()).build());
     }
 
     List<MatchRequestDto> matchRequests() {
-        return matchRequestDao.findAllByUserId(userService.getCurrentUser().get().getId())
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return matchRequestDao.findAllByUserId(userService.getCurrentUser().get().getId()).stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     List<InvitationStatusDto> invitationStatus() {
-        return invitationStatusDao.findAll()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return invitationStatusDao.findAll().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     List<MatchTypeDto> matchTypes() {
-        return matchTypeDao.findAll()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return matchTypeDao.findAll().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     List<NotificationTypeDto> notificationTypes() {
-        return notificationTypeDao.findAll()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return notificationTypeDao.findAll().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     List<PositionDto> positions() {
-        return positionDao.findAll()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return positionDao.findAll().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     List<ProgressDto> progresses() {
-        return progressDao.findAll()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return progressDao.findAll().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     List<VoteTypeDto> voteTypes() {
-        return voteTypeDao.findAll()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return voteTypeDao.findAll().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     Optional<MatchTypeDto> getMatchTypeByName(String name) {
-        return matchTypeDao
-            .findByName(name)
-            .map((entity) -> entity.toDto());
+        return matchTypeDao.findByName(name).map(entity -> entity.toDto());
     }
 
     Optional<ProjectInvitationDto> getProjectInvitation(Long id) {
-        return projectInvitationDao
-            .findById(id)
-            .map((entity) -> entity.toDto());
+        return projectInvitationDao.findById(id).map(entity -> entity.toDto());
     }
 
     Optional<TeamInvitationDto> getTeamInvitation(Long id) {
-        return teamInvitationDao
-            .findById(id)
-            .map((entity) -> entity.toDto());
+        return teamInvitationDao.findById(id).map(entity -> entity.toDto());
     }
 
     Optional<VoteTypeDto> getVoteTypeByName(String name) {
-        return voteTypeDao
-            .findByName(name)
-            .map((entity) -> entity.toDto());
+        return voteTypeDao.findByName(name).map(entity -> entity.toDto());
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public Query(final OAuth2Service oauth2Service, final UserService userService, final ImageDao imageDao, final InvitationStatusDao invitationStatusDao, final MatchRequestDao matchRequestDao, final MatchTypeDao matchTypeDao, final NotificationTypeDao notificationTypeDao, final PositionDao positionDao, final ProgressDao progressDao, final ProjectInvitationDao projectInvitationDao, final TeamInvitationDao teamInvitationDao, final VoteTypeDao voteTypeDao) {
+        this.oauth2Service = oauth2Service;
+        this.userService = userService;
+        this.imageDao = imageDao;
+        this.invitationStatusDao = invitationStatusDao;
+        this.matchRequestDao = matchRequestDao;
+        this.matchTypeDao = matchTypeDao;
+        this.notificationTypeDao = notificationTypeDao;
+        this.positionDao = positionDao;
+        this.progressDao = progressDao;
+        this.projectInvitationDao = projectInvitationDao;
+        this.teamInvitationDao = teamInvitationDao;
+        this.voteTypeDao = voteTypeDao;
+    }
+    //</editor-fold>
 }

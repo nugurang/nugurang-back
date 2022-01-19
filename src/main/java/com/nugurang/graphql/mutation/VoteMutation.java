@@ -4,13 +4,10 @@ import com.nugurang.dto.VoteDto;
 import com.nugurang.dto.VoteInputDto;
 import com.nugurang.service.VoteService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class VoteMutation implements GraphQLMutationResolver {
-
     private final VoteService voteService;
 
     public VoteDto createVote(VoteInputDto voteInputDto) {
@@ -25,4 +22,12 @@ public class VoteMutation implements GraphQLMutationResolver {
         voteService.deleteVote(voteId);
         return voteId;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public VoteMutation(final VoteService voteService) {
+        this.voteService = voteService;
+    }
+    //</editor-fold>
 }

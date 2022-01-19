@@ -9,15 +9,12 @@ import com.nugurang.entity.TeamEntity;
 import com.nugurang.entity.XrefUserTeamEntity;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class TeamService {
-
     private final UserService userService;
     private final RoleDao roleDao;
     private final TeamDao teamDao;
@@ -25,22 +22,8 @@ public class TeamService {
 
     @Transactional
     public TeamEntity createTeam(TeamInputDto teamInputDto) {
-        TeamEntity teamEntity = teamDao.save(
-            TeamEntity
-            .builder()
-            .name(teamInputDto.getName())
-            .build()
-        );
-
-        xrefUserTeamDao.save(
-            XrefUserTeamEntity
-            .builder()
-            .user(userService.getCurrentUser().get())
-            .team(teamEntity)
-            .role(roleDao.findByName(RoleName.OWNER.name()).get())
-            .build()
-        );
-
+        TeamEntity teamEntity = teamDao.save(TeamEntity.builder().name(teamInputDto.getName()).build());
+        xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(userService.getCurrentUser().get()).team(teamEntity).role(roleDao.findByName(RoleName.OWNER.name()).get()).build());
         return teamEntity;
     }
 
@@ -65,4 +48,15 @@ public class TeamService {
     public void deleteTeam(Long teamId) {
         teamDao.deleteById(teamId);
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public TeamService(final UserService userService, final RoleDao roleDao, final TeamDao teamDao, final XrefUserTeamDao xrefUserTeamDao) {
+        this.userService = userService;
+        this.roleDao = roleDao;
+        this.teamDao = teamDao;
+        this.xrefUserTeamDao = xrefUserTeamDao;
+    }
+    //</editor-fold>
 }

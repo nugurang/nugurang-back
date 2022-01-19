@@ -13,12 +13,10 @@ import graphql.schema.idl.TypeDefinitionRegistry;
 import java.io.IOException;
 import java.net.URL;
 import javax.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@RequiredArgsConstructor
 public class GraphQlProviderConfig {
     private GraphQL graphQLObject;
 
@@ -38,9 +36,7 @@ public class GraphQlProviderConfig {
     }
 
     private RuntimeWiring buildWiring() {
-        return RuntimeWiring.newRuntimeWiring()
-                .scalar(ExtendedScalars.DateTime)
-                .build();
+        return RuntimeWiring.newRuntimeWiring().scalar(ExtendedScalars.DateTime).build();
     }
 
     @Bean
@@ -52,4 +48,11 @@ public class GraphQlProviderConfig {
     public GraphQLScalarType dateTime() {
         return ExtendedScalars.DateTime;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public GraphQlProviderConfig() {
+    }
+    //</editor-fold>
 }

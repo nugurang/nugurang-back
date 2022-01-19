@@ -15,13 +15,10 @@ import graphql.kickstart.tools.GraphQLResolver;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
 public class ArticleResolver implements GraphQLResolver<ArticleDto> {
-
     private final ArticleDao articleDao;
     private final ImageDao imageDao;
     private final ThreadDao threadDao;
@@ -30,33 +27,19 @@ public class ArticleResolver implements GraphQLResolver<ArticleDto> {
     private final VoteTypeDao voteTypeDao;
 
     public ThreadDto thread(ArticleDto articleDto) {
-        return articleDao.findById(articleDto.getId())
-            .map((articleEntity) -> articleEntity.getThread())
-            .map((entity) -> entity.toDto())
-            .get();
+        return articleDao.findById(articleDto.getId()).map(articleEntity -> articleEntity.getThread()).map(entity -> entity.toDto()).get();
     }
 
     public UserDto user(ArticleDto articleDto) {
-        return articleDao
-            .findById(articleDto.getId())
-            .map((articleEntity) -> articleEntity.getUser())
-            .map((userEntity) -> userEntity.toDto())
-            .get();
+        return articleDao.findById(articleDto.getId()).map(articleEntity -> articleEntity.getUser()).map(userEntity -> userEntity.toDto()).get();
     }
 
     public Optional<ArticleDto> parent(ArticleDto articleDto) {
-        return articleDao
-            .findById(articleDto.getId())
-            .map((articleEntity) -> articleEntity.getParent())
-            .map((entity) -> entity.toDto());
+        return articleDao.findById(articleDto.getId()).map(articleEntity -> articleEntity.getParent()).map(entity -> entity.toDto());
     }
 
     public List<ImageDto> images(ArticleDto articleDto) {
-        return imageDao
-            .findAllByArticleId(articleDto.getId())
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return imageDao.findAllByArticleId(articleDto.getId()).stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     public List<TagDto> tags(ArticleDto articleDto) {
@@ -64,46 +47,31 @@ public class ArticleResolver implements GraphQLResolver<ArticleDto> {
     }
 
     public Long viewCount(ArticleDto articleDto) {
-        return voteDao
-            .countByArticleIdAndVoteTypeId(
-                articleDto.getId(),
-                voteTypeDao
-                .findByName("VIEW")
-                .get()
-                .getId()
-            );
+        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("VIEW").get().getId());
     }
 
     public Long upCount(ArticleDto articleDto) {
-        return voteDao
-            .countByArticleIdAndVoteTypeId(
-                articleDto.getId(),
-                voteTypeDao
-                .findByName("UP")
-                .get()
-                .getId()
-            );
+        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("UP").get().getId());
     }
 
     public Long downCount(ArticleDto articleDto) {
-        return voteDao
-            .countByArticleIdAndVoteTypeId(
-                articleDto.getId(),
-                voteTypeDao
-                .findByName("DOWN")
-                .get()
-                .getId()
-            );
+        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("DOWN").get().getId());
     }
 
     public Long starCount(ArticleDto articleDto) {
-        return voteDao
-            .countByArticleIdAndVoteTypeId(
-                articleDto.getId(),
-                voteTypeDao
-                .findByName("STAR")
-                .get()
-                .getId()
-            );
+        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("STAR").get().getId());
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public ArticleResolver(final ArticleDao articleDao, final ImageDao imageDao, final ThreadDao threadDao, final UserDao userDao, final VoteDao voteDao, final VoteTypeDao voteTypeDao) {
+        this.articleDao = articleDao;
+        this.imageDao = imageDao;
+        this.threadDao = threadDao;
+        this.userDao = userDao;
+        this.voteDao = voteDao;
+        this.voteTypeDao = voteTypeDao;
+    }
+    //</editor-fold>
 }

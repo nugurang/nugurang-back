@@ -9,12 +9,10 @@ import com.nugurang.entity.UserEntity;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
     private final BoardDao boardDao;
     private final ImageDao imageDao;
@@ -22,25 +20,7 @@ public class UserService {
     private final OAuth2Service oauth2Service;
 
     public UserEntity createUser(UserInputDto userInputDto) {
-        return userDao.save(
-            UserEntity
-            .builder()
-            .oauth2Provider(oauth2Service.getProvider())
-            .oauth2Id(oauth2Service.getId())
-            .name(userInputDto.getName())
-            .email(userInputDto.getEmail())
-            .biography(userInputDto.getBiography())
-            .image(userInputDto.getImage().flatMap((id) -> imageDao.findById(id)).orElse(null))
-            .blog(
-                boardDao.save(
-                    BoardEntity
-                    .builder()
-                    .name(UUID.randomUUID().toString())
-                    .build()
-                )
-            )
-            .build()
-        );
+        return userDao.save(UserEntity.builder().oauth2Provider(oauth2Service.getProvider()).oauth2Id(oauth2Service.getId()).name(userInputDto.getName()).email(userInputDto.getEmail()).biography(userInputDto.getBiography()).image(userInputDto.getImage().flatMap(id -> imageDao.findById(id)).orElse(null)).blog(boardDao.save(BoardEntity.builder().name(UUID.randomUUID().toString()).build())).build());
     }
 
     public Optional<UserEntity> getUser(Long userId) {
@@ -52,10 +32,7 @@ public class UserService {
     }
 
     public Optional<UserEntity> getCurrentUser() {
-        return userDao.findByOauth2ProviderAndOauth2Id(
-            oauth2Service.getProvider(),
-            oauth2Service.getId()
-        );
+        return userDao.findByOauth2ProviderAndOauth2Id(oauth2Service.getProvider(), oauth2Service.getId());
     }
 
     public List<UserEntity> getUsers(Pageable pageable) {
@@ -70,11 +47,7 @@ public class UserService {
         userEntity.setName(userInputDto.getName());
         userEntity.setEmail(userInputDto.getEmail());
         userEntity.setBiography(userInputDto.getBiography());
-        userEntity.setImage(
-            userInputDto
-            .getImage()
-            .flatMap((id) -> imageDao.findById(id)).orElse(null)
-        );
+        userEntity.setImage(userInputDto.getImage().flatMap(id -> imageDao.findById(id)).orElse(null));
         return userDao.save(userEntity);
     }
 
@@ -100,4 +73,15 @@ public class UserService {
     public Long deleteCurrentUser() {
         return deleteUser(getCurrentUser().get());
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public UserService(final BoardDao boardDao, final ImageDao imageDao, final UserDao userDao, final OAuth2Service oauth2Service) {
+        this.boardDao = boardDao;
+        this.imageDao = imageDao;
+        this.userDao = userDao;
+        this.oauth2Service = oauth2Service;
+    }
+    //</editor-fold>
 }

@@ -10,39 +10,89 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
-@Setter
 @Entity
 @Table(name = "board")
 public class BoardEntity implements BaseEntity<BoardDto> {
     @Id
     @GeneratedValue
     private Long id;
-
     @Column(nullable = false, unique = true)
     private String name;
-
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<XrefUserBoardEntity> xrefUsers = new ArrayList<>();
 
-    @Builder
     public BoardEntity(String name) {
         this.name = name;
     }
 
     @Override
     public BoardDto toDto() {
-        return BoardDto
-            .builder()
-            .id(id)
-            .name(name)
-            .build();
+        return BoardDto.builder().id(id).name(name).build();
     }
+
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    public static class BoardEntityBuilder {
+        @SuppressWarnings("all")
+        private String name;
+
+        @SuppressWarnings("all")
+        public BoardEntity.BoardEntityBuilder name(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        @SuppressWarnings("all")
+        public BoardEntity build() {
+            return new BoardEntity(this.name);
+        }
+
+        @Override
+        @SuppressWarnings("all")
+        public String toString() {
+            return "BoardEntity.BoardEntityBuilder(name=" + this.name + ")";
+        }
+    }
+
+    @SuppressWarnings("all")
+    public static BoardEntity.BoardEntityBuilder builder() {
+        return new BoardEntity.BoardEntityBuilder();
+    }
+
+    @SuppressWarnings("all")
+    protected BoardEntity() {
+    }
+
+    @SuppressWarnings("all")
+    public Long getId() {
+        return this.id;
+    }
+
+    @SuppressWarnings("all")
+    public String getName() {
+        return this.name;
+    }
+
+    @SuppressWarnings("all")
+    public List<XrefUserBoardEntity> getXrefUsers() {
+        return this.xrefUsers;
+    }
+
+    @SuppressWarnings("all")
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    @SuppressWarnings("all")
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    @SuppressWarnings("all")
+    public void setXrefUsers(final List<XrefUserBoardEntity> xrefUsers) {
+        this.xrefUsers = xrefUsers;
+    }
+    //</editor-fold>
 }

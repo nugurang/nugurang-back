@@ -1,16 +1,14 @@
 package com.nugurang.task;
 
 import com.nugurang.service.UserEvaluationService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
 @Component
-@Slf4j
 public class UserEvaluationTask {
-
+    @SuppressWarnings("all")
+    
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(UserEvaluationTask.class);
     private final UserEvaluationService userEvaluationService;
 
     @Scheduled(fixedDelay = 10000)
@@ -18,4 +16,12 @@ public class UserEvaluationTask {
         log.info("user evaluation task");
         userEvaluationService.evaluateUsers();
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public UserEvaluationTask(final UserEvaluationService userEvaluationService) {
+        this.userEvaluationService = userEvaluationService;
+    }
+    //</editor-fold>
 }

@@ -17,11 +17,9 @@ import graphql.kickstart.tools.GraphQLResolver;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
 public class ThreadResolver implements GraphQLResolver<ThreadDto> {
     private final ArticleDao articleDao;
@@ -33,19 +31,11 @@ public class ThreadResolver implements GraphQLResolver<ThreadDto> {
     private final ArticleDao articledDao;
 
     public BoardDto board(ThreadDto threadDto) {
-        return threadDao
-            .findById(threadDto.getId())
-            .map((threadEntity) -> threadEntity.getBoard())
-            .map((boardEntity) -> boardEntity.toDto())
-            .get();
+        return threadDao.findById(threadDto.getId()).map(threadEntity -> threadEntity.getBoard()).map(boardEntity -> boardEntity.toDto()).get();
     }
 
     public UserDto user(ThreadDto threadDto) {
-        return threadDao
-            .findById(threadDto.getId())
-            .map((threadEntity) -> threadEntity.getUser())
-            .map((entity) -> entity.toDto())
-            .get();
+        return threadDao.findById(threadDto.getId()).map(threadEntity -> threadEntity.getUser()).map(entity -> entity.toDto()).get();
     }
 
     public Optional<TeamDto> team(ThreadDto threadDto) {
@@ -53,10 +43,7 @@ public class ThreadResolver implements GraphQLResolver<ThreadDto> {
     }
 
     public Optional<EventDto> event(ThreadDto threadDto) {
-        return threadDao
-            .findById(threadDto.getId())
-            .map((threadEntity) -> threadEntity.getEvent())
-            .map((entity) -> entity.toDto());
+        return threadDao.findById(threadDto.getId()).map(threadEntity -> threadEntity.getEvent()).map(entity -> entity.toDto());
     }
 
     public List<TagDto> tags(ThreadDto threadDto) {
@@ -64,26 +51,28 @@ public class ThreadResolver implements GraphQLResolver<ThreadDto> {
     }
 
     public ArticleDto firstArticle(ThreadDto threadDto) {
-        return articleDao
-            .findAllByThreadIdOrderByCreatedAtAsc(threadDto.getId(), PageRequest.of(0, 1))
-            .getContent()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList())
-            .get(0);
+        return articleDao.findAllByThreadIdOrderByCreatedAtAsc(threadDto.getId(), PageRequest.of(0, 1)).getContent().stream().map(entity -> entity.toDto()).collect(Collectors.toList()).get(0);
     }
 
     public List<ArticleDto> getArticles(ThreadDto threadDto, Integer page, Integer pageSize) {
-        return articleDao
-            .findAllByThreadIdOrderByCreatedAtAsc(threadDto.getId(), PageRequest.of(page, pageSize))
-            .getContent()
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return articleDao.findAllByThreadIdOrderByCreatedAtAsc(threadDto.getId(), PageRequest.of(page, pageSize)).getContent().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     public Long commentCount(ThreadDto threadDto) {
-        return articleDao
-            .countByThreadId(threadDto.getId()) - 1;
+        return articleDao.countByThreadId(threadDto.getId()) - 1;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public ThreadResolver(final ArticleDao articleDao, final BoardDao boardDao, final TeamDao teamDao, final ThreadDao threadDao, final UserDao userDao, final EventDao eventDao, final ArticleDao articledDao) {
+        this.articleDao = articleDao;
+        this.boardDao = boardDao;
+        this.teamDao = teamDao;
+        this.threadDao = threadDao;
+        this.userDao = userDao;
+        this.eventDao = eventDao;
+        this.articledDao = articledDao;
+    }
+    //</editor-fold>
 }

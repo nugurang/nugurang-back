@@ -4,13 +4,10 @@ import com.nugurang.dto.UserDto;
 import com.nugurang.dto.UserInputDto;
 import com.nugurang.service.UserService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class UserMutation implements GraphQLMutationResolver {
-
     private final UserService userService;
 
     public UserDto createCurrentUser(UserInputDto userInputDto) {
@@ -28,4 +25,12 @@ public class UserMutation implements GraphQLMutationResolver {
     public Long deleteCurrentUser() {
         return userService.deleteCurrentUser();
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public UserMutation(final UserService userService) {
+        this.userService = userService;
+    }
+    //</editor-fold>
 }

@@ -4,13 +4,10 @@ import com.nugurang.dto.BoardDto;
 import com.nugurang.dto.BoardInputDto;
 import com.nugurang.service.BoardService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class BoardMutation implements GraphQLMutationResolver {
-
     private final BoardService boardService;
 
     public BoardDto createBoard(BoardInputDto boardInputDto) {
@@ -25,4 +22,12 @@ public class BoardMutation implements GraphQLMutationResolver {
         boardService.deleteBoard(boardId);
         return boardId;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public BoardMutation(final BoardService boardService) {
+        this.boardService = boardService;
+    }
+    //</editor-fold>
 }

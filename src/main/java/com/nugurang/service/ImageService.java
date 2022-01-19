@@ -3,22 +3,14 @@ package com.nugurang.service;
 import com.nugurang.dao.ImageDao;
 import com.nugurang.entity.ImageEntity;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class ImageService {
-
     private final ImageDao imageDao;
 
     public ImageEntity createImage(String imageAddress) {
-        return imageDao.save(
-            ImageEntity
-            .builder()
-            .address(imageAddress)
-            .build()
-        );
+        return imageDao.save(ImageEntity.builder().address(imageAddress).build());
     }
 
     public Optional<ImageEntity> getImage(Long id) {
@@ -32,4 +24,12 @@ public class ImageService {
     public void deleteImage(Long id) {
         imageDao.deleteById(id);
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public ImageService(final ImageDao imageDao) {
+        this.imageDao = imageDao;
+    }
+    //</editor-fold>
 }

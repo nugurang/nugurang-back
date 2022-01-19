@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.time4j.Moment;
 import net.time4j.range.IntervalTree;
 import net.time4j.range.MomentInterval;
@@ -27,10 +25,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Component
-@Slf4j
 public class MatchTask {
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MatchTask.class);
+    //</editor-fold>
     private final NotificationService notificationService;
     private final MatchRequestDao matchRequestDao;
     private final RoleDao roleDao;
@@ -40,127 +41,58 @@ public class MatchTask {
     @Scheduled(fixedDelay = 10000)
     @Transactional
     private void matchRequests() {
-        final var expiredMatchRequestEntities = matchRequestDao
-            .findAllByExpiredAtLessThan(OffsetDateTime.now());
+        final var expiredMatchRequestEntities = matchRequestDao.findAllByExpiredAtLessThan(OffsetDateTime.now());
         for (final var expiredMatchRequestEntity : expiredMatchRequestEntities) {
-            notificationService.createMatchFailureNotification(
-                expiredMatchRequestEntity.getUser(),
-                expiredMatchRequestEntity.getType(),
-                expiredMatchRequestEntity.getEvent()
-            );
+            notificationService.createMatchFailureNotification(expiredMatchRequestEntity.getUser(), expiredMatchRequestEntity.getType(), expiredMatchRequestEntity.getEvent());
             matchRequestDao.deleteById(expiredMatchRequestEntity.getId());
         }
-
         // https://github.com/MenoData/Time4J/issues/674
         // should filter by random match and event
-        List<ValueInterval<Moment, MomentInterval, MatchRequestEntity>>
-            matchRequestIntervals = matchRequestDao
-            .findAll()
-            .stream()
-            .map((matchRequestEntity) ->
-                Optional.ofNullable(matchRequestEntity.getMaxTeamSize())
-                .map((maxTeamSize) ->
-                    MomentInterval
-                    .between(
-                        Instant.ofEpochSecond(matchRequestEntity.getMinTeamSize()),
-                        Instant.ofEpochSecond(maxTeamSize)
-                    )
-                    .withValue(matchRequestEntity)
-                )
-                .orElseGet(() ->
-                    MomentInterval
-                    .since(Instant.ofEpochSecond(matchRequestEntity.getMinTeamSize()))
-                    .withValue(matchRequestEntity)
-                )
-            )
-            .collect(Collectors.toList());
-
-        if (matchRequestIntervals.size() < 2)
-            return;
-
+        List<ValueInterval<Moment, MomentInterval, MatchRequestEntity>> matchRequestIntervals = matchRequestDao.findAll().stream().map(matchRequestEntity -> Optional.ofNullable(matchRequestEntity.getMaxTeamSize()).map(maxTeamSize -> MomentInterval.between(Instant.ofEpochSecond(matchRequestEntity.getMinTeamSize()), Instant.ofEpochSecond(maxTeamSize)).withValue(matchRequestEntity)).orElseGet(() -> MomentInterval.since(Instant.ofEpochSecond(matchRequestEntity.getMinTeamSize())).withValue(matchRequestEntity))).collect(Collectors.toList());
+        if (matchRequestIntervals.size() < 2) return;
         Collections.shuffle(matchRequestIntervals);
-
-        IntervalTree<Moment, ValueInterval<Moment, MomentInterval, MatchRequestEntity>>
-            intervalTree = IntervalTree.onMomentAxis(matchRequestIntervals);
-
+        IntervalTree<Moment, ValueInterval<Moment, MomentInterval, MatchRequestEntity>> intervalTree = IntervalTree.onMomentAxis(matchRequestIntervals);
         final var matchRequestInterval = matchRequestIntervals.get(0);
-
-        var otherMatchRequestIntervals = intervalTree
-            .findIntersections(matchRequestInterval)
-            .stream()
-            .filter((otherMatchRequestInterval) ->
-                otherMatchRequestInterval.getValue().getId() != matchRequestInterval.getValue().getId()
-            )
-            .collect(Collectors.toList());
+        var otherMatchRequestIntervals = intervalTree.findIntersections(matchRequestInterval).stream().filter(otherMatchRequestInterval -> otherMatchRequestInterval.getValue().getId() != matchRequestInterval.getValue().getId()).collect(Collectors.toList());
         Collections.shuffle(otherMatchRequestIntervals);
-
         log.info("intervals " + otherMatchRequestIntervals.size());
-
         final var matchRequestEntity = matchRequestInterval.getValue();
         int min = matchRequestEntity.getMinTeamSize();
-        int max = Optional.ofNullable(matchRequestEntity.getMaxTeamSize())
-            .orElse(Integer.MAX_VALUE);
-
+        int max = Optional.ofNullable(matchRequestEntity.getMaxTeamSize()).orElse(Integer.MAX_VALUE);
         List<ValueInterval<Moment, MomentInterval, MatchRequestEntity>> matchedRequestIntervals = new LinkedList<>();
         for (final var otherMatchRequestInterval : otherMatchRequestIntervals) {
             final var otherMatchRequestEntity = otherMatchRequestInterval.getValue();
             int currentMin = otherMatchRequestEntity.getMinTeamSize();
-            int currentMax = Optional.ofNullable(
-                otherMatchRequestEntity.getMaxTeamSize()
-            ).orElse(Integer.MAX_VALUE);
+            int currentMax = Optional.ofNullable(otherMatchRequestEntity.getMaxTeamSize()).orElse(Integer.MAX_VALUE);
             min = Math.max(min, currentMin);
             max = Math.min(max, currentMax);
-            if (matchedRequestIntervals.size() + 1 >= max)
-                break;
+            if (matchedRequestIntervals.size() + 1 >= max) break;
             matchedRequestIntervals.add(otherMatchRequestInterval);
         }
-
         log.info("matched " + matchedRequestIntervals.size() + " users and min is " + min);
-
-        if (matchedRequestIntervals.size() + 1 < min)
-            return;
-
-        TeamEntity teamEntity = teamDao.save(
-            TeamEntity
-            .builder()
-            .name(UUID.randomUUID().toString())
-            .build()
-        );
-
-        xrefUserTeamDao.save(
-            XrefUserTeamEntity
-            .builder()
-            .user(matchRequestEntity.getUser())
-            .team(teamEntity)
-            .role(roleDao.findByName(RoleName.OWNER.name()).get())
-            .build()
-        );
+        if (matchedRequestIntervals.size() + 1 < min) return;
+        TeamEntity teamEntity = teamDao.save(TeamEntity.builder().name(UUID.randomUUID().toString()).build());
+        xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(matchRequestEntity.getUser()).team(teamEntity).role(roleDao.findByName(RoleName.OWNER.name()).get()).build());
         matchRequestDao.deleteById(matchRequestEntity.getId());
-        notificationService.createMatchSuccessNotification(
-            matchRequestEntity.getUser(),
-            matchRequestEntity.getType(),
-            matchRequestEntity.getEvent(),
-            teamEntity
-        );
-
+        notificationService.createMatchSuccessNotification(matchRequestEntity.getUser(), matchRequestEntity.getType(), matchRequestEntity.getEvent(), teamEntity);
         for (ValueInterval<Moment, MomentInterval, MatchRequestEntity> matchedRequestInterval : matchedRequestIntervals) {
             final var matchedRequestEntity = matchedRequestInterval.getValue();
-            notificationService.createMatchSuccessNotification(
-                matchedRequestEntity.getUser(),
-                matchedRequestEntity.getType(),
-                matchedRequestEntity.getEvent(),
-                teamEntity
-            );
-            xrefUserTeamDao.save(
-                XrefUserTeamEntity
-                .builder()
-                .user(matchedRequestEntity.getUser())
-                .team(teamEntity)
-                .role(roleDao.findByName(RoleName.MEMBER.name()).get())
-                .build()
-            );
+            notificationService.createMatchSuccessNotification(matchedRequestEntity.getUser(), matchedRequestEntity.getType(), matchedRequestEntity.getEvent(), teamEntity);
+            xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(matchedRequestEntity.getUser()).team(teamEntity).role(roleDao.findByName(RoleName.MEMBER.name()).get()).build());
             matchRequestDao.deleteById(matchedRequestEntity.getId());
         }
         log.info("match task");
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public MatchTask(final NotificationService notificationService, final MatchRequestDao matchRequestDao, final RoleDao roleDao, final TeamDao teamDao, final XrefUserTeamDao xrefUserTeamDao) {
+        this.notificationService = notificationService;
+        this.matchRequestDao = matchRequestDao;
+        this.roleDao = roleDao;
+        this.teamDao = teamDao;
+        this.xrefUserTeamDao = xrefUserTeamDao;
+    }
+    //</editor-fold>
 }

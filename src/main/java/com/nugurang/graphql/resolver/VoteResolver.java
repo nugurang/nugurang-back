@@ -8,10 +8,8 @@ import com.nugurang.dto.UserDto;
 import com.nugurang.dto.VoteDto;
 import com.nugurang.dto.VoteTypeDto;
 import graphql.kickstart.tools.GraphQLResolver;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
 public class VoteResolver implements GraphQLResolver<VoteDto> {
     private final UserDao userDao;
@@ -30,4 +28,13 @@ public class VoteResolver implements GraphQLResolver<VoteDto> {
         return null;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public VoteResolver(final UserDao userDao, final ArticleDao articledDao, final VoteTypeDao voteTypeDao) {
+        this.userDao = userDao;
+        this.articledDao = articledDao;
+        this.voteTypeDao = voteTypeDao;
+    }
+    //</editor-fold>
 }

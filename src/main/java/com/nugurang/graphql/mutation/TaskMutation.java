@@ -4,13 +4,10 @@ import com.nugurang.dto.TaskDto;
 import com.nugurang.dto.TaskInputDto;
 import com.nugurang.service.TaskService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TaskMutation implements GraphQLMutationResolver {
-
     private final TaskService taskService;
 
     public TaskDto createTask(TaskInputDto taskInputDto, Long workId) {
@@ -25,4 +22,12 @@ public class TaskMutation implements GraphQLMutationResolver {
         taskService.deleteTask(taskId);
         return taskId;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public TaskMutation(final TaskService taskService) {
+        this.taskService = taskService;
+    }
+    //</editor-fold>
 }

@@ -8,28 +8,27 @@ import com.nugurang.dto.WorkDto;
 import graphql.kickstart.tools.GraphQLResolver;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@RequiredArgsConstructor
 @Service
 public class WorkResolver implements GraphQLResolver<WorkDto> {
     private final TaskDao taskDao;
     private final WorkDao workDao;
 
     public ProjectDto project(WorkDto workDto) {
-        return workDao
-            .findById(workDto.getId())
-            .map((workEntity) -> workEntity.getProject())
-            .map((projectEntity) -> projectEntity.toDto())
-            .get();
+        return workDao.findById(workDto.getId()).map(workEntity -> workEntity.getProject()).map(projectEntity -> projectEntity.toDto()).get();
     }
 
     public List<TaskDto> tasks(WorkDto workDto) {
-        return taskDao
-            .findAllByWorkId(workDto.getId())
-            .stream()
-            .map((entity) -> entity.toDto())
-            .collect(Collectors.toList());
+        return taskDao.findAllByWorkId(workDto.getId()).stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public WorkResolver(final TaskDao taskDao, final WorkDao workDao) {
+        this.taskDao = taskDao;
+        this.workDao = workDao;
+    }
+    //</editor-fold>
 }

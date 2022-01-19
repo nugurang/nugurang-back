@@ -7,7 +7,6 @@ import com.nugurang.oauth2.OAuth2RestAuthenticationFilter;
 import com.nugurang.oauth2.OAuth2RestAuthenticationProvider;
 import com.nugurang.oauth2.OAuth2RestAuthenticationSuccessHandler;
 import java.util.Collections;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,9 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     private final OAuth2RestAuthenticationEntryPoint oauth2RestAuthenticationEntryPoint;
     private final OAuth2RestAuthenticationSuccessHandler oauth2RestAuthenticationSuccessHandler;
     private final OAuth2RestAuthenticationFailureHandler oauth2RestAuthenticationFailureHandler;
@@ -48,41 +45,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-            .cors()
-            .and()
-            .csrf()
-            .disable()
-            .authorizeRequests()
-            .antMatchers("/login", "/test")
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(oauth2RestAuthenticationEntryPoint)
-            .accessDeniedHandler(oauth2RestAccessDeniedHandler)
-            .and()
-            .oauth2Login()
-            .and()
-            .logout()
-            .permitAll()
-            .clearAuthentication(true)
-            .deleteCookies("JSESSIONID")
-            .invalidateHttpSession(true)
-            .and()
-            .headers()
-            .frameOptions()
-            .sameOrigin()
-            .and()
-            .addFilterBefore(getFilter(), LogoutFilter.class)
-            /*.securityContext()
+        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/login", "/test").permitAll().anyRequest().authenticated().and().exceptionHandling().authenticationEntryPoint(oauth2RestAuthenticationEntryPoint).accessDeniedHandler(oauth2RestAccessDeniedHandler).and().oauth2Login().and().logout().permitAll().clearAuthentication(true).deleteCookies("JSESSIONID").invalidateHttpSession(true).and().headers().frameOptions().sameOrigin().and().addFilterBefore(getFilter(), LogoutFilter.class);
+        /*.securityContext()
             .securityContextRepository(new NullSecurityContextRepository())*/
-            /* TODO
+        /* TODO
             .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/
-        ;
     }
 
     @Bean
@@ -105,6 +74,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public WebSecurityConfig(final OAuth2RestAuthenticationEntryPoint oauth2RestAuthenticationEntryPoint, final OAuth2RestAuthenticationSuccessHandler oauth2RestAuthenticationSuccessHandler, final OAuth2RestAuthenticationFailureHandler oauth2RestAuthenticationFailureHandler, final OAuth2RestAccessDeniedHandler oauth2RestAccessDeniedHandler) {
+        this.oauth2RestAuthenticationEntryPoint = oauth2RestAuthenticationEntryPoint;
+        this.oauth2RestAuthenticationSuccessHandler = oauth2RestAuthenticationSuccessHandler;
+        this.oauth2RestAuthenticationFailureHandler = oauth2RestAuthenticationFailureHandler;
+        this.oauth2RestAccessDeniedHandler = oauth2RestAccessDeniedHandler;
+    }
+    //</editor-fold>
 /*
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {

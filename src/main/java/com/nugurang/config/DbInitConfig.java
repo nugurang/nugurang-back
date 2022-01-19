@@ -20,11 +20,9 @@ import com.nugurang.entity.RoleEntity;
 import com.nugurang.entity.VoteTypeEntity;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@RequiredArgsConstructor
 public class DbInitConfig {
     private final InvitationStatusDao invitationStatusDao;
     private final MatchTypeDao matchTypeDao;
@@ -36,30 +34,27 @@ public class DbInitConfig {
     @PostConstruct
     public void init() {
         for (InvitationStatusName invitationStatusName : InvitationStatusName.values()) {
-            invitationStatusDao.save(
-                InvitationStatusEntity.builder().name(invitationStatusName.name()).build()
-            );
+            invitationStatusDao.save(InvitationStatusEntity.builder().name(invitationStatusName.name()).build());
         }
-
-        for (String roleName : List.of(RoleName.OWNER.name(), RoleName.MEMBER.name()))
-            roleDao.save(RoleEntity.builder().name(roleName).build());
-
-        for (VoteTypeName voteTypeName : VoteTypeName.values())
-            voteTypeDao.save(VoteTypeEntity.builder().name(voteTypeName.name()).build());
-
-        for (ProgressName progressName : ProgressName.values())
-            progressDao.save(ProgressEntity.builder().name(progressName.name()).build());
-
-        for (MatchTypeName matchTypeName : MatchTypeName.values())
-            matchTypeDao.save(MatchTypeEntity.builder().name(matchTypeName.name()).build());
-
+        for (String roleName : List.of(RoleName.OWNER.name(), RoleName.MEMBER.name())) roleDao.save(RoleEntity.builder().name(roleName).build());
+        for (VoteTypeName voteTypeName : VoteTypeName.values()) voteTypeDao.save(VoteTypeEntity.builder().name(voteTypeName.name()).build());
+        for (ProgressName progressName : ProgressName.values()) progressDao.save(ProgressEntity.builder().name(progressName.name()).build());
+        for (MatchTypeName matchTypeName : MatchTypeName.values()) matchTypeDao.save(MatchTypeEntity.builder().name(matchTypeName.name()).build());
         for (NotificationTypeName notificationTypeName : NotificationTypeName.values()) {
-            notificationTypeDao.save(
-                NotificationTypeEntity
-                .builder()
-                .name(notificationTypeName.name())
-                .build()
-            );
+            notificationTypeDao.save(NotificationTypeEntity.builder().name(notificationTypeName.name()).build());
         }
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public DbInitConfig(final InvitationStatusDao invitationStatusDao, final MatchTypeDao matchTypeDao, final NotificationTypeDao notificationTypeDao, final ProgressDao progressDao, final RoleDao roleDao, final VoteTypeDao voteTypeDao) {
+        this.invitationStatusDao = invitationStatusDao;
+        this.matchTypeDao = matchTypeDao;
+        this.notificationTypeDao = notificationTypeDao;
+        this.progressDao = progressDao;
+        this.roleDao = roleDao;
+        this.voteTypeDao = voteTypeDao;
+    }
+    //</editor-fold>
 }

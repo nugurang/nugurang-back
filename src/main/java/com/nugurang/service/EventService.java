@@ -4,27 +4,14 @@ import com.nugurang.dao.EventDao;
 import com.nugurang.dto.EventInputDto;
 import com.nugurang.entity.EventEntity;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class EventService {
-
     private final EventDao eventDao;
 
     public EventEntity createEvent(EventInputDto eventInputDto) {
-        return eventDao.save(
-            EventEntity
-            .builder()
-            .name(eventInputDto.getName())
-            .description(eventInputDto.getDescription())
-            .recruitingStart(eventInputDto.getRecruitingStart())
-            .recruitingEnd(eventInputDto.getRecruitingEnd())
-            .eventStart(eventInputDto.getEventStart())
-            .eventEnd(eventInputDto.getEventEnd())
-            .build()
-        );
+        return eventDao.save(EventEntity.builder().name(eventInputDto.getName()).description(eventInputDto.getDescription()).recruitingStart(eventInputDto.getRecruitingStart()).recruitingEnd(eventInputDto.getRecruitingEnd()).eventStart(eventInputDto.getEventStart()).eventEnd(eventInputDto.getEventEnd()).build());
     }
 
     public Optional<EventEntity> getEvent(Long eventId) {
@@ -45,4 +32,12 @@ public class EventService {
     public void deleteEvent(Long eventId) {
         eventDao.deleteById(eventId);
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public EventService(final EventDao eventDao) {
+        this.eventDao = eventDao;
+    }
+    //</editor-fold>
 }

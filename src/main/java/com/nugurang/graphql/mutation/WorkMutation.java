@@ -4,13 +4,10 @@ import com.nugurang.dto.WorkDto;
 import com.nugurang.dto.WorkInputDto;
 import com.nugurang.service.WorkService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class WorkMutation implements GraphQLMutationResolver {
-
     private final WorkService workService;
 
     public WorkDto createWork(WorkInputDto workInputDto, Long projectId) {
@@ -25,4 +22,12 @@ public class WorkMutation implements GraphQLMutationResolver {
         workService.deleteWork(workId);
         return workId;
     }
+
+    //<editor-fold defaultstate="collapsed" desc="delombok">
+    @SuppressWarnings("all")
+    
+    public WorkMutation(final WorkService workService) {
+        this.workService = workService;
+    }
+    //</editor-fold>
 }
