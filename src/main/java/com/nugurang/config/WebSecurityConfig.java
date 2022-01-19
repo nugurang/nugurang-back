@@ -34,9 +34,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${nugurang.addr.front.url}")
-    private String frontUrl;
-
     private final OAuth2RestAuthenticationEntryPoint oauth2RestAuthenticationEntryPoint;
     private final OAuth2RestAuthenticationSuccessHandler oauth2RestAuthenticationSuccessHandler;
     private final OAuth2RestAuthenticationFailureHandler oauth2RestAuthenticationFailureHandler;
@@ -55,21 +52,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrf()
             .disable()
             .authorizeRequests()
-            .antMatchers("/signin", "/test"/*, "/login"*/)
+            .antMatchers("/login", "/test")
             .permitAll()
             .anyRequest()
             .authenticated()
             .and()
             .exceptionHandling()
-            //.authenticationEntryPoint(oauth2RestAuthenticationEntryPoint)
+            .authenticationEntryPoint(oauth2RestAuthenticationEntryPoint)
             .accessDeniedHandler(oauth2RestAccessDeniedHandler)
             .and()
             .oauth2Login()
-            //.loginPage("/signin")
-            //.defaultSuccessUrl("/after-signin", true)
             .and()
             .logout()
-            //.logoutSuccessUrl("/after-signout")
             .permitAll()
             .clearAuthentication(true)
             .deleteCookies("JSESSIONID")
@@ -101,7 +95,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin(frontUrl);
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

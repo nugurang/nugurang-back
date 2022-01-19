@@ -32,7 +32,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Slf4j
 public class OAuth2RestAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private static final String DEFAULT_FILTER_PROCESSES_URL = "/signin";
+    private static final String DEFAULT_FILTER_PROCESSES_URL = "/login";
     private static final String CLIENT_REGISTRATION_NOT_FOUND_ERROR_CODE = "client_registration_not_found";
 
     @Autowired
