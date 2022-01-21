@@ -38,6 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final OAuth2RestAuthenticationSuccessHandler oauth2RestAuthenticationSuccessHandler;
     private final OAuth2RestAuthenticationFailureHandler oauth2RestAuthenticationFailureHandler;
     private final OAuth2RestAccessDeniedHandler oauth2RestAccessDeniedHandler;
+    @Value("${nugurang.addr.front.url}")
+    private String frontUrl;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -95,6 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin(frontUrl);
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
