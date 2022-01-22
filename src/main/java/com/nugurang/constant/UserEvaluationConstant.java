@@ -1,5 +1,5 @@
 package com.nugurang.constant;
 
 public interface UserEvaluationConstant {
-    int days = 7;
+    int DAYS = 7;
 }

@@ -152,7 +152,7 @@ public class Mutation implements GraphQLMutationResolver {
         var projectEntity = projectDao.findById(project).get();
         if (projectEntity.getFinished()) return false;
         var now = OffsetDateTime.now();
-        final var userEvaluationEntity = userEvaluationDao.save(UserEvaluationEntity.builder().createdAt(now).expiresAt(now.plusDays(UserEvaluationConstant.days)).build());
+        final var userEvaluationEntity = userEvaluationDao.save(UserEvaluationEntity.builder().createdAt(now).expiresAt(now.plusDays(UserEvaluationConstant.DAYS)).build());
         projectEntity.setFinished(true);
         projectEntity.setUserEvaluation(userEvaluationEntity);
         projectEntity = projectDao.save(projectEntity);

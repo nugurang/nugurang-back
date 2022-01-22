@@ -29,7 +29,7 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
     }
 
     public UserEvaluationDto toDto() {
-        return UserEvaluationDto.builder().id(id).createdAt(createdAt).expiresAt(expiresAt).build();
+        return new UserEvaluationDto(id, createdAt, expiresAt);
     }
 
 
