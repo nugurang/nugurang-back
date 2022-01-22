@@ -1,7 +1,6 @@
 package com.nugurang.entity;
 
 import com.nugurang.dto.PositionDto;
-import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +24,7 @@ public class PositionEntity implements BaseEntity<PositionDto> {
     private ImageEntity image;
 
     public PositionDto toDto() {
-        return PositionDto.builder().id(id).name(name).description(Optional.ofNullable(description)).build();
+        return new PositionDto(id, name, description);
     }
 
 

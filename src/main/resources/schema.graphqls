@@ -22,7 +22,7 @@ input EventInput {
 
 input MatchRequestInput {
     minTeamSize: Int!
-    maxTeamSize: Int
+    maxTeamSize: Int!
     days: Int
     hours: Int
     minutes: Int
@@ -148,7 +148,7 @@ type Event {
 type MatchRequest {
     id: ID!
     createdAt: DateTime!
-    expiredAt: DateTime!
+    expiresAt: DateTime!
     minTeamSize: Int!
     maxTeamSize: Int
     type: MatchType!
@@ -296,7 +296,7 @@ type User {
 type UserEvaluation {
     id: ID!
     createdAt: DateTime!
-    expiredAt: DateTime!
+    expiresAt: DateTime!
     project: Project!
     reviews: [UserReview]!
 }

@@ -2,7 +2,6 @@ package com.nugurang.entity;
 
 import com.nugurang.dto.ArticleDto;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -43,7 +42,13 @@ public class ArticleEntity implements BaseEntity<ArticleDto> {
 
     @Override
     public ArticleDto toDto() {
-        return ArticleDto.builder().id(id).title(Optional.ofNullable(title)).content(content).createdAt(getCreatedAt()).modifiedAt(getModifiedAt()).build();
+        return new ArticleDto(
+            id,
+            title,
+            content,
+            getCreatedAt(),
+            getModifiedAt()
+        );
     }
 
 

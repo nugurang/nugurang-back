@@ -17,7 +17,7 @@ public class MatchTypeEntity implements BaseEntity<MatchTypeDto> {
     private String name;
 
     public MatchTypeDto toDto() {
-        return MatchTypeDto.builder().id(id).name(name).build();
+        return new MatchTypeDto(id, name);
     }
 
 

@@ -30,7 +30,7 @@ public class TaskEntity implements BaseEntity<TaskDto> {
     private ProgressEntity progress;
 
     public TaskDto toDto() {
-        return TaskDto.builder().id(id).name(name).order(order).difficulty(difficulty).build();
+        return new TaskDto(id, name, order, difficulty);
     }
 
 

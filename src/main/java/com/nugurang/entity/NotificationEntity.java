@@ -33,7 +33,7 @@ public class NotificationEntity implements BaseEntity<NotificationDto> {
     private UserEntity user;
 
     public NotificationDto toDto() {
-        return NotificationDto.builder().id(id).isRead(isRead).createdAt(createdAt).build();
+        return new NotificationDto(id, isRead, createdAt);
     }
 
 

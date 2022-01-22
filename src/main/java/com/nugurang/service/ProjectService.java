@@ -24,7 +24,7 @@ public class ProjectService {
 
     @Transactional
     public ProjectEntity createProject(ProjectInputDto projectInputDto, Long teamId) {
-        ProjectEntity projectEntity = projectDao.save(ProjectEntity.builder().name(projectInputDto.getName()).finished(false).team(teamDao.findById(teamId).get()).event(projectInputDto.getEvent().flatMap(id -> eventDao.findById(id)).orElse(null)).build());
+        ProjectEntity projectEntity = projectDao.save(ProjectEntity.builder().name(projectInputDto.getName()).finished(false).team(teamDao.findById(teamId).get()).event(Optional.ofNullable(projectInputDto.getEvent()).flatMap(id -> eventDao.findById(id)).orElse(null)).build());
         xrefUserProjectDao.save(XrefUserProjectEntity.builder().user(userService.getCurrentUser().get()).project(projectEntity).role(roleDao.findByName(RoleName.OWNER.name()).get()).build());
         return projectEntity;
     }
@@ -37,7 +37,7 @@ public class ProjectService {
     public ProjectEntity updateProject(ProjectInputDto projectInputDto, Long projectId) {
         return projectDao.save(projectDao.findById(projectId).map(projectEntity -> {
             projectEntity.setName(projectInputDto.getName());
-            projectEntity.setEvent(projectInputDto.getEvent().flatMap(eventId -> eventDao.findById(eventId)).orElse(null));
+            projectEntity.setEvent(Optional.ofNullable(projectInputDto.getEvent()).flatMap(eventId -> eventDao.findById(eventId)).orElse(null));
             return projectEntity;
         }).get());
     }

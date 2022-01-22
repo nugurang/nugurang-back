@@ -28,7 +28,7 @@ public class BoardEntity implements BaseEntity<BoardDto> {
 
     @Override
     public BoardDto toDto() {
-        return BoardDto.builder().id(id).name(name).build();
+        return new BoardDto(id, name);
     }
 
 

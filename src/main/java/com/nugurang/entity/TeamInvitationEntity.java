@@ -30,7 +30,7 @@ public class TeamInvitationEntity implements BaseEntity<TeamInvitationDto> {
 
     @Override
     public TeamInvitationDto toDto() {
-        return TeamInvitationDto.builder().id(id).build();
+        return new TeamInvitationDto(id);
     }
 
 

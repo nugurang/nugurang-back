@@ -19,15 +19,15 @@ public class WorkEntity implements BaseEntity<WorkDto> {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private Boolean opened;
-    @Column(nullable = false)
     private Integer order;
+    @Column(nullable = false)
+    private Boolean opened;
     @ManyToOne
     @JoinColumn(name = "project", nullable = false)
     private ProjectEntity project;
 
     public WorkDto toDto() {
-        return WorkDto.builder().id(id).name(name).opened(opened).order(order).build();
+        return new WorkDto(id, name, order, opened);
     }
 
 

@@ -32,7 +32,7 @@ public class UserReviewEntity implements BaseEntity<UserReviewDto> {
     private UserEvaluationEntity userEvaluation;
 
     public UserReviewDto toDto() {
-        return UserReviewDto.builder().id(id).honor(honor).build();
+        return new UserReviewDto(id, honor);
     }
 
 

@@ -19,7 +19,7 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
     @Column(nullable = false)
     private OffsetDateTime createdAt;
     @Column(nullable = false)
-    private OffsetDateTime expiredAt;
+    private OffsetDateTime expiresAt;
     @OneToOne(mappedBy = "userEvaluation")
     private ProjectEntity project;
 
@@ -29,7 +29,7 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
     }
 
     public UserEvaluationDto toDto() {
-        return UserEvaluationDto.builder().id(id).createdAt(createdAt).expiredAt(expiredAt).build();
+        return UserEvaluationDto.builder().id(id).createdAt(createdAt).expiresAt(expiresAt).build();
     }
 
 
@@ -45,7 +45,7 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
         private OffsetDateTime createdAt;
         @SuppressWarnings("all")
         
-        private OffsetDateTime expiredAt;
+        private OffsetDateTime expiresAt;
         @SuppressWarnings("all")
         
         private ProjectEntity project;
@@ -71,8 +71,8 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
 
         @SuppressWarnings("all")
         
-        public UserEvaluationEntity.UserEvaluationEntityBuilder expiredAt(final OffsetDateTime expiredAt) {
-            this.expiredAt = expiredAt;
+        public UserEvaluationEntity.UserEvaluationEntityBuilder expiresAt(final OffsetDateTime expiresAt) {
+            this.expiresAt = expiresAt;
             return this;
         }
 
@@ -86,14 +86,14 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
         @SuppressWarnings("all")
         
         public UserEvaluationEntity build() {
-            return new UserEvaluationEntity(this.id, this.createdAt, this.expiredAt, this.project);
+            return new UserEvaluationEntity(this.id, this.createdAt, this.expiresAt, this.project);
         }
 
         @Override
         @SuppressWarnings("all")
         
         public String toString() {
-            return "UserEvaluationEntity.UserEvaluationEntityBuilder(id=" + this.id + ", createdAt=" + this.createdAt + ", expiredAt=" + this.expiredAt + ", project=" + this.project + ")";
+            return "UserEvaluationEntity.UserEvaluationEntityBuilder(id=" + this.id + ", createdAt=" + this.createdAt + ", expiresAt=" + this.expiresAt + ", project=" + this.project + ")";
         }
     }
 
@@ -110,10 +110,10 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
 
     @SuppressWarnings("all")
     
-    public UserEvaluationEntity(final Long id, final OffsetDateTime createdAt, final OffsetDateTime expiredAt, final ProjectEntity project) {
+    public UserEvaluationEntity(final Long id, final OffsetDateTime createdAt, final OffsetDateTime expiresAt, final ProjectEntity project) {
         this.id = id;
         this.createdAt = createdAt;
-        this.expiredAt = expiredAt;
+        this.expiresAt = expiresAt;
         this.project = project;
     }
 
@@ -131,8 +131,8 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
 
     @SuppressWarnings("all")
     
-    public OffsetDateTime getExpiredAt() {
-        return this.expiredAt;
+    public OffsetDateTime getExpiresAt() {
+        return this.expiresAt;
     }
 
     @SuppressWarnings("all")
@@ -155,8 +155,8 @@ public class UserEvaluationEntity implements BaseEntity<UserEvaluationDto> {
 
     @SuppressWarnings("all")
     
-    public void setExpiredAt(final OffsetDateTime expiredAt) {
-        this.expiredAt = expiredAt;
+    public void setExpiresAt(final OffsetDateTime expiresAt) {
+        this.expiresAt = expiresAt;
     }
 
     @SuppressWarnings("all")

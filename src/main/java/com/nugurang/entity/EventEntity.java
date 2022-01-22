@@ -28,9 +28,16 @@ public class EventEntity implements BaseEntity<EventDto> {
     private OffsetDateTime eventEnd;
 
     public EventDto toDto() {
-        return EventDto.builder().id(id).name(name).description(description).recruitingStart(recruitingStart).recruitingEnd(recruitingEnd).eventStart(eventStart).eventEnd(eventEnd).build();
+        return new EventDto(
+            id,
+            name,
+            description,
+            recruitingStart,
+            recruitingEnd,
+            eventStart,
+            eventEnd
+        );
     }
-
 
     //<editor-fold defaultstate="collapsed" desc="delombok">
     @SuppressWarnings("all")

@@ -33,7 +33,7 @@ public class ProjectEntity implements BaseEntity<ProjectDto> {
 
     @Override
     public ProjectDto toDto() {
-        return ProjectDto.builder().id(id).name(name).finished(finished).build();
+        return new ProjectDto(id, name, finished);
     }
 
 

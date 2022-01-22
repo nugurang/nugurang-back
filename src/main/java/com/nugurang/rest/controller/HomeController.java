@@ -1,12 +1,7 @@
 package com.nugurang.rest.controller;
 
-import com.nugurang.dto.RestResponseDto;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +15,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -66,11 +60,6 @@ public class HomeController {
             + " " + authentication.getName() + " " + name + " " + email;
         */
         return String.join("<br/>", oauth2.getAuthorizedClientRegistrationId(), oauth2.getName(), name, email, principal.toString(), String.valueOf(principal instanceof UserDetails), String.valueOf(principal instanceof OAuth2User), auth.getDetails() != null ? auth.getDetails().toString() : "null", client != null ? client.getAccessToken().getTokenValue() : "null", client != null ? client.getAccessToken().getIssuedAt().toString() : "null", client != null ? client.getAccessToken().getExpiresAt().toString() : "null");
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<RestResponseDto> test() {
-        return new ResponseEntity<>(RestResponseDto.builder().data(Optional.empty()).errors(Optional.of(List.of(RestResponseDto.Error.builder().message("Signin Required").extensions(Optional.of(RestResponseDto.Error.ErrorExtension.builder().type("UnAuthorized").build())).build()))).build(), HttpStatus.UNAUTHORIZED);
     }
 
     //<editor-fold defaultstate="collapsed" desc="delombok">

@@ -13,5 +13,5 @@ public interface MatchRequestDao extends JpaRepository<MatchRequestEntity, Long>
 
     List<MatchRequestEntity> findAllByUserId(Long user);
 
-    List<MatchRequestEntity> findAllByExpiredAtLessThan(OffsetDateTime at);
+    List<MatchRequestEntity> findAllByExpiresAtLessThan(OffsetDateTime at);
 }

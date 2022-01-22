@@ -30,7 +30,7 @@ public class TeamEntity implements BaseEntity<TeamDto> {
 
     @Override
     public TeamDto toDto() {
-        return TeamDto.builder().id(id).name(name).build();
+        return new TeamDto(id, name);
     }
 
 

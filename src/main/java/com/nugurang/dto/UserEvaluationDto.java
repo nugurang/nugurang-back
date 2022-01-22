@@ -9,7 +9,7 @@ public class UserEvaluationDto {
     @NotNull
     private OffsetDateTime createdAt;
     @NotNull
-    private OffsetDateTime expiredAt;
+    private OffsetDateTime expiresAt;
 
 
     //<editor-fold defaultstate="collapsed" desc="delombok">
@@ -24,7 +24,7 @@ public class UserEvaluationDto {
         private OffsetDateTime createdAt;
         @SuppressWarnings("all")
         
-        private OffsetDateTime expiredAt;
+        private OffsetDateTime expiresAt;
 
         @SuppressWarnings("all")
         
@@ -47,22 +47,22 @@ public class UserEvaluationDto {
 
         @SuppressWarnings("all")
         
-        public UserEvaluationDto.UserEvaluationDtoBuilder expiredAt(final OffsetDateTime expiredAt) {
-            this.expiredAt = expiredAt;
+        public UserEvaluationDto.UserEvaluationDtoBuilder expiresAt(final OffsetDateTime expiresAt) {
+            this.expiresAt = expiresAt;
             return this;
         }
 
         @SuppressWarnings("all")
         
         public UserEvaluationDto build() {
-            return new UserEvaluationDto(this.id, this.createdAt, this.expiredAt);
+            return new UserEvaluationDto(this.id, this.createdAt, this.expiresAt);
         }
 
         @Override
         @SuppressWarnings("all")
         
         public String toString() {
-            return "UserEvaluationDto.UserEvaluationDtoBuilder(id=" + this.id + ", createdAt=" + this.createdAt + ", expiredAt=" + this.expiredAt + ")";
+            return "UserEvaluationDto.UserEvaluationDtoBuilder(id=" + this.id + ", createdAt=" + this.createdAt + ", expiresAt=" + this.expiresAt + ")";
         }
     }
 
@@ -86,8 +86,8 @@ public class UserEvaluationDto {
 
     @SuppressWarnings("all")
     
-    public OffsetDateTime getExpiredAt() {
-        return this.expiredAt;
+    public OffsetDateTime getExpiresAt() {
+        return this.expiresAt;
     }
 
     @SuppressWarnings("all")
@@ -104,8 +104,8 @@ public class UserEvaluationDto {
 
     @SuppressWarnings("all")
     
-    public void setExpiredAt(final OffsetDateTime expiredAt) {
-        this.expiredAt = expiredAt;
+    public void setExpiresAt(final OffsetDateTime expiresAt) {
+        this.expiresAt = expiresAt;
     }
 
     @Override
@@ -122,9 +122,9 @@ public class UserEvaluationDto {
         final Object this$createdAt = this.getCreatedAt();
         final Object other$createdAt = other.getCreatedAt();
         if (this$createdAt == null ? other$createdAt != null : !this$createdAt.equals(other$createdAt)) return false;
-        final Object this$expiredAt = this.getExpiredAt();
-        final Object other$expiredAt = other.getExpiredAt();
-        if (this$expiredAt == null ? other$expiredAt != null : !this$expiredAt.equals(other$expiredAt)) return false;
+        final Object this$expiresAt = this.getExpiresAt();
+        final Object other$expiresAt = other.getExpiresAt();
+        if (this$expiresAt == null ? other$expiresAt != null : !this$expiresAt.equals(other$expiresAt)) return false;
         return true;
     }
 
@@ -144,8 +144,8 @@ public class UserEvaluationDto {
         result = result * PRIME + ($id == null ? 43 : $id.hashCode());
         final Object $createdAt = this.getCreatedAt();
         result = result * PRIME + ($createdAt == null ? 43 : $createdAt.hashCode());
-        final Object $expiredAt = this.getExpiredAt();
-        result = result * PRIME + ($expiredAt == null ? 43 : $expiredAt.hashCode());
+        final Object $expiresAt = this.getExpiresAt();
+        result = result * PRIME + ($expiresAt == null ? 43 : $expiresAt.hashCode());
         return result;
     }
 
@@ -153,15 +153,15 @@ public class UserEvaluationDto {
     @SuppressWarnings("all")
     
     public String toString() {
-        return "UserEvaluationDto(id=" + this.getId() + ", createdAt=" + this.getCreatedAt() + ", expiredAt=" + this.getExpiredAt() + ")";
+        return "UserEvaluationDto(id=" + this.getId() + ", createdAt=" + this.getCreatedAt() + ", expiresAt=" + this.getExpiresAt() + ")";
     }
 
     @SuppressWarnings("all")
     
-    public UserEvaluationDto(final Long id, final OffsetDateTime createdAt, final OffsetDateTime expiredAt) {
+    public UserEvaluationDto(final Long id, final OffsetDateTime createdAt, final OffsetDateTime expiresAt) {
         this.id = id;
         this.createdAt = createdAt;
-        this.expiredAt = expiredAt;
+        this.expiresAt = expiresAt;
     }
     //</editor-fold>
 }

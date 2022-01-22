@@ -2,7 +2,6 @@ package com.nugurang.entity;
 
 import com.nugurang.dto.MatchRequestDto;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +20,7 @@ public class MatchRequestEntity implements BaseEntity<MatchRequestDto> {
     @Column(nullable = false)
     private OffsetDateTime createdAt;
     @Column(nullable = false)
-    private OffsetDateTime expiredAt;
+    private OffsetDateTime expiresAt;
     @Column(nullable = false)
     private Integer minTeamSize;
     @Column(nullable = true)
@@ -38,7 +37,7 @@ public class MatchRequestEntity implements BaseEntity<MatchRequestDto> {
 
     @Override
     public MatchRequestDto toDto() {
-        return MatchRequestDto.builder().id(id).createdAt(createdAt).expiredAt(expiredAt).minTeamSize(minTeamSize).maxTeamSize(Optional.ofNullable(maxTeamSize)).build();
+        return new MatchRequestDto(id, createdAt, expiresAt, minTeamSize, maxTeamSize);
     }
 
 
@@ -54,7 +53,7 @@ public class MatchRequestEntity implements BaseEntity<MatchRequestDto> {
         private OffsetDateTime createdAt;
         @SuppressWarnings("all")
         
-        private OffsetDateTime expiredAt;
+        private OffsetDateTime expiresAt;
         @SuppressWarnings("all")
         
         private Integer minTeamSize;
@@ -92,8 +91,8 @@ public class MatchRequestEntity implements BaseEntity<MatchRequestDto> {
 
         @SuppressWarnings("all")
         
-        public MatchRequestEntity.MatchRequestEntityBuilder expiredAt(final OffsetDateTime expiredAt) {
-            this.expiredAt = expiredAt;
+        public MatchRequestEntity.MatchRequestEntityBuilder expiresAt(final OffsetDateTime expiresAt) {
+            this.expiresAt = expiresAt;
             return this;
         }
 
@@ -135,14 +134,14 @@ public class MatchRequestEntity implements BaseEntity<MatchRequestDto> {
         @SuppressWarnings("all")
         
         public MatchRequestEntity build() {
-            return new MatchRequestEntity(this.id, this.createdAt, this.expiredAt, this.minTeamSize, this.maxTeamSize, this.type, this.event, this.user);
+            return new MatchRequestEntity(this.id, this.createdAt, this.expiresAt, this.minTeamSize, this.maxTeamSize, this.type, this.event, this.user);
         }
 
         @Override
         @SuppressWarnings("all")
         
         public String toString() {
-            return "MatchRequestEntity.MatchRequestEntityBuilder(id=" + this.id + ", createdAt=" + this.createdAt + ", expiredAt=" + this.expiredAt + ", minTeamSize=" + this.minTeamSize + ", maxTeamSize=" + this.maxTeamSize + ", type=" + this.type + ", event=" + this.event + ", user=" + this.user + ")";
+            return "MatchRequestEntity.MatchRequestEntityBuilder(id=" + this.id + ", createdAt=" + this.createdAt + ", expiresAt=" + this.expiresAt + ", minTeamSize=" + this.minTeamSize + ", maxTeamSize=" + this.maxTeamSize + ", type=" + this.type + ", event=" + this.event + ", user=" + this.user + ")";
         }
     }
 
@@ -154,10 +153,10 @@ public class MatchRequestEntity implements BaseEntity<MatchRequestDto> {
 
     @SuppressWarnings("all")
     
-    public MatchRequestEntity(final Long id, final OffsetDateTime createdAt, final OffsetDateTime expiredAt, final Integer minTeamSize, final Integer maxTeamSize, final MatchTypeEntity type, final EventEntity event, final UserEntity user) {
+    public MatchRequestEntity(final Long id, final OffsetDateTime createdAt, final OffsetDateTime expiresAt, final Integer minTeamSize, final Integer maxTeamSize, final MatchTypeEntity type, final EventEntity event, final UserEntity user) {
         this.id = id;
         this.createdAt = createdAt;
-        this.expiredAt = expiredAt;
+        this.expiresAt = expiresAt;
         this.minTeamSize = minTeamSize;
         this.maxTeamSize = maxTeamSize;
         this.type = type;
@@ -184,8 +183,8 @@ public class MatchRequestEntity implements BaseEntity<MatchRequestDto> {
 
     @SuppressWarnings("all")
     
-    public OffsetDateTime getExpiredAt() {
-        return this.expiredAt;
+    public OffsetDateTime getExpiresAt() {
+        return this.expiresAt;
     }
 
     @SuppressWarnings("all")
@@ -232,8 +231,8 @@ public class MatchRequestEntity implements BaseEntity<MatchRequestDto> {
 
     @SuppressWarnings("all")
     
-    public void setExpiredAt(final OffsetDateTime expiredAt) {
-        this.expiredAt = expiredAt;
+    public void setExpiresAt(final OffsetDateTime expiresAt) {
+        this.expiresAt = expiresAt;
     }
 
     @SuppressWarnings("all")

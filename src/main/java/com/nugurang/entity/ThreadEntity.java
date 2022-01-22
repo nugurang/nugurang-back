@@ -58,7 +58,7 @@ public class ThreadEntity implements BaseEntity<ThreadDto> {
 
     @Override
     public ThreadDto toDto() {
-        return ThreadDto.builder().id(id).name(name).createdAt(createdAt).modifiedAt(modifiedAt).build();
+        return new ThreadDto(id, name, createdAt, modifiedAt);
     }
 
 

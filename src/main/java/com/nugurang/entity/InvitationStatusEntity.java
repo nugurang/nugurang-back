@@ -17,7 +17,7 @@ public class InvitationStatusEntity implements BaseEntity<InvitationStatusDto> {
     private String name;
 
     public InvitationStatusDto toDto() {
-        return InvitationStatusDto.builder().id(id).name(name).build();
+        return new InvitationStatusDto(id, name);
     }
 
 

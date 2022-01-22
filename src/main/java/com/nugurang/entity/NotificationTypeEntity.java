@@ -17,7 +17,7 @@ public class NotificationTypeEntity implements BaseEntity<NotificationTypeDto> {
     private String name;
 
     public NotificationTypeDto toDto() {
-        return NotificationTypeDto.builder().id(id).name(name).build();
+        return new NotificationTypeDto(id, name);
     }
 
 

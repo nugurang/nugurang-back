@@ -48,7 +48,7 @@ public class Query implements GraphQLQueryResolver {
     }
 
     Optional<OAuth2UserDto> currentOAuth2User() {
-        return Optional.of(OAuth2UserDto.builder().provider(oauth2Service.getProvider()).id(oauth2Service.getId()).name(oauth2Service.getName()).email(oauth2Service.getEmail()).build());
+        return Optional.of(new OAuth2UserDto(oauth2Service.getProvider(), oauth2Service.getId(), oauth2Service.getName(), oauth2Service.getEmail()));
     }
 
     List<MatchRequestDto> matchRequests() {

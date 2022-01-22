@@ -22,7 +22,7 @@ public class ArticleService {
 
     @Transactional
     public ArticleEntity createArticle(ArticleInputDto articleInputDto, Long thread, Optional<Long> parent) {
-        final var articleEntity = articleDao.save(ArticleEntity.builder().title(articleInputDto.getTitle().orElse(null)).content(articleInputDto.getContent()).user(userService.getCurrentUser().get()).thread(threadDao.findById(thread).get()).parent(parent.flatMap(parentId -> articleDao.findById(parentId)).orElse(null)).build());
+        final var articleEntity = articleDao.save(ArticleEntity.builder().title(articleInputDto.getTitle()).content(articleInputDto.getContent()).user(userService.getCurrentUser().get()).thread(threadDao.findById(thread).get()).parent(parent.flatMap(parentId -> articleDao.findById(parentId)).orElse(null)).build());
         xrefArticleImageDao.saveAll(articleInputDto.getImages().stream().map(imageId -> XrefArticleImageEntity.builder().article(articleEntity).image(imageDao.findById(imageId).orElse(null)).build()).collect(Collectors.toList()));
         return articleEntity;
     }

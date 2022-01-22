@@ -18,7 +18,7 @@ public class ProgressEntity implements BaseEntity<ProgressDto> {
 
     @Override
     public ProgressDto toDto() {
-        return ProgressDto.builder().id(id).name(name).build();
+        return new ProgressDto(id, name);
     }
 
 

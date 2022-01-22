@@ -55,6 +55,7 @@ import com.nugurang.service.UserService;
 import graphql.kickstart.tools.GraphQLMutationResolver;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,11 +100,11 @@ public class Mutation implements GraphQLMutationResolver {
     MatchRequestDto createMatchRequest(MatchRequestInputDto matchRequestInputDto) {
         log.info("Creating match request...");
         var now = OffsetDateTime.now();
-        return matchRequestDao.save(MatchRequestEntity.builder().createdAt(now).expiredAt(now.plusDays(matchRequestInputDto.getDays().orElse(1)).plusHours(matchRequestInputDto.getHours().orElse(0)).plusMinutes(matchRequestInputDto.getMinutes().orElse(0))).minTeamSize(matchRequestInputDto.getMinTeamSize()).maxTeamSize(matchRequestInputDto.getMaxTeamSize().orElse(null)).type(matchTypeDao.findById(matchRequestInputDto.getType()).get()).event(eventDao.findById(matchRequestInputDto.getEvent()).get()).user(userService.getCurrentUser().get()).build()).toDto();
+        return matchRequestDao.save(MatchRequestEntity.builder().createdAt(now).expiresAt(now.plusDays(Optional.ofNullable(matchRequestInputDto.getDays()).orElse(1)).plusHours(Optional.ofNullable(matchRequestInputDto.getHours()).orElse(0)).plusMinutes(Optional.ofNullable(matchRequestInputDto.getMinutes()).orElse(0))).minTeamSize(matchRequestInputDto.getMinTeamSize()).maxTeamSize(matchRequestInputDto.getMaxTeamSize()).type(matchTypeDao.findById(matchRequestInputDto.getType()).get()).event(eventDao.findById(matchRequestInputDto.getEvent()).get()).user(userService.getCurrentUser().get()).build()).toDto();
     }
 
     PositionDto createPosition(PositionInputDto positionInputDto) {
-        return positionDao.save(PositionEntity.builder().name(positionInputDto.getName()).description(positionInputDto.getDescription().orElse(null)).image(positionInputDto.getImage().flatMap(imageId -> imageDao.findById(imageId)).orElse(null)).build()).toDto();
+        return positionDao.save(PositionEntity.builder().name(positionInputDto.getName()).description(positionInputDto.getDescription()).image(Optional.ofNullable(positionInputDto.getImage()).flatMap(imageId -> imageDao.findById(imageId)).orElse(null)).build()).toDto();
     }
 
     List<ProjectInvitationDto> createProjectInvitations(ProjectInvitationInputDto projectInvitationInputDto) {
@@ -151,7 +152,7 @@ public class Mutation implements GraphQLMutationResolver {
         var projectEntity = projectDao.findById(project).get();
         if (projectEntity.getFinished()) return false;
         var now = OffsetDateTime.now();
-        final var userEvaluationEntity = userEvaluationDao.save(UserEvaluationEntity.builder().createdAt(now).expiredAt(now.plusDays(UserEvaluationConstant.days)).build());
+        final var userEvaluationEntity = userEvaluationDao.save(UserEvaluationEntity.builder().createdAt(now).expiresAt(now.plusDays(UserEvaluationConstant.days)).build());
         projectEntity.setFinished(true);
         projectEntity.setUserEvaluation(userEvaluationEntity);
         projectEntity = projectDao.save(projectEntity);

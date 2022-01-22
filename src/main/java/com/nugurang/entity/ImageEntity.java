@@ -17,9 +17,8 @@ public class ImageEntity implements BaseEntity<ImageDto> {
     private String address;
 
     public ImageDto toDto() {
-        return ImageDto.builder().id(id).address(address).build();
+        return new ImageDto(id, address);
     }
-
 
     //<editor-fold defaultstate="collapsed" desc="delombok">
     @SuppressWarnings("all")

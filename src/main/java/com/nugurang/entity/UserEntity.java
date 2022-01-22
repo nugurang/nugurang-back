@@ -35,7 +35,7 @@ public class UserEntity implements BaseEntity<UserDto> {
 
     @Override
     public UserDto toDto() {
-        return UserDto.builder().id(id).oauth2Provider(oauth2Provider).oauth2Id(oauth2Id).email(email).name(name).biography(biography).build();
+        return new UserDto(id, oauth2Provider, oauth2Id, email, name, biography);
     }
 
 

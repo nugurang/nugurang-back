@@ -17,7 +17,7 @@ public class VoteTypeEntity implements BaseEntity<VoteTypeDto> {
     private String name;
 
     public VoteTypeDto toDto() {
-        return VoteTypeDto.builder().id(id).name(name).build();
+        return new VoteTypeDto(id, name);
     }
 
 

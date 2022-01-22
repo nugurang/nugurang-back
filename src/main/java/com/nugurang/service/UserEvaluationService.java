@@ -30,7 +30,7 @@ public class UserEvaluationService {
     @Transactional
     public void evaluateUsers() {
         log.info("user evaluation task");
-        List<UserEvaluationEntity> userEvaluationEntities = userEvaluationDao.findAllByExpiredAtLessThanEqual(OffsetDateTime.now());
+        List<UserEvaluationEntity> userEvaluationEntities = userEvaluationDao.findAllByExpiresAtLessThanEqual(OffsetDateTime.now());
         // should fix
         //<editor-fold defaultstate="collapsed" desc="delombok">
         List<UserReviewEntity> userReviewEntities = userReviewDao.findAllByToUserIdIn(userDao.findAllByProjectIdIn(userEvaluationEntities.stream().map(userEvaluationEntity -> projectDao.findByUserEvaluationId(userEvaluationEntity.getId()).get()).map(projectEntity -> projectEntity.getId()).collect(Collectors.toList())).stream().map(userEntity -> userEntity.getId()).collect(Collectors.toList()));

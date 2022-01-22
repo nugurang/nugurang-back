@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
+// TODO: Remove role and use spring security ACL
 @Entity
 @Table(name = "role")
 public class RoleEntity {

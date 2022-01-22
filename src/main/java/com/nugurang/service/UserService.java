@@ -20,7 +20,7 @@ public class UserService {
     private final OAuth2Service oauth2Service;
 
     public UserEntity createUser(UserInputDto userInputDto) {
-        return userDao.save(UserEntity.builder().oauth2Provider(oauth2Service.getProvider()).oauth2Id(oauth2Service.getId()).name(userInputDto.getName()).email(userInputDto.getEmail()).biography(userInputDto.getBiography()).image(userInputDto.getImage().flatMap(id -> imageDao.findById(id)).orElse(null)).blog(boardDao.save(BoardEntity.builder().name(UUID.randomUUID().toString()).build())).build());
+        return userDao.save(UserEntity.builder().oauth2Provider(oauth2Service.getProvider()).oauth2Id(oauth2Service.getId()).name(userInputDto.getName()).email(userInputDto.getEmail()).biography(userInputDto.getBiography()).image(Optional.ofNullable(userInputDto.getImage()).flatMap(id -> imageDao.findById(id)).orElse(null)).blog(boardDao.save(BoardEntity.builder().name(UUID.randomUUID().toString()).build())).build());
     }
 
     public Optional<UserEntity> getUser(Long userId) {
@@ -47,7 +47,7 @@ public class UserService {
         userEntity.setName(userInputDto.getName());
         userEntity.setEmail(userInputDto.getEmail());
         userEntity.setBiography(userInputDto.getBiography());
-        userEntity.setImage(userInputDto.getImage().flatMap(id -> imageDao.findById(id)).orElse(null));
+        userEntity.setImage(Optional.ofNullable(userInputDto.getImage()).flatMap(id -> imageDao.findById(id)).orElse(null));
         return userDao.save(userEntity);
     }
 

@@ -41,7 +41,7 @@ public class MatchTask {
     @Scheduled(fixedDelay = 10000)
     @Transactional
     private void matchRequests() {
-        final var expiredMatchRequestEntities = matchRequestDao.findAllByExpiredAtLessThan(OffsetDateTime.now());
+        final var expiredMatchRequestEntities = matchRequestDao.findAllByExpiresAtLessThan(OffsetDateTime.now());
         for (final var expiredMatchRequestEntity : expiredMatchRequestEntities) {
             notificationService.createMatchFailureNotification(expiredMatchRequestEntity.getUser(), expiredMatchRequestEntity.getType(), expiredMatchRequestEntity.getEvent());
             matchRequestDao.deleteById(expiredMatchRequestEntity.getId());

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserEvaluationDao extends JpaRepository<UserEvaluationEntity, Long> {
 
-    List<UserEvaluationEntity> findAllByExpiredAtLessThanEqual(OffsetDateTime at);
+    List<UserEvaluationEntity> findAllByExpiresAtLessThanEqual(OffsetDateTime at);
 
     void deleteAllByIdIn(List<Long> ids);
 }

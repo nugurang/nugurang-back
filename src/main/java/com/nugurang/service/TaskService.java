@@ -29,7 +29,7 @@ public class TaskService {
 
     @Transactional
     public TaskEntity createTask(TaskInputDto taskInputDto, Long work) {
-        TaskEntity taskEntity = taskDao.save(TaskEntity.builder().name(taskInputDto.getName()).order(taskInputDto.getOrder().orElseGet(() -> taskDao.findFirstByOrderByOrderDesc().map(prevTaskEntity -> prevTaskEntity.getOrder() + 1).orElse(0))).difficulty(taskInputDto.getDifficulty().orElse(1)).work(workDao.findById(work).get()).progress(taskInputDto.getProgress().map(progressId -> progressDao.findById(progressId).get()).orElseGet(() -> progressDao.findByName(ProgressName.TODO.name()).get())).build());
+        TaskEntity taskEntity = taskDao.save(TaskEntity.builder().name(taskInputDto.getName()).order(Optional.ofNullable(taskInputDto.getOrder()).orElseGet(() -> taskDao.findFirstByOrderByOrderDesc().map(prevTaskEntity -> prevTaskEntity.getOrder() + 1).orElse(0))).difficulty(Optional.of(taskInputDto.getDifficulty()).orElse(1)).work(workDao.findById(work).get()).progress(Optional.ofNullable(taskInputDto.getProgress()).map(progressId -> progressDao.findById(progressId).get()).orElseGet(() -> progressDao.findByName(ProgressName.TODO.name()).get())).build());
         xrefUserTaskDao.saveAll(taskInputDto.getUsers().stream().map(userId -> userDao.findById(userId).get()).map(userEntity -> XrefUserTaskEntity.builder().user(userEntity).task(taskEntity).build()).collect(Collectors.toList()));
         xrefTaskPositionDao.saveAll(taskInputDto.getPositions().stream().map(positionId -> positionDao.findById(positionId).get()).map(positionEntity -> XrefTaskPositionEntity.builder().task(taskEntity).position(positionEntity).build()).collect(Collectors.toList()));
         return taskEntity;
@@ -42,10 +42,10 @@ public class TaskService {
     public TaskEntity updateTask(TaskInputDto taskInputDto, Long taskId) {
         TaskEntity taskEntity = taskDao.findById(taskId).get();
         taskEntity.setName(taskInputDto.getName());
-        if (taskInputDto.getOrder().isPresent()) taskEntity.setOrder(taskInputDto.getOrder().get());
-        if (taskInputDto.getDifficulty().isPresent()) taskEntity.setDifficulty(taskInputDto.getDifficulty().get());
-        if (taskInputDto.getProgress().isPresent()) {
-            taskEntity.setProgress(progressDao.findById(taskInputDto.getProgress().get()).get());
+        if (Optional.ofNullable(taskInputDto.getOrder()).isPresent()) taskEntity.setOrder(taskInputDto.getOrder());
+        if (Optional.ofNullable(taskInputDto.getDifficulty()).isPresent()) taskEntity.setDifficulty(taskInputDto.getDifficulty());
+        if (Optional.ofNullable(taskInputDto.getProgress()).isPresent()) {
+            taskEntity.setProgress(progressDao.findById(taskInputDto.getProgress()).get());
         }
         return taskDao.save(taskEntity);
     }
