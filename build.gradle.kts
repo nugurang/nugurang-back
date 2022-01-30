@@ -10,10 +10,13 @@ plugins {
     java
     `java-library`
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("io.freefair.lombok") version "6.1.0"
     id("org.springframework.boot") version "2.6.2"
-    kotlin("jvm") version "1.6.10"
-    kotlin("plugin.spring") version "1.6.10"
+    val kotlinVersion = "1.6.10"
+    kotlin("jvm") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
+    kotlin("plugin.jpa") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("plugin.allopen") version kotlinVersion
 }
 
 java {
@@ -37,12 +40,9 @@ dependencies {
     ).map(::api)
 
     arrayOf(
-        "com.querydsl:querydsl-apt::jpa",
         "javax.persistence:javax.persistence-api",
         "javax.annotation:javax.annotation-api",
         "org.mapstruct:mapstruct-processor:1.4.2.Final",
-        "org.projectlombok:lombok",
-        "org.projectlombok:lombok-mapstruct-binding:0.2.0",
         "org.springframework.boot:spring-boot-configuration-processor"
     ).map(::annotationProcessor)
 
@@ -96,6 +96,14 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+
+    kapt(group = "com.querydsl", name = "querydsl-apt", classifier = "jpa")
+
+    sourceSets.main {
+        withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
+            kotlin.srcDir("$buildDir/generated/source/kapt/main")
+        }
     }
 }
 

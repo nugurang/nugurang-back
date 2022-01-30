@@ -5,6 +5,7 @@ import com.nugurang.dto.BoardInputDto;
 import com.nugurang.entity.BoardEntity;
 import com.nugurang.exception.NotFoundException;
 import java.util.List;
+import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -41,7 +42,7 @@ public class BoardService {
     }
 
     public BoardEntity getBoard(String name) throws NotFoundException {
-        return boardDao.findByName(name).orElseThrow(() -> NotFoundException.builder().message("Board not found").objectName("Board").build());
+        return Optional.ofNullable(boardDao.findByName(name)).orElseThrow(() -> NotFoundException.builder().message("Board not found").objectName("Board").build());
     }
 
     public List<BoardEntity> getBoards() {

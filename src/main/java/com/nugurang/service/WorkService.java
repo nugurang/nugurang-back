@@ -13,7 +13,7 @@ public class WorkService {
     private final WorkDao workDao;
 
     public WorkEntity createWork(WorkInputDto workInputDto, Long project) {
-        return workDao.save(WorkEntity.builder().name(workInputDto.getName()).opened(true).order(Optional.ofNullable(workInputDto.getOrder()).orElseGet(() -> workDao.findFirstByOrderByOrderDesc().map(prevWorkEntity -> prevWorkEntity.getOrder() + 1).orElse(0))).project(projectDao.findById(project).get()).build());
+        return workDao.save(WorkEntity.builder().name(workInputDto.getName()).opened(true).order(Optional.ofNullable(workInputDto.getOrder()).orElseGet(() -> Optional.ofNullable(workDao.findFirstByOrderByOrderDesc()).map(prevWorkEntity -> prevWorkEntity.getOrder() + 1).orElse(0))).project(projectDao.findById(project).get()).build());
     }
 
     public Optional<WorkEntity> getWork(Long workId) {
@@ -24,7 +24,7 @@ public class WorkService {
         return workDao.save(workDao.findById(workId).map(workEntity -> {
             workEntity.setName(workInputDto.getName());
             workEntity.setOpened(true);
-            workEntity.setOrder(Optional.ofNullable(workInputDto.getOrder()).orElseGet(() -> workDao.findFirstByOrderByOrderDesc().map(prevWorkEntity -> prevWorkEntity.getOrder() + 1).orElse(0)));
+            workEntity.setOrder(Optional.ofNullable(workInputDto.getOrder()).orElseGet(() -> Optional.ofNullable(workDao.findFirstByOrderByOrderDesc()).map(prevWorkEntity -> prevWorkEntity.getOrder() + 1).orElse(0)));
             return workEntity;
         }).get());
     }

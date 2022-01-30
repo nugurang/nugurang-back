@@ -72,13 +72,13 @@ public class MatchTask {
         log.info("matched " + matchedRequestIntervals.size() + " users and min is " + min);
         if (matchedRequestIntervals.size() + 1 < min) return;
         TeamEntity teamEntity = teamDao.save(TeamEntity.builder().name(UUID.randomUUID().toString()).build());
-        xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(matchRequestEntity.getUser()).team(teamEntity).role(roleDao.findByName(RoleName.OWNER.name()).get()).build());
+        xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(matchRequestEntity.getUser()).team(teamEntity).role(roleDao.findByName(RoleName.OWNER.name())).build());
         matchRequestDao.deleteById(matchRequestEntity.getId());
         notificationService.createMatchSuccessNotification(matchRequestEntity.getUser(), matchRequestEntity.getType(), matchRequestEntity.getEvent(), teamEntity);
         for (ValueInterval<Moment, MomentInterval, MatchRequestEntity> matchedRequestInterval : matchedRequestIntervals) {
             final var matchedRequestEntity = matchedRequestInterval.getValue();
             notificationService.createMatchSuccessNotification(matchedRequestEntity.getUser(), matchedRequestEntity.getType(), matchedRequestEntity.getEvent(), teamEntity);
-            xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(matchedRequestEntity.getUser()).team(teamEntity).role(roleDao.findByName(RoleName.MEMBER.name()).get()).build());
+            xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(matchedRequestEntity.getUser()).team(teamEntity).role(roleDao.findByName(RoleName.MEMBER.name())).build());
             matchRequestDao.deleteById(matchedRequestEntity.getId());
         }
         log.info("match task");

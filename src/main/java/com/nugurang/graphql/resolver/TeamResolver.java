@@ -24,11 +24,11 @@ public class TeamResolver implements GraphQLResolver<TeamDto> {
     }
 
     UserDto owner(TeamDto teamDto) {
-        return userDao.findFirstByTeamIdAndRoleId(teamDto.getId(), roleDao.findByName(RoleName.OWNER.name()).get().getId()).get().toDto();
+        return userDao.findFirstByTeamIdAndRoleId(teamDto.getId(), roleDao.findByName(RoleName.OWNER.name()).getId()).toDto();
     }
 
     public List<UserDto> getMembers(TeamDto teamDto, Integer page, Integer pageSize) {
-        return userDao.findAllByTeamIdAndRoleId(teamDto.getId(), roleDao.findByName(RoleName.MEMBER.name()).get().getId(), PageRequest.of(page, pageSize)).getContent().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
+        return userDao.findAllByTeamIdAndRoleId(teamDto.getId(), roleDao.findByName(RoleName.MEMBER.name()).getId(), PageRequest.of(page, pageSize)).getContent().stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     //<editor-fold defaultstate="collapsed" desc="delombok">

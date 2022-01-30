@@ -31,7 +31,7 @@ public class NotificationService {
 
     @Transactional
     private NotificationEntity createNotification(UserEntity userEntity, NotificationTypeName type, List<String> data) {
-        final var notificationEntity = notificationDao.save(NotificationEntity.builder().isRead(false).notificationType(notificationTypeDao.findByName(type.name()).get()).user(userEntity).build());
+        final var notificationEntity = notificationDao.save(NotificationEntity.builder().isRead(false).notificationType(Optional.ofNullable(notificationTypeDao.findByName(type.name())).get()).user(userEntity).build());
         notificationDataDao.saveAll(data.stream().map(datum -> NotificationDataEntity.builder().value(datum).notification(notificationEntity).build()).collect(Collectors.toList()));
         return notificationEntity;
     }

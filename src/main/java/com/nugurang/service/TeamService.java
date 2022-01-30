@@ -23,7 +23,7 @@ public class TeamService {
     @Transactional
     public TeamEntity createTeam(TeamInputDto teamInputDto) {
         TeamEntity teamEntity = teamDao.save(TeamEntity.builder().name(teamInputDto.getName()).build());
-        xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(userService.getCurrentUser().get()).team(teamEntity).role(roleDao.findByName(RoleName.OWNER.name()).get()).build());
+        xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(userService.getCurrentUser().get()).team(teamEntity).role(roleDao.findByName(RoleName.OWNER.name())).build());
         return teamEntity;
     }
 
@@ -32,7 +32,7 @@ public class TeamService {
     }
 
     public Optional<TeamEntity> getTeam(String teamName) {
-        return teamDao.findByName(teamName);
+        return Optional.ofNullable(teamDao.findByName(teamName));
     }
 
     public List<TeamEntity> getTeams(String teamName, Pageable pageable) {

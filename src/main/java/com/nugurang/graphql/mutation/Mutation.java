@@ -111,7 +111,7 @@ public class Mutation implements GraphQLMutationResolver {
         final var currentUserEntity = userService.getCurrentUser().get();
         return projectInvitationInputDto.getUsers().stream().map(userId -> userDao.findById(userId).get()).map(userEntity -> {
             ProjectEntity projectEntity = projectDao.findById(projectInvitationInputDto.getProject()).get();
-            ProjectInvitationEntity projectInvitationEntity = projectInvitationDao.save(ProjectInvitationEntity.builder().status(invitationStatusDao.findByName(InvitationStatusName.UNACCEPTED.name()).get()).project(projectEntity).fromUser(currentUserEntity).toUser(userEntity).build());
+            ProjectInvitationEntity projectInvitationEntity = projectInvitationDao.save(ProjectInvitationEntity.builder().status(Optional.ofNullable(invitationStatusDao.findByName(InvitationStatusName.UNACCEPTED.name())).get()).project(projectEntity).fromUser(currentUserEntity).toUser(userEntity).build());
             notificationService.createProjectInvitationNotification(userEntity, projectInvitationEntity);
             return projectInvitationEntity.toDto();
         }).collect(Collectors.toList());
@@ -126,7 +126,7 @@ public class Mutation implements GraphQLMutationResolver {
         final var currentUserEntity = userService.getCurrentUser().get();
         return teamInvitationInputDto.getUsers().stream().map(userId -> userDao.findById(userId).get()).map(userEntity -> {
             TeamEntity teamEntity = teamDao.findById(teamInvitationInputDto.getTeam()).get();
-            TeamInvitationEntity teamInvitationEntity = teamInvitationDao.save(TeamInvitationEntity.builder().status(invitationStatusDao.findByName(InvitationStatusName.UNACCEPTED.name()).get()).team(teamEntity).fromUser(currentUserEntity).toUser(userEntity).build());
+            TeamInvitationEntity teamInvitationEntity = teamInvitationDao.save(TeamInvitationEntity.builder().status(Optional.ofNullable(invitationStatusDao.findByName(InvitationStatusName.UNACCEPTED.name())).get()).team(teamEntity).fromUser(currentUserEntity).toUser(userEntity).build());
             notificationService.createTeamInvitationNotification(userEntity, teamInvitationEntity);
             return teamInvitationEntity.toDto();
         }).collect(Collectors.toList());
@@ -135,15 +135,15 @@ public class Mutation implements GraphQLMutationResolver {
     @Transactional
     Boolean updateProjectInvitationAccepted(Long projectInvitation) {
         var projectInvitationEntity = projectInvitationDao.findById(projectInvitation).get();
-        projectInvitationEntity.setStatus(invitationStatusDao.findByName(InvitationStatusName.ACCEPTED.name()).get());
+        projectInvitationEntity.setStatus(Optional.ofNullable(invitationStatusDao.findByName(InvitationStatusName.ACCEPTED.name())).get());
         projectInvitationDao.save(projectInvitationEntity);
-        xrefUserProjectDao.save(XrefUserProjectEntity.builder().user(projectInvitationEntity.getToUser()).project(projectInvitationEntity.getProject()).role(roleDao.findByName(RoleName.MEMBER.name()).get()).build());
+        xrefUserProjectDao.save(XrefUserProjectEntity.builder().user(projectInvitationEntity.getToUser()).project(projectInvitationEntity.getProject()).role(roleDao.findByName(RoleName.MEMBER.name())).build());
         return true;
     }
 
     Boolean updateProjectInvitationDenied(Long projectInvitation) {
         var projectInvitationEntity = projectInvitationDao.findById(projectInvitation).get();
-        projectInvitationEntity.setStatus(invitationStatusDao.findByName(InvitationStatusName.DENIED.name()).get());
+        projectInvitationEntity.setStatus(invitationStatusDao.findByName(InvitationStatusName.DENIED.name()));
         projectInvitationDao.save(projectInvitationEntity);
         return true;
     }
@@ -170,7 +170,7 @@ public class Mutation implements GraphQLMutationResolver {
                 if (positionEntities.size() > 0) honorPerPosition /= positionEntities.size();
                 // log.info("honor per position: " + honorPerPosition);
                 for (final var positionEntity : positionEntities) {
-                    UserHonorEntity userHonorEntity = userHonorDao.findByUserIdAndPositionId(userEntity.getId(), positionEntity.getId()).orElseGet(() -> UserHonorEntity.builder().user(userEntity).honor(0).position(positionEntity).build());
+                    UserHonorEntity userHonorEntity = Optional.ofNullable(userHonorDao.findByUserIdAndPositionId(userEntity.getId(), positionEntity.getId())).orElseGet(() -> UserHonorEntity.builder().user(userEntity).honor(0).position(positionEntity).build());
                     userHonorEntity.setHonor(userHonorEntity.getHonor() + honorPerPosition);
                     userHonorDao.save(userHonorEntity);
                 }
@@ -190,15 +190,15 @@ public class Mutation implements GraphQLMutationResolver {
 
     Boolean updateTeamInvitationAccepted(Long teamInvitation) {
         var teamInvitationEntity = teamInvitationDao.findById(teamInvitation).get();
-        teamInvitationEntity.setStatus(invitationStatusDao.findByName(InvitationStatusName.ACCEPTED.name()).get());
+        teamInvitationEntity.setStatus(invitationStatusDao.findByName(InvitationStatusName.ACCEPTED.name()));
         teamInvitationDao.save(teamInvitationEntity);
-        xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(teamInvitationEntity.getToUser()).team(teamInvitationEntity.getTeam()).role(roleDao.findByName(RoleName.MEMBER.name()).get()).build());
+        xrefUserTeamDao.save(XrefUserTeamEntity.builder().user(teamInvitationEntity.getToUser()).team(teamInvitationEntity.getTeam()).role(roleDao.findByName(RoleName.MEMBER.name())).build());
         return true;
     }
 
     Boolean updateTeamInvitationDenied(Long teamInvitation) {
         var teamInvitationEntity = teamInvitationDao.findById(teamInvitation).get();
-        teamInvitationEntity.setStatus(invitationStatusDao.findByName(InvitationStatusName.DENIED.name()).get());
+        teamInvitationEntity.setStatus(invitationStatusDao.findByName(InvitationStatusName.DENIED.name()));
         teamInvitationDao.save(teamInvitationEntity);
         return true;
     }

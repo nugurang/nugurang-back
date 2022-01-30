@@ -18,7 +18,7 @@ public class ImageService {
     }
 
     public Optional<ImageEntity> getImage(String address) {
-        return imageDao.findByAddress(address);
+        return Optional.ofNullable(imageDao.findByAddress(address));
     }
 
     public void deleteImage(Long id) {

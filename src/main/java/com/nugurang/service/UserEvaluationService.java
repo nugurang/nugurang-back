@@ -10,6 +10,7 @@ import com.nugurang.entity.UserHonorEntity;
 import com.nugurang.entity.UserReviewEntity;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,9 +34,9 @@ public class UserEvaluationService {
         List<UserEvaluationEntity> userEvaluationEntities = userEvaluationDao.findAllByExpiresAtLessThanEqual(OffsetDateTime.now());
         // should fix
         //<editor-fold defaultstate="collapsed" desc="delombok">
-        List<UserReviewEntity> userReviewEntities = userReviewDao.findAllByToUserIdIn(userDao.findAllByProjectIdIn(userEvaluationEntities.stream().map(userEvaluationEntity -> projectDao.findByUserEvaluationId(userEvaluationEntity.getId()).get()).map(projectEntity -> projectEntity.getId()).collect(Collectors.toList())).stream().map(userEntity -> userEntity.getId()).collect(Collectors.toList()));
+        List<UserReviewEntity> userReviewEntities = userReviewDao.findAllByToUserIdIn(userDao.findAllByProjectIdIn(userEvaluationEntities.stream().map(userEvaluationEntity -> Optional.ofNullable(projectDao.findByUserEvaluationId(userEvaluationEntity.getId())).get()).map(projectEntity -> projectEntity.getId()).collect(Collectors.toList())).stream().map(userEntity -> userEntity.getId()).collect(Collectors.toList()));
         userHonorDao.saveAll(userReviewEntities.stream().map(userReviewEntity -> {
-            UserHonorEntity userHonorEntity = userHonorDao.findByUserIdAndPositionId(userReviewEntity.getToUser().getId(), userReviewEntity.getPosition().getId()).orElseGet(() -> UserHonorEntity.builder().honor(0).user(userReviewEntity.getToUser()).position(userReviewEntity.getPosition()).build());
+            UserHonorEntity userHonorEntity = Optional.ofNullable(userHonorDao.findByUserIdAndPositionId(userReviewEntity.getToUser().getId(), userReviewEntity.getPosition().getId())).orElseGet(() -> UserHonorEntity.builder().honor(0).user(userReviewEntity.getToUser()).position(userReviewEntity.getPosition()).build());
             userHonorEntity.setHonor(userHonorEntity.getHonor() + userReviewEntity.getHonor());
             return userHonorEntity;
         }).collect(Collectors.toList()));

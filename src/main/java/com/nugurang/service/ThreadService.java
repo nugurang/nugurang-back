@@ -34,7 +34,7 @@ public class ThreadService {
     @Transactional
     public ThreadEntity createThread(ThreadInputDto threadInputDto, Long board) throws NotFoundException {
         UserEntity userEntity = userService.getCurrentUser().get();
-        ThreadEntity threadEntity = threadDao.save(ThreadEntity.builder().name(threadInputDto.getName()).board(boardService.getBoard(board)).xrefUserTeam(Optional.ofNullable(threadInputDto.getTeam()).map(teamId -> xrefUserTeamDao.findByUserIdAndTeamId(userEntity.getId(), teamId).get()).orElse(null)).event(Optional.ofNullable(threadInputDto.getEvent()).map(eventId -> eventDao.getById(eventId)).orElse(null)).user(userEntity).build());
+        ThreadEntity threadEntity = threadDao.save(ThreadEntity.builder().name(threadInputDto.getName()).board(boardService.getBoard(board)).xrefUserTeam(Optional.ofNullable(threadInputDto.getTeam()).map(teamId -> xrefUserTeamDao.findByUserIdAndTeamId(userEntity.getId(), teamId)).orElse(null)).event(Optional.ofNullable(threadInputDto.getEvent()).map(eventId -> eventDao.getById(eventId)).orElse(null)).user(userEntity).build());
         articleService.createArticle(threadInputDto.getFirstArticle(), threadEntity.getId(), Optional.empty());
         return threadEntity;
     }
@@ -45,7 +45,7 @@ public class ThreadService {
         if (!threadEntity.isPresent()) return Optional.empty();
         ArticleEntity articleEntity = articleDao.findFirstByThreadIdOrderByCreatedAtAsc(threadEntity.get().getId());
         if (voteService.getVote(userService.getCurrentUser().get().getId(), articleEntity.getId(), "VIEW").isPresent()) return threadEntity;
-        voteService.createVote(new VoteInputDto(articleEntity.getId(), voteTypeDao.findByName("VIEW").get().getId()));
+        voteService.createVote(new VoteInputDto(articleEntity.getId(), voteTypeDao.findByName("VIEW").getId()));
         return threadEntity;
     }
 

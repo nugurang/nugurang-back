@@ -80,7 +80,7 @@ public class Query implements GraphQLQueryResolver {
     }
 
     Optional<MatchTypeDto> getMatchTypeByName(String name) {
-        return matchTypeDao.findByName(name).map(entity -> entity.toDto());
+        return Optional.ofNullable(matchTypeDao.findByName(name)).map(entity -> entity.toDto());
     }
 
     Optional<ProjectInvitationDto> getProjectInvitation(Long id) {
@@ -92,7 +92,7 @@ public class Query implements GraphQLQueryResolver {
     }
 
     Optional<VoteTypeDto> getVoteTypeByName(String name) {
-        return voteTypeDao.findByName(name).map(entity -> entity.toDto());
+        return Optional.ofNullable(voteTypeDao.findByName(name)).map(entity -> entity.toDto());
     }
 
     //<editor-fold defaultstate="collapsed" desc="delombok">

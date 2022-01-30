@@ -16,7 +16,7 @@ public class VoteService {
     private final VoteTypeDao voteTypeDao;
 
     public Optional<VoteEntity> getVote(Long userId, Long articleId, String voteTypeName) {
-        return voteDao.findByUserIdAndArticleIdAndVoteTypeName(userId, articleId, voteTypeName);
+        return Optional.ofNullable(voteDao.findByUserIdAndArticleIdAndVoteTypeName(userId, articleId, voteTypeName));
     }
 
     public VoteEntity createVote(VoteInputDto voteInputDto) {

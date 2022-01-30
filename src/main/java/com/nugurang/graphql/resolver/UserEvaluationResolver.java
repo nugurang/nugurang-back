@@ -16,7 +16,7 @@ public class UserEvaluationResolver implements GraphQLResolver<UserEvaluationDto
     private final UserReviewDao userReviewDao;
 
     public ProjectDto project(UserEvaluationDto userEvaluationDto) {
-        return projectDao.findByUserEvaluationId(userEvaluationDto.getId()).get().toDto();
+        return projectDao.findByUserEvaluationId(userEvaluationDto.getId()).toDto();
     }
 
     public List<UserReviewDto> reviews(UserEvaluationDto userEvaluationDto) {

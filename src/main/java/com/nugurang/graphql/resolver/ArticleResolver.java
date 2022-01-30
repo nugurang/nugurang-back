@@ -47,19 +47,19 @@ public class ArticleResolver implements GraphQLResolver<ArticleDto> {
     }
 
     public Long viewCount(ArticleDto articleDto) {
-        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("VIEW").get().getId());
+        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("VIEW").getId());
     }
 
     public Long upCount(ArticleDto articleDto) {
-        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("UP").get().getId());
+        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("UP").getId());
     }
 
     public Long downCount(ArticleDto articleDto) {
-        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("DOWN").get().getId());
+        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("DOWN").getId());
     }
 
     public Long starCount(ArticleDto articleDto) {
-        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("STAR").get().getId());
+        return voteDao.countByArticleIdAndVoteTypeId(articleDto.getId(), voteTypeDao.findByName("STAR").getId());
     }
 
     //<editor-fold defaultstate="collapsed" desc="delombok">

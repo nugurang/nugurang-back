@@ -28,11 +28,11 @@ public class UserService {
     }
 
     public Optional<UserEntity> getUser(String userName) {
-        return userDao.findByName(userName);
+        return Optional.ofNullable(userDao.findByName(userName));
     }
 
     public Optional<UserEntity> getCurrentUser() {
-        return userDao.findByOauth2ProviderAndOauth2Id(oauth2Service.getProvider(), oauth2Service.getId());
+        return Optional.ofNullable(userDao.findByOauth2ProviderAndOauth2Id(oauth2Service.getProvider(), oauth2Service.getId()));
     }
 
     public List<UserEntity> getUsers(Pageable pageable) {
