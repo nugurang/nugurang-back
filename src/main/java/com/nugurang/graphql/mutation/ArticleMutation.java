@@ -12,7 +12,7 @@ public class ArticleMutation implements GraphQLMutationResolver {
     private final ArticleService articleService;
 
     public ArticleDto createArticle(ArticleInputDto articleInputDto, Long thread, Optional<Long> parent) {
-        return articleService.createArticle(articleInputDto, thread, parent).toDto();
+        return articleService.createArticle(articleInputDto, thread, parent.orElse(null)).toDto();
     }
 
     public ArticleDto updateArticle(ArticleInputDto articleInputDto, Long id) {

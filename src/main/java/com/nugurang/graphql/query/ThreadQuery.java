@@ -13,7 +13,7 @@ public class ThreadQuery implements GraphQLQueryResolver {
     private final ThreadService threadService;
 
     Optional<ThreadDto> getThread(Long id) {
-        return threadService.getThread(id).map(entity -> entity.toDto());
+        return Optional.ofNullable(threadService.getThread(id)).map(entity -> entity.toDto());
     }
 
     List<ThreadDto> getThreadsByBoards(List<Long> boards, Integer page, Integer pageSize) {

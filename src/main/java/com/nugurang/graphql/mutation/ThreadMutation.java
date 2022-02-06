@@ -15,7 +15,7 @@ public class ThreadMutation implements GraphQLMutationResolver {
         try {
             return threadService.createThread(threadInputDto, board).toDto();
         } catch (NotFoundException nfe) {
-            throw com.nugurang.graphql.exception.NotFoundException.builder().message(nfe.getMessage()).objectName(nfe.getObjectName()).build();
+            throw com.nugurang.graphql.exception.NotFoundException.builder().message(nfe.getMessage()).objectName(nfe.getClassName()).build();
         }
     }
 

@@ -11,7 +11,7 @@ public class EventQuery implements GraphQLQueryResolver {
     private final EventService eventService;
 
     public Optional<EventDto> getEvent(Long id) {
-        return eventService.getEvent(id).map(entity -> entity.toDto());
+        return Optional.ofNullable(eventService.getEvent(id)).map(entity -> entity.toDto());
     }
 
     //<editor-fold defaultstate="collapsed" desc="delombok">

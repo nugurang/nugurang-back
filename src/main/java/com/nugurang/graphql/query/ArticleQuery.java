@@ -11,7 +11,7 @@ public class ArticleQuery implements GraphQLQueryResolver {
     private final ArticleService articleService;
 
     public Optional<ArticleDto> getArticle(Long id) {
-        return articleService.getArticle(id).map(entity -> entity.toDto());
+        return Optional.ofNullable(articleService.getArticle(id)).map(entity -> entity.toDto());
     }
 
     //<editor-fold defaultstate="collapsed" desc="delombok">

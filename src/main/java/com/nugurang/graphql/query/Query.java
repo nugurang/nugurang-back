@@ -52,7 +52,7 @@ public class Query implements GraphQLQueryResolver {
     }
 
     List<MatchRequestDto> matchRequests() {
-        return matchRequestDao.findAllByUserId(userService.getCurrentUser().get().getId()).stream().map(entity -> entity.toDto()).collect(Collectors.toList());
+        return matchRequestDao.findAllByUserId(userService.getCurrentUser().getId()).stream().map(entity -> entity.toDto()).collect(Collectors.toList());
     }
 
     List<InvitationStatusDto> invitationStatus() {

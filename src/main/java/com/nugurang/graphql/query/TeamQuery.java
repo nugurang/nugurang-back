@@ -14,11 +14,11 @@ public class TeamQuery implements GraphQLQueryResolver {
     private final TeamService teamService;
 
     public Optional<TeamDto> getTeam(Long id) {
-        return teamService.getTeam(id).map(entity -> entity.toDto());
+        return Optional.ofNullable(teamService.getTeam(id)).map(entity -> entity.toDto());
     }
 
     public Optional<TeamDto> getTeamByName(String name) {
-        return teamService.getTeam(name).map(entity -> entity.toDto());
+        return Optional.ofNullable(teamService.getTeam(name)).map(entity -> entity.toDto());
     }
 
     public List<TeamDto> getTeamsByName(String name, Integer page, Integer pageSize) {

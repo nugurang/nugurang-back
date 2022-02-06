@@ -14,15 +14,15 @@ public class UserQuery implements GraphQLQueryResolver {
     private final UserService userService;
 
     public Optional<UserDto> currentUser() {
-        return userService.getCurrentUser().map(entity -> entity.toDto());
+        return Optional.ofNullable(userService.getCurrentUser()).map(entity -> entity.toDto());
     }
 
     public Optional<UserDto> getUser(Long id) {
-        return userService.getUser(id).map(entity -> entity.toDto());
+        return Optional.ofNullable(userService.getUser(id)).map(entity -> entity.toDto());
     }
 
     public Optional<UserDto> getUserByName(String name) {
-        return userService.getUser(name).map(entity -> entity.toDto());
+        return Optional.ofNullable(userService.getUser(name)).map(entity -> entity.toDto());
     }
 
     public List<UserDto> getUsers(Integer page, Integer pageSize) {

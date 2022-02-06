@@ -11,7 +11,7 @@ public class TaskQuery implements GraphQLQueryResolver {
     private final TaskService taskService;
 
     public Optional<TaskDto> getTask(Long id) {
-        return taskService.getTask(id).map(entity -> entity.toDto());
+        return Optional.ofNullable(taskService.getTask(id)).map(entity -> entity.toDto());
     }
 
     //<editor-fold defaultstate="collapsed" desc="delombok">
