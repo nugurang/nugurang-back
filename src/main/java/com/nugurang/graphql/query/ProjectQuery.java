@@ -11,7 +11,7 @@ public class ProjectQuery implements GraphQLQueryResolver {
     private final ProjectService projectService;
 
     public Optional<ProjectDto> getProject(Long id) {
-        return projectService.getProject(id).map(entity -> entity.toDto());
+        return Optional.ofNullable(projectService.getProject(id)).map(entity -> entity.toDto());
     }
 
     //<editor-fold defaultstate="collapsed" desc="delombok">

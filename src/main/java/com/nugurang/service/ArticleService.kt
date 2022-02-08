@@ -50,8 +50,9 @@ class ArticleService(
         return articleDao.findByIdOrNull(articleId) ?: throw NotFoundException(ArticleEntity::class.java);
     }
 
-    fun updateArticle(articleInputDto: ArticleInputDto, articleId: Long): ArticleEntity? {
-        return null
+    fun updateArticle(articleInputDto: ArticleInputDto, articleId: Long): ArticleEntity {
+        // TODO: Implement correctly
+        return getArticle(articleId)
     }
 
     fun deleteArticle(articleId: Long): Long {

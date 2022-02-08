@@ -16,14 +16,14 @@ class OAuth2RestAuthenticationFailureHandler(
 ) : AuthenticationFailureHandler {
 
     override fun onAuthenticationFailure(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        exception: AuthenticationException?
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        exception: AuthenticationException
     ) {
         val responseDto = RestResponseDto(
             errors = listOf(
                 RestResponseDto.Error(
-                    message = exception!!.message!!,
+                    message = exception.message ?: "No exception message",
                     extensions = RestResponseDto.Error.Extension(
                         type = exception.javaClass.simpleName
                     )

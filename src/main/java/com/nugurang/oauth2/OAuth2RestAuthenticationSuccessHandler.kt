@@ -16,9 +16,9 @@ class OAuth2RestAuthenticationSuccessHandler(
 ) : AuthenticationSuccessHandler {
 
     override fun onAuthenticationSuccess(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        authentication: Authentication?
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        authentication: Authentication
     ) {
         val responseDto = RestResponseDto(data = authentication)
         val responseEntity = ResponseEntity(responseDto, HttpStatus.OK)

@@ -16,9 +16,9 @@ class OAuth2RestAccessDeniedHandler(
 ) : AccessDeniedHandler {
 
     override fun handle(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        accessDeniedException: AccessDeniedException?
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        accessDeniedException: AccessDeniedException
     ) {
         val responseDto = RestResponseDto(
             errors = listOf(

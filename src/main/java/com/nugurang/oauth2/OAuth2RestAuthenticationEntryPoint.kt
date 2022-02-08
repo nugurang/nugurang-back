@@ -16,14 +16,14 @@ class OAuth2RestAuthenticationEntryPoint(
 ) : AuthenticationEntryPoint {
 
     override fun commence(
-        request: HttpServletRequest?,
-        response: HttpServletResponse?,
-        authException: AuthenticationException?
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        authException: AuthenticationException
     ) {
         val responseDto = RestResponseDto(
             errors = listOf(
                 RestResponseDto.Error(
-                    message = authException!!.message!!,
+                    message = authException.message ?: "No exception message",
                     extensions = RestResponseDto.Error.Extension(
                         type = authException.javaClass.simpleName
                     )

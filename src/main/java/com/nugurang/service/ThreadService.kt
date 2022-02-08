@@ -93,8 +93,9 @@ class ThreadService(
         return threadDao.findAllByBoardNameInOrderByCreatedAtDesc(boards, PageRequest.of(page, pageSize)).content
     }
 
-    fun updateThread(threadInputDto: ThreadInputDto, id: Long): ThreadEntity? {
-        return null
+    fun updateThread(threadInputDto: ThreadInputDto, id: Long): ThreadEntity {
+        // TODO: Implement this method
+        return null as ThreadEntity
     }
 
     fun deleteThread(id: Long) {
