@@ -8,7 +8,6 @@ import com.nugurang.entity.WorkEntity
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class WorkService(private val projectDao: ProjectDao, private val workDao: WorkDao) {
@@ -30,8 +29,8 @@ class WorkService(private val projectDao: ProjectDao, private val workDao: WorkD
         )
     }
 
-    fun getWork(workId: Long): Optional<WorkEntity> {
-        return workDao.findById(workId)
+    fun getWork(workId: Long): WorkEntity {
+        return workDao.findByIdOrNull(workId) ?: throw NotFoundException(WorkEntity::class.java)
     }
 
     fun updateWork(workInputDto: WorkInputDto, workId: Long): WorkEntity {
