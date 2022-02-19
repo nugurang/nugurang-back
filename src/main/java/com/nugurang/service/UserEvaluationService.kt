@@ -2,7 +2,6 @@ package com.nugurang.service
 
 import com.nugurang.dao.*
 import com.nugurang.entity.ProjectEntity
-import com.nugurang.entity.UserEntity
 import com.nugurang.entity.UserHonorEntity
 import com.nugurang.exception.NotFoundException
 import org.slf4j.LoggerFactory
@@ -27,18 +26,18 @@ class UserEvaluationService(
         val userReviewEntities = userReviewDao.findAllByToUserIdIn(
             userDao.findAllByProjectIdIn(
                 userEvaluationEntities
-                .map { userEvaluationEntity ->
-                    projectDao.findByUserEvaluationId(userEvaluationEntity.id)
+                .map {
+                    projectDao.findByUserEvaluationId(it.id)
                     ?: throw NotFoundException(ProjectEntity::class.java)
                 }
-                .map { projectEntity: ProjectEntity -> projectEntity.id }
+                .map { it.id!! }
             )
-            .map { userEntity: UserEntity -> userEntity.id }
+            .map { it.id!! }
         )
 
         userHonorDao.saveAll(userReviewEntities.map { userReviewEntity ->
             val userHonorEntity = userHonorDao.findByUserIdAndPositionId(
-                userReviewEntity.toUser.id, userReviewEntity.position.id
+                userReviewEntity.toUser.id!!, userReviewEntity.position.id
             )
             ?: UserHonorEntity
            .builder()

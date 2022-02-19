@@ -38,7 +38,7 @@ class ThreadService(
             .board(boardService.getBoard(board))
             .xrefUserTeam(
                 threadInputDto.team?.let { teamId ->
-                    xrefUserTeamDao.findByUserIdAndTeamId(userEntity.id, teamId)
+                    xrefUserTeamDao.findByUserIdAndTeamId(userEntity.id!!, teamId)
                         ?: throw NotFoundException(XrefUserTeamEntity::class.java)
                 }
             )
@@ -64,7 +64,7 @@ class ThreadService(
 
         return try {
             voteService.getVote(
-                userService.getCurrentUser().id,
+                userService.getCurrentUser().id!!,
                 articleEntity.id,
                 VoteTypeName.VIEW.name
             )

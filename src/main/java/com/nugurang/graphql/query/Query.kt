@@ -42,7 +42,7 @@ class Query(
 
     fun matchRequests(): List<MatchRequestDto> {
         return matchRequestDao
-            .findAllByUserId(userService.getCurrentUser().id)
+            .findAllByUserId(userService.getCurrentUser().id!!)
             .map { it.toDto() }
     }
 

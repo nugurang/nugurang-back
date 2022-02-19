@@ -114,7 +114,7 @@ class Mutation(
                     .toUser(userEntity)
                     .build()
                 )
-                notificationService.createProjectInvitationNotification(userEntity!!, projectInvitationEntity)
+                notificationService.createProjectInvitationNotification(userEntity, projectInvitationEntity)
                 projectInvitationEntity.toDto()
             }
     }
@@ -209,7 +209,7 @@ class Mutation(
                 if (positionEntities.size > 0) honorPerPosition /= positionEntities.size
                 // log.info("honor per position: " + honorPerPosition);
                 for (positionEntity in positionEntities) {
-                    val userHonorEntity = userHonorDao.findByUserIdAndPositionId(userEntity.id, positionEntity.id)
+                    val userHonorEntity = userHonorDao.findByUserIdAndPositionId(userEntity.id!!, positionEntity.id)
                     ?: UserHonorEntity.builder().user(userEntity).honor(0).position(positionEntity).build()
                     userHonorEntity.honor = userHonorEntity.honor + honorPerPosition
                     userHonorDao.save(userHonorEntity)
@@ -223,7 +223,7 @@ class Mutation(
     fun updateTaskReview(taskReviewInputDto: TaskReviewInputDto): Boolean {
         val taskEntity = taskDao.findById(taskReviewInputDto.task).get()
         val userEntity = userService.getCurrentUser()
-        taskReviewDao.deleteByTaskIdAndUserId(taskEntity.id, userEntity.id)
+        taskReviewDao.deleteByTaskIdAndUserId(taskEntity.id, userEntity.id!!)
         taskReviewDao.save(
             TaskReviewEntity.builder().honor(taskReviewInputDto.honor).task(taskEntity).user(userEntity).build()
         )
@@ -261,7 +261,7 @@ class Mutation(
         .forEach { toUserId ->
             userReviewDao.deleteByUserEvaluationIdAndFromUserIdAndToUserId(
                 userEvaluationEntity.id,
-                currentUserEntity.id,
+                currentUserEntity.id!!,
                 toUserId
             )
         }

@@ -2,6 +2,8 @@ package com.nugurang.graphql.resolver
 
 import com.nugurang.dao.*
 import com.nugurang.dto.*
+import com.nugurang.entity.BoardEntity
+import com.nugurang.exception.NotFoundException
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -34,7 +36,7 @@ class UserResolver(
     }
 
     fun blog(userDto: UserDto): BoardDto {
-        return userDao.findById(userDto.id).get().blog.toDto()
+        return userDao.findByIdOrNull(userDto.id)?.blog?.toDto() ?: throw NotFoundException(BoardEntity::class.java)
     }
 
     fun getArticles(userDto: UserDto, page: Int, pageSize: Int): List<ArticleDto> {

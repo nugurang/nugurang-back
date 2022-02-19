@@ -22,18 +22,18 @@ class UserService(
 ) {
     fun createUser(userInputDto: UserInputDto): UserEntity {
         return userDao.save(
-            UserEntity
-            .builder()
-            .oauth2Provider(oauth2Service.getProvider())
-            .oauth2Id(oauth2Service.getId())
-            .name(userInputDto.name)
-            .email(userInputDto.email)
-            .biography(userInputDto.biography)
-            .image(userInputDto.image?.let { id ->
-                imageDao.findByIdOrNull(id) ?: throw NotFoundException(ImageEntity::class.java)
-            })
-            .blog(boardDao.save(BoardEntity.builder().name(UUID.randomUUID().toString()).build())
-        ).build())
+            UserEntity(
+                oauth2Provider = oauth2Service.getProvider(),
+                oauth2Id = oauth2Service.getId(),
+                name = userInputDto.name,
+                email = userInputDto.email,
+                biography = userInputDto.biography,
+                image = userInputDto.image?.let { id ->
+                    imageDao.findByIdOrNull(id) ?: throw NotFoundException(ImageEntity::class.java)
+                },
+                blog = boardDao.save(BoardEntity.builder().name(UUID.randomUUID().toString()).build())
+            )
+        )
     }
 
     fun getUser(userId: Long): UserEntity {
@@ -80,7 +80,7 @@ class UserService(
     }
 
     fun deleteUser(userEntity: UserEntity): Long {
-        val userId = userEntity.id
+        val userId = userEntity.id!!
         userDao.delete(userEntity)
         return userId
     }
