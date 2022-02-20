@@ -11,15 +11,14 @@ import org.springframework.stereotype.Service
 class EventService(private val eventDao: EventDao) {
     fun createEvent(eventInputDto: EventInputDto): EventEntity {
         return eventDao.save(
-            EventEntity
-            .builder()
-            .name(eventInputDto.name)
-            .description(eventInputDto.description)
-            .recruitingStart(eventInputDto.recruitingStart)
-            .recruitingEnd(eventInputDto.recruitingEnd)
-            .eventStart(eventInputDto.eventStart)
-            .eventEnd(eventInputDto.eventEnd)
-            .build()
+            EventEntity(
+                name = eventInputDto.name,
+                description = eventInputDto.description,
+                recruitingStart = eventInputDto.recruitingStart,
+                recruitingEnd = eventInputDto.recruitingEnd,
+                eventStart = eventInputDto.eventStart,
+                eventEnd = eventInputDto.eventEnd
+            )
         )
     }
 

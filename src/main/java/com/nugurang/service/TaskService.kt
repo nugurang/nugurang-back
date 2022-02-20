@@ -22,32 +22,29 @@ class TaskService(
     @Transactional
     fun createTask(taskInputDto: TaskInputDto, work: Long): TaskEntity {
         val taskEntity = taskDao.save(
-            TaskEntity
-            .builder()
-            .name(taskInputDto.name)
-            .order(taskInputDto.order
-                ?: (taskDao.findFirstByOrderByOrderDesc()?.let { prevTaskEntity -> prevTaskEntity.order + 1 } ?: 0)
-            )
-            .difficulty(taskInputDto.difficulty ?: 1)
-            .work(workDao.findByIdOrNull(work) ?: throw NotFoundException(WorkEntity::class.java))
-            .progress(
-                taskInputDto.progress?.let { progressId ->
-                    progressDao.findByIdOrNull(progressId) ?: throw NotFoundException(ProgressEntity::class.java)
+            TaskEntity(
+                name = taskInputDto.name,
+                order = taskInputDto.order
+                    ?: (taskDao.findFirstByOrderByOrderDesc()?.let { it.order + 1 } ?: 0),
+                difficulty = taskInputDto.difficulty ?: 1,
+                work = workDao.findByIdOrNull(work) ?: throw NotFoundException(WorkEntity::class.java),
+                progress = taskInputDto.progress?.let {
+                    progressDao.findByIdOrNull(it) ?: throw NotFoundException(ProgressEntity::class.java)
                 }
                 ?: (progressDao.findByName(ProgressName.TODO.name) ?: throw NotFoundException(ProgressEntity::class.java))
-            ).build()
+            )
         )
 
         xrefUserTaskDao.saveAll(
-            taskInputDto.users.map { userId -> userService.getUser(userId) }
-            .map { userEntity: UserEntity? -> XrefUserTaskEntity.builder().user(userEntity).task(taskEntity).build() }
+            taskInputDto.users.map { userService.getUser(it) }
+            .map { XrefUserTaskEntity(user = it, task = taskEntity) }
         )
 
         xrefTaskPositionDao.saveAll(
-            taskInputDto.positions.map { positionId: Long -> positionDao.findById(positionId).get() }
-            .map { positionEntity: PositionEntity? ->
-                XrefTaskPositionEntity.builder().task(taskEntity).position(positionEntity).build()
+            taskInputDto.positions.map {
+                positionDao.findByIdOrNull(it) ?: throw NotFoundException(PositionEntity::class.java)
             }
+            .map { XrefTaskPositionEntity(task = taskEntity, position = it) }
         )
 
         return taskEntity

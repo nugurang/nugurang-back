@@ -14,18 +14,16 @@ class WorkService(private val projectDao: ProjectDao, private val workDao: WorkD
 
     fun createWork(workInputDto: WorkInputDto, projectId: Long): WorkEntity {
         return workDao.save(
-            WorkEntity
-            .builder()
-            .name(workInputDto.name)
-            .opened(true)
-            .order(
-                workInputDto.order ?: (
+            WorkEntity(
+                name = workInputDto.name,
+                opened = true,
+                order = workInputDto.order ?: (
                     workDao.findFirstByOrderByOrderDesc()
                     ?.let { prevWorkEntity -> prevWorkEntity.order + 1 }
                     ?: 0
-                )
-            ).project(projectDao.findByIdOrNull(projectId) ?: throw NotFoundException(ProjectEntity::class.java))
-            .build()
+                ),
+                project = projectDao.findByIdOrNull(projectId) ?: throw NotFoundException(ProjectEntity::class.java)
+            )
         )
     }
 

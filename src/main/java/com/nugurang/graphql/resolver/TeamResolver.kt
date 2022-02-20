@@ -8,7 +8,9 @@ import com.nugurang.dto.ProjectDto
 import com.nugurang.dto.TeamDto
 import com.nugurang.dto.UserDto
 import com.nugurang.entity.ProjectEntity
+import com.nugurang.entity.RoleEntity
 import com.nugurang.entity.UserEntity
+import com.nugurang.exception.NotFoundException
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
@@ -26,14 +28,21 @@ class TeamResolver(
     }
 
     fun owner(teamDto: TeamDto): UserDto {
-        return userDao.findFirstByTeamIdAndRoleId(teamDto.id, roleDao.findByName(RoleName.OWNER.name)!!.id)!!.toDto()
+        return userDao
+            .findFirstByTeamIdAndRoleId(
+                teamDto.id,
+                roleDao.findByName(RoleName.OWNER.name)?.id
+                    ?: throw NotFoundException(RoleEntity::class.java)
+            )
+            ?.toDto()
+            ?: throw NotFoundException(UserEntity::class.java)
     }
 
-    fun getMembers(teamDto: TeamDto, page: Int?, pageSize: Int?): List<UserDto> {
+    fun getMembers(teamDto: TeamDto, page: Int, pageSize: Int): List<UserDto> {
         return userDao.findAllByTeamIdAndRoleId(
-            teamDto.id, roleDao.findByName(RoleName.MEMBER.name)!!.id, PageRequest.of(
-                page!!, pageSize!!
-            )
+            teamDto.id,
+            roleDao.findByName(RoleName.MEMBER.name)?.id ?: throw NotFoundException(RoleEntity::class.java),
+            PageRequest.of(page, pageSize)
         ).content.stream().map { entity: UserEntity -> entity.toDto() }.collect(Collectors.toList())
     }
 }

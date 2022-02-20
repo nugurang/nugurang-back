@@ -6,8 +6,10 @@ import com.nugurang.dao.RoleDao
 import com.nugurang.dao.TeamDao
 import com.nugurang.dao.XrefUserTeamDao
 import com.nugurang.entity.MatchRequestEntity
+import com.nugurang.entity.RoleEntity
 import com.nugurang.entity.TeamEntity
 import com.nugurang.entity.XrefUserTeamEntity
+import com.nugurang.exception.NotFoundException
 import com.nugurang.service.NotificationService
 import net.time4j.Moment
 import net.time4j.range.IntervalTree
@@ -40,7 +42,7 @@ class MatchTask(
                 expiredMatchRequestEntity.type,
                 expiredMatchRequestEntity.event
             )
-            matchRequestDao.deleteById(expiredMatchRequestEntity.id)
+            matchRequestDao.deleteById(expiredMatchRequestEntity.id!!)
         }
         // https://github.com/MenoData/Time4J/issues/674
         // should filter by random match and event
@@ -81,13 +83,15 @@ class MatchTask(
         }
         log.info("matched " + matchedRequestIntervals.size + " users and min is " + min)
         if (matchedRequestIntervals.size + 1 < min) return
-        val teamEntity = teamDao.save(TeamEntity.builder().name(UUID.randomUUID().toString()).build())
+        val teamEntity = teamDao.save(TeamEntity(name = UUID.randomUUID().toString()))
         xrefUserTeamDao.save(
-            XrefUserTeamEntity.builder().user(matchRequestEntity.user).team(teamEntity).role(
-                roleDao.findByName(RoleName.OWNER.name)
-            ).build()
+            XrefUserTeamEntity(
+                user = matchRequestEntity.user,
+                team = teamEntity,
+                role = roleDao.findByName(RoleName.OWNER.name) ?: throw NotFoundException(RoleEntity::class.java)
+            )
         )
-        matchRequestDao.deleteById(matchRequestEntity.id)
+        matchRequestDao.deleteById(matchRequestEntity.id!!)
         notificationService.createMatchSuccessNotification(
             matchRequestEntity.user,
             matchRequestEntity.type,
@@ -103,17 +107,18 @@ class MatchTask(
                 teamEntity
             )
             xrefUserTeamDao.save(
-                XrefUserTeamEntity.builder().user(matchedRequestEntity.user).team(teamEntity).role(
-                    roleDao.findByName(RoleName.MEMBER.name)
-                ).build()
+                XrefUserTeamEntity(
+                    user = matchedRequestEntity.user,
+                    team = teamEntity,
+                    role = roleDao.findByName(RoleName.MEMBER.name) ?: throw NotFoundException(RoleEntity::class.java)
+                )
             )
-            matchRequestDao.deleteById(matchedRequestEntity.id)
+            matchRequestDao.deleteById(matchedRequestEntity.id!!)
         }
         log.info("match task")
     }
 
     companion object {
-        //<editor-fold defaultstate="collapsed" desc="delombok">
         private val log = LoggerFactory.getLogger(MatchTask::class.java)
     }
 }

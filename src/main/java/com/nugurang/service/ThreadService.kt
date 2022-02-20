@@ -5,7 +5,6 @@ import com.nugurang.dao.*
 import com.nugurang.dto.ThreadInputDto
 import com.nugurang.dto.VoteInputDto
 import com.nugurang.entity.ArticleEntity
-import com.nugurang.entity.EventEntity
 import com.nugurang.entity.ThreadEntity
 import com.nugurang.entity.XrefUserTeamEntity
 import com.nugurang.exception.NotFoundException
@@ -32,26 +31,20 @@ class ThreadService(
     fun createThread(threadInputDto: ThreadInputDto, board: Long): ThreadEntity {
         val userEntity = userService.getCurrentUser()
         val threadEntity = threadDao.save(
-            ThreadEntity
-            .builder()
-            .name(threadInputDto.name)
-            .board(boardService.getBoard(board))
-            .xrefUserTeam(
-                threadInputDto.team?.let { teamId ->
-                    xrefUserTeamDao.findByUserIdAndTeamId(userEntity.id!!, teamId)
+            ThreadEntity(
+                name = threadInputDto.name,
+                board = boardService.getBoard(board),
+                xrefUserTeam = threadInputDto.team?.let {
+                    xrefUserTeamDao.findByUserIdAndTeamId(userEntity.id!!, it)
                         ?: throw NotFoundException(XrefUserTeamEntity::class.java)
-                }
+                },
+                event = threadInputDto.event?.let {
+                    eventDao.getById(it)
+                },
+                user = userEntity,
             )
-            .event(
-                threadInputDto.event?.let { eventId ->
-                    eventDao.getById(eventId)
-                        ?: throw NotFoundException(EventEntity::class.java)
-                }
-            )
-            .user(userEntity)
-            .build()
         )
-        articleService.createArticle(threadInputDto.firstArticle, threadEntity.id)
+        articleService.createArticle(threadInputDto.firstArticle, threadEntity.id!!)
         return threadEntity
     }
 
@@ -59,20 +52,20 @@ class ThreadService(
     fun getThread(id: Long): ThreadEntity {
         val threadEntity = threadDao.findByIdOrNull(id)
             ?: throw NotFoundException(ThreadEntity::class.java)
-        val articleEntity = articleDao.findFirstByThreadIdOrderByCreatedAtAsc(threadEntity.id)
+        val articleEntity = articleDao.findFirstByThreadIdOrderByCreatedAtAsc(threadEntity.id!!)
             ?: throw NotFoundException(ArticleEntity::class.java)
 
         return try {
             voteService.getVote(
                 userService.getCurrentUser().id!!,
-                articleEntity.id,
+                articleEntity.id!!,
                 VoteTypeName.VIEW.name
             )
             threadEntity
         } catch (nfe: NotFoundException) {
             voteService.createVote(
                 VoteInputDto(
-                    articleEntity.id,
+                    articleEntity.id!!,
                     voteTypeDao.findByName(VoteTypeName.VIEW.name)?.id
                         ?: throw NotFoundException(VoteTypeName::class.java)
                 )

@@ -31,7 +31,11 @@ class UserService(
                 image = userInputDto.image?.let { id ->
                     imageDao.findByIdOrNull(id) ?: throw NotFoundException(ImageEntity::class.java)
                 },
-                blog = boardDao.save(BoardEntity.builder().name(UUID.randomUUID().toString()).build())
+                blog = boardDao.save(
+                    BoardEntity(
+                        name = UUID.randomUUID().toString()
+                    )
+                )
             )
         )
     }

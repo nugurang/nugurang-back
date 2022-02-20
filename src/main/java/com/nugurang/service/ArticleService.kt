@@ -25,22 +25,20 @@ class ArticleService(
     @Transactional
     fun createArticle(articleInputDto: ArticleInputDto, threadId: Long, parentId: Long? = null): ArticleEntity {
         val articleEntity = articleDao.save(
-            ArticleEntity
-            .builder()
-            .title(articleInputDto.title)
-            .content(articleInputDto.content)
-            .user(userService.getCurrentUser())
-            .thread(threadDao.findByIdOrNull(threadId) ?: throw NotFoundException(ThreadEntity::class.java))
-            .parent(parentId?.let { articleDao.findByIdOrNull(parentId) })
-            .build()
+            ArticleEntity(
+                title = articleInputDto.title,
+                content = articleInputDto.content,
+                user = userService.getCurrentUser(),
+                thread = threadDao.findByIdOrNull(threadId) ?: throw NotFoundException(ThreadEntity::class.java),
+                parent = parentId?.let { articleDao.findByIdOrNull(parentId) }
+            )
         )
         xrefArticleImageDao.saveAll(
             articleInputDto.images.map { imageId: Long ->
-                XrefArticleImageEntity
-                .builder()
-                .article(articleEntity)
-                .image(imageDao.findByIdOrNull(imageId) ?: throw NotFoundException(ImageEntity::class.java))
-                .build()
+                XrefArticleImageEntity(
+                    article = articleEntity,
+                    image = imageDao.findByIdOrNull(imageId) ?: throw NotFoundException(ImageEntity::class.java)
+                )
             }
         )
         return articleEntity

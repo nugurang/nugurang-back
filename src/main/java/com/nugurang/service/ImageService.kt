@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 class ImageService(private val imageDao: ImageDao) {
 
     fun createImage(imageAddress: String): ImageEntity {
-        return imageDao.save(ImageEntity.builder().address(imageAddress).build())
+        return imageDao.save(ImageEntity(address = imageAddress))
     }
 
     fun getImage(id: Long): ImageEntity {

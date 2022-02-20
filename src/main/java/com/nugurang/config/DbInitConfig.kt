@@ -18,22 +18,34 @@ class DbInitConfig(
     @PostConstruct
     fun init() {
         for (invitationStatusName in InvitationStatusName.values()) {
-            invitationStatusDao.save(InvitationStatusEntity.builder().name(invitationStatusName.name).build())
+            invitationStatusDao.save(
+                InvitationStatusEntity(name = invitationStatusName.name)
+            )
         }
-        for (roleName in listOf(RoleName.OWNER.name, RoleName.MEMBER.name)) roleDao.save(
-            RoleEntity.builder().name(roleName).build()
-        )
-        for (voteTypeName in VoteTypeName.values()) voteTypeDao.save(
-            VoteTypeEntity.builder().name(voteTypeName.name).build()
-        )
-        for (progressName in ProgressName.values()) progressDao.save(
-            ProgressEntity.builder().name(progressName.name).build()
-        )
-        for (matchTypeName in MatchTypeName.values()) matchTypeDao.save(
-            MatchTypeEntity.builder().name(matchTypeName.name).build()
-        )
+        for (roleName in listOf(RoleName.OWNER.name, RoleName.MEMBER.name)) {
+            roleDao.save(
+                RoleEntity(name = roleName)
+            )
+        }
+        for (voteTypeName in VoteTypeName.values()) {
+            voteTypeDao.save(
+                VoteTypeEntity(name = voteTypeName.name)
+            )
+        }
+        for (progressName in ProgressName.values()) {
+            progressDao.save(
+                ProgressEntity(name = progressName.name)
+            )
+        }
+        for (matchTypeName in MatchTypeName.values()) {
+            matchTypeDao.save(
+                MatchTypeEntity(name = matchTypeName.name)
+            )
+        }
         for (notificationTypeName in NotificationTypeName.values()) {
-            notificationTypeDao.save(NotificationTypeEntity.builder().name(notificationTypeName.name).build())
+            notificationTypeDao.save(
+                NotificationTypeEntity(name = notificationTypeName.name)
+            )
         }
     }
 }

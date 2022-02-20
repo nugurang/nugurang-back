@@ -20,7 +20,11 @@ class BoardService(
 ) {
     @Transactional
     fun createBoard(boardInputDto: BoardInputDto): BoardEntity {
-        val board = boardDao.save(BoardEntity.builder().name(boardInputDto.name).build())
+        val board = boardDao.save(
+            BoardEntity(
+                name = boardInputDto.name
+            )
+        )
         val oid = ObjectIdentityImpl(BoardEntity::class.java, board.id)
         val acl = mutableAclService.createAcl(oid)
         val auth = oauth2Service.getOAuth2AuthToken()

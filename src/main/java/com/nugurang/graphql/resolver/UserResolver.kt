@@ -3,6 +3,7 @@ package com.nugurang.graphql.resolver
 import com.nugurang.dao.*
 import com.nugurang.dto.*
 import com.nugurang.entity.BoardEntity
+import com.nugurang.entity.UserEvaluationEntity
 import com.nugurang.exception.NotFoundException
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.domain.PageRequest
@@ -13,8 +14,6 @@ import java.util.stream.Collectors
 @Service
 class UserResolver(
     private val articleDao: ArticleDao,
-    private val boardDao: BoardDao,
-    private val imageDao: ImageDao,
     private val projectDao: ProjectDao,
     private val teamDao: TeamDao,
     private val threadDao: ThreadDao,
@@ -100,7 +99,7 @@ class UserResolver(
             .findAllByUserId(userDto.id, PageRequest.of(page, pageSize))
             .stream()
             .map { it.userEvaluation }
-            .map { it.toDto() }
+            .map { it?.toDto() ?: throw NotFoundException(UserEvaluationEntity::class.java) }
             .collect(Collectors.toList())
     }
 }

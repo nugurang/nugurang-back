@@ -5,6 +5,7 @@ import com.nugurang.dao.RoleDao
 import com.nugurang.dao.TeamDao
 import com.nugurang.dao.XrefUserTeamDao
 import com.nugurang.dto.TeamInputDto
+import com.nugurang.entity.RoleEntity
 import com.nugurang.entity.TeamEntity
 import com.nugurang.entity.XrefUserTeamEntity
 import com.nugurang.exception.NotFoundException
@@ -22,14 +23,13 @@ class TeamService(
 ) {
     @Transactional
     fun createTeam(teamInputDto: TeamInputDto): TeamEntity {
-        val teamEntity = teamDao.save(TeamEntity.builder().name(teamInputDto.name).build())
+        val teamEntity = teamDao.save(TeamEntity(name = teamInputDto.name))
         xrefUserTeamDao.save(
-            XrefUserTeamEntity
-            .builder()
-            .user(userService.getCurrentUser())
-            .team(teamEntity)
-            .role(roleDao.findByName(RoleName.OWNER.name))
-            .build()
+            XrefUserTeamEntity(
+                user = userService.getCurrentUser(),
+                team = teamEntity,
+                role = roleDao.findByName(RoleName.OWNER.name) ?: throw NotFoundException(RoleEntity::class.java),
+            )
         )
         return teamEntity
     }

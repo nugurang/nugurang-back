@@ -25,25 +25,21 @@ class ProjectService(
     @Transactional
     fun createProject(projectInputDto: ProjectInputDto, teamId: Long): ProjectEntity {
         val projectEntity = projectDao.save(
-            ProjectEntity
-            .builder()
-            .name(projectInputDto.name)
-            .finished(false)
-            .team(teamDao.findByIdOrNull(teamId) ?: throw NotFoundException(TeamEntity::class.java))
-            .event(eventDao.findByIdOrNull(projectInputDto.event))
-            .build()
+            ProjectEntity(
+                name = projectInputDto.name,
+                finished = false,
+                team = teamDao.findByIdOrNull(teamId) ?: throw NotFoundException(TeamEntity::class.java),
+                event = eventDao.findByIdOrNull(projectInputDto.event)
+            )
         )
 
         xrefUserProjectDao.save(
-            XrefUserProjectEntity
-            .builder()
-            .user(userService.getCurrentUser())
-            .project(projectEntity)
-            .role(
-                roleDao.findByName(RoleName.OWNER.name)
-                ?: throw NotFoundException(RoleEntity::class.java)
+            XrefUserProjectEntity(
+                user = userService.getCurrentUser(),
+                project = projectEntity,
+                role = roleDao.findByName(RoleName.OWNER.name)
+                    ?: throw NotFoundException(RoleEntity::class.java)
             )
-            .build()
         )
         return projectEntity
     }

@@ -27,7 +27,7 @@ class UserEvaluationService(
             userDao.findAllByProjectIdIn(
                 userEvaluationEntities
                 .map {
-                    projectDao.findByUserEvaluationId(it.id)
+                    projectDao.findByUserEvaluationId(it.id!!)
                     ?: throw NotFoundException(ProjectEntity::class.java)
                 }
                 .map { it.id!! }
@@ -37,23 +37,21 @@ class UserEvaluationService(
 
         userHonorDao.saveAll(userReviewEntities.map { userReviewEntity ->
             val userHonorEntity = userHonorDao.findByUserIdAndPositionId(
-                userReviewEntity.toUser.id!!, userReviewEntity.position.id
+                userReviewEntity.toUser.id!!, userReviewEntity.position.id!!
             )
-            ?: UserHonorEntity
-           .builder()
-           .honor(0)
-           .user(userReviewEntity.toUser)
-           .position(userReviewEntity.position)
-           .build()
-
+            ?: UserHonorEntity(
+                honor = 0,
+                user = userReviewEntity.toUser,
+                position = userReviewEntity.position
+            )
             userHonorEntity.honor = userHonorEntity.honor + userReviewEntity.honor
 
             userHonorEntity
         })
 
-        userReviewDao.deleteAllByIdIn(userReviewEntities.map { it.id })
+        userReviewDao.deleteAllByIdIn(userReviewEntities.map { it.id!! })
 
-        userEvaluationDao.deleteAllByIdIn(userEvaluationEntities.map { it.id })
+        userEvaluationDao.deleteAllByIdIn(userEvaluationEntities.map { it.id!! })
 
     }
 

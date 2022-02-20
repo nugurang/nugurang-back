@@ -24,19 +24,19 @@ class NotificationService(
         data: List<String>
     ): NotificationEntity {
         val notificationEntity = notificationDao.save(
-            NotificationEntity
-            .builder()
-            .isRead(false)
-            .notificationType(
-                notificationTypeDao.findByName(type.name)
-                    ?: throw NotFoundException(NotificationTypeEntity::class.java)
+            NotificationEntity(
+                isRead = false,
+                notificationType = notificationTypeDao.findByName(type.name)
+                    ?: throw NotFoundException(NotificationTypeEntity::class.java),
+                user = userEntity
             )
-            .user(userEntity)
-            .build()
         )
         notificationDataDao.saveAll(
-            data.map { datum: String? ->
-                NotificationDataEntity.builder().value(datum).notification(notificationEntity).build()
+            data.map {
+                NotificationDataEntity(
+                    value = it,
+                    notification = notificationEntity
+                )
             }
         )
         return notificationEntity

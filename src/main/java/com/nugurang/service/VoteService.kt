@@ -29,15 +29,11 @@ class VoteService(
     fun createVote(voteInputDto: VoteInputDto): VoteEntity {
         // TODO: Prevent users vote their own articles
         return voteDao.save(
-            VoteEntity
-            .builder().user(userService.getCurrentUser())
-            .article(
-                articleDao.findByIdOrNull(voteInputDto.article) ?: throw NotFoundException(ArticleEntity::class.java)
+            VoteEntity(
+                user = userService.getCurrentUser(),
+                article = articleDao.findByIdOrNull(voteInputDto.article) ?: throw NotFoundException(ArticleEntity::class.java),
+                voteType = voteTypeDao.findByIdOrNull(voteInputDto.voteType) ?: throw NotFoundException(VoteTypeEntity::class.java)
             )
-            .voteType(
-                voteTypeDao.findByIdOrNull(voteInputDto.voteType) ?: throw NotFoundException(VoteTypeEntity::class.java)
-            )
-            .build()
         )
     }
 
