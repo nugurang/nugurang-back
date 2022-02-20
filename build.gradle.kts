@@ -86,10 +86,6 @@ dependencies {
     ).map(::implementation)
 
     arrayOf(
-        "org.projectlombok:lombok"
-    ).map(::compileOnly)
-
-    arrayOf(
         "org.springframework.boot:spring-boot-devtools"
     ).map(::developmentOnly)
 
