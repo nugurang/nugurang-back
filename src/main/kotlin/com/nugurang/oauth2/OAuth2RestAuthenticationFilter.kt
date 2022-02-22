@@ -6,6 +6,9 @@ import com.nugurang.dto.LoginRequestDto
 import com.nugurang.http.MultiReadableHttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
@@ -18,7 +21,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException
 import org.springframework.security.oauth2.core.OAuth2Error
 import org.springframework.security.oauth2.core.OAuth2RefreshToken
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
+import org.springframework.security.web.util.matcher.AndRequestMatcher
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher
 import java.io.IOException
 import java.time.Instant
 import javax.servlet.FilterChain
@@ -27,8 +32,8 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
 //import org.springframework.security.authentication.BadCredentialsException;
+
 class OAuth2RestAuthenticationFilter : AbstractAuthenticationProcessingFilter {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
@@ -39,12 +44,23 @@ class OAuth2RestAuthenticationFilter : AbstractAuthenticationProcessingFilter {
     @Autowired
     private lateinit var oauth2AuthorizedClientService: OAuth2AuthorizedClientService
 
-    constructor() : super(AntPathRequestMatcher(DEFAULT_FILTER_PROCESSES_URL, "POST")) {}
-    constructor(filterProcessesUrl: String) : super(AntPathRequestMatcher(filterProcessesUrl, "POST")) {}
+    constructor() : this(DEFAULT_FILTER_PROCESSES_URL)
+    constructor(filterProcessesUrl: String) : super(
+        AndRequestMatcher(
+            AntPathRequestMatcher(filterProcessesUrl, HttpMethod.POST.name),
+            RequestHeaderRequestMatcher(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        )
+    )
 
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
-        super.doFilter(MultiReadableHttpServletRequest((request as HttpServletRequest)), response, chain)
+        // TODO: Improve duplicated code
+        if (!requiresAuthentication(request as HttpServletRequest, response as HttpServletResponse)) {
+            chain.doFilter(request, response)
+            return
+        }
+
+        super.doFilter(MultiReadableHttpServletRequest(request), response, chain)
     }
 
     @Throws(AuthenticationException::class, IOException::class, ServletException::class)
