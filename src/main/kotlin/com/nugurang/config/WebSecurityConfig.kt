@@ -4,7 +4,6 @@ import com.nugurang.oauth2.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -34,37 +33,55 @@ class WebSecurityConfig(
 
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
-        http.cors().and().csrf().disable().authorizeRequests().antMatchers("/login", "/test").permitAll().anyRequest()
-            .authenticated().and().exceptionHandling().authenticationEntryPoint(
-            oauth2RestAuthenticationEntryPoint
-        ).accessDeniedHandler(oauth2RestAccessDeniedHandler).and().oauth2Login().and().logout().permitAll()
-            .clearAuthentication(true).deleteCookies("JSESSIONID").invalidateHttpSession(true).and().headers()
-            .frameOptions().sameOrigin().and().addFilterBefore(
-            filter, LogoutFilter::class.java
-        )
+        http
+            .cors()
+            .and()
+            .csrf()
+            .disable()
+            .authorizeRequests()
+            .antMatchers("/login", "/test")
+            .permitAll()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .exceptionHandling()
+            .authenticationEntryPoint(oauth2RestAuthenticationEntryPoint)
+            .accessDeniedHandler(oauth2RestAccessDeniedHandler)
+            .and()
+            .oauth2Login()
+            .and()
+            .logout()
+            .permitAll()
+            .clearAuthentication(true)
+            .deleteCookies("JSESSIONID")
+            .invalidateHttpSession(true)
+            .and()
+            .headers()
+            .frameOptions()
+            .sameOrigin()
+            .and()
+            .addFilterBefore(createOauth2AuthenticationFilter(), LogoutFilter::class.java)
         /*.securityContext()
             .securityContextRepository(new NullSecurityContextRepository())*/
         /* TODO
             .and()
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        */
     }
 
-    @get:Bean
-    val filter: OAuth2RestAuthenticationFilter
-        get() {
-            val filter = OAuth2RestAuthenticationFilter()
-            filter.setAuthenticationManager(
-                ProviderManager(
-                    listOf<AuthenticationProvider>(
-                        OAuth2RestAuthenticationProvider()
-                    )
-                )
+//    @get:Bean
+    fun createOauth2AuthenticationFilter(): OAuth2RestAuthenticationFilter {
+        val filter = OAuth2RestAuthenticationFilter()
+        filter.setAuthenticationManager(
+            ProviderManager(
+                listOf(OAuth2RestAuthenticationProvider())
             )
-            filter.setAuthenticationSuccessHandler(oauth2RestAuthenticationSuccessHandler)
-            filter.setAuthenticationFailureHandler(oauth2RestAuthenticationFailureHandler)
-            return filter
-        }
+        )
+        filter.setAuthenticationSuccessHandler(oauth2RestAuthenticationSuccessHandler)
+        filter.setAuthenticationFailureHandler(oauth2RestAuthenticationFailureHandler)
+        return filter
+    }
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
