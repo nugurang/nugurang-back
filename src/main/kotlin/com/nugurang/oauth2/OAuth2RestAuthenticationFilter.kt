@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.nugurang.dto.LoginRequestDto
 import com.nugurang.http.MultiReadableHttpServletRequest
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
@@ -34,23 +33,17 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 //import org.springframework.security.authentication.BadCredentialsException;
 
-class OAuth2RestAuthenticationFilter : AbstractAuthenticationProcessingFilter {
-    @Autowired
-    private lateinit var objectMapper: ObjectMapper
-
-    @Autowired
-    private lateinit var clientRegistrationRepository: ClientRegistrationRepository
-
-    @Autowired
-    private lateinit var oauth2AuthorizedClientService: OAuth2AuthorizedClientService
-
-    constructor() : this(DEFAULT_FILTER_PROCESSES_URL)
-    constructor(filterProcessesUrl: String) : super(
-        AndRequestMatcher(
-            AntPathRequestMatcher(filterProcessesUrl, HttpMethod.POST.name),
-            RequestHeaderRequestMatcher(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        )
+class OAuth2RestAuthenticationFilter(
+    private val objectMapper: ObjectMapper,
+    private val clientRegistrationRepository: ClientRegistrationRepository,
+    private val oauth2AuthorizedClientService: OAuth2AuthorizedClientService,
+    filterProcessesUrl: String = DEFAULT_FILTER_PROCESSES_URL
+) : AbstractAuthenticationProcessingFilter(
+    AndRequestMatcher(
+        AntPathRequestMatcher(filterProcessesUrl, HttpMethod.POST.name),
+        RequestHeaderRequestMatcher(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
     )
+) {
 
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
