@@ -1,5 +1,6 @@
 package com.nugurang.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.nugurang.oauth2.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -10,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.web.authentication.logout.LogoutFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -22,6 +25,9 @@ class WebSecurityConfig(
     private val oauth2RestAuthenticationSuccessHandler: OAuth2RestAuthenticationSuccessHandler,
     private val oauth2RestAuthenticationFailureHandler: OAuth2RestAuthenticationFailureHandler,
     private val oauth2RestAccessDeniedHandler: OAuth2RestAccessDeniedHandler,
+    private val objectMapper: ObjectMapper,
+    private val clientRegistrationRepository: ClientRegistrationRepository,
+    private val oauth2AuthorizedClientService: OAuth2AuthorizedClientService,
     @Value("\${nugurang.addr.front.url}")
     private val frontUrl: String
 ) : WebSecurityConfigurerAdapter() {
@@ -70,9 +76,13 @@ class WebSecurityConfig(
         */
     }
 
-//    @get:Bean
     fun createOauth2AuthenticationFilter(): OAuth2RestAuthenticationFilter {
-        val filter = OAuth2RestAuthenticationFilter()
+        val filter = OAuth2RestAuthenticationFilter(
+            objectMapper,
+            clientRegistrationRepository,
+            oauth2AuthorizedClientService
+        )
+
         filter.setAuthenticationManager(
             ProviderManager(
                 listOf(OAuth2RestAuthenticationProvider())
