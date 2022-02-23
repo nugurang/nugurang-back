@@ -2,19 +2,23 @@ package com.nugurang.graphql.mutation
 
 import com.nugurang.dto.BoardDto
 import com.nugurang.dto.BoardInputDto
+import com.nugurang.mapper.BoardMapper
 import com.nugurang.service.BoardService
 import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.stereotype.Service
 
 @Service
-class BoardMutation(private val boardService: BoardService) : GraphQLMutationResolver {
+class BoardMutation(
+    private val boardService: BoardService,
+    private val boardMapper: BoardMapper
+) : GraphQLMutationResolver {
 
     fun createBoard(boardInputDto: BoardInputDto): BoardDto {
-        return boardService.createBoard(boardInputDto).toDto()
+        return boardMapper.toDto(boardService.createBoard(boardInputDto))
     }
 
     fun updateBoard(boardInputDto: BoardInputDto, boardId: Long): BoardDto {
-        return boardService.updateBoard(boardInputDto, boardId).toDto()
+        return boardMapper.toDto(boardService.updateBoard(boardInputDto, boardId))
     }
 
     fun deleteBoard(boardId: Long): Long {
