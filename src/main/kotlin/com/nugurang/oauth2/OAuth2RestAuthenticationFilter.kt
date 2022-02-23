@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.nugurang.dto.LoginRequestDto
 import com.nugurang.http.MultiReadableHttpServletRequest
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
@@ -22,7 +20,6 @@ import org.springframework.security.oauth2.core.OAuth2RefreshToken
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.util.matcher.AndRequestMatcher
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher
 import java.io.IOException
 import java.time.Instant
 import javax.servlet.FilterChain
@@ -41,10 +38,9 @@ class OAuth2RestAuthenticationFilter(
 ) : AbstractAuthenticationProcessingFilter(
     AndRequestMatcher(
         AntPathRequestMatcher(filterProcessesUrl, HttpMethod.POST.name),
-        RequestHeaderRequestMatcher(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
     )
 ) {
-
+    //val jsonRequestMatcher = RequestHeaderRequestMatcher(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
     @Throws(IOException::class, ServletException::class)
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         // TODO: Improve duplicated code
