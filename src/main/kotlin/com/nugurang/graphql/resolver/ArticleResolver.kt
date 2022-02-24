@@ -9,6 +9,7 @@ import com.nugurang.entity.ThreadEntity
 import com.nugurang.entity.UserEntity
 import com.nugurang.entity.VoteTypeEntity
 import com.nugurang.exception.NotFoundException
+import com.nugurang.mapper.ArticleMapper
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -18,7 +19,8 @@ class ArticleResolver(
     private val articleDao: ArticleDao,
     private val imageDao: ImageDao,
     private val voteDao: VoteDao,
-    private val voteTypeDao: VoteTypeDao
+    private val voteTypeDao: VoteTypeDao,
+    private val articleMapper: ArticleMapper
 ) : GraphQLResolver<ArticleDto> {
 
     fun thread(articleDto: ArticleDto): ThreadDto {
@@ -33,7 +35,7 @@ class ArticleResolver(
 
     // TODO: should we return nullable or non-nullable with an exception?
     fun parent(articleDto: ArticleDto): ArticleDto? {
-        return articleDao.findByIdOrNull(articleDto.id)?.parent?.toDto()
+        return articleDao.findByIdOrNull(articleDto.id)?.parent?.let(articleMapper::toDto)
     }
 
     fun images(articleDto: ArticleDto): List<ImageDto> {

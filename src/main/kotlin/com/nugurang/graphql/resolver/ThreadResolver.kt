@@ -3,21 +3,22 @@ package com.nugurang.graphql.resolver
 import com.nugurang.dao.ArticleDao
 import com.nugurang.dao.ThreadDao
 import com.nugurang.dto.*
-import com.nugurang.entity.ArticleEntity
 import com.nugurang.entity.BoardEntity
 import com.nugurang.entity.UserEntity
 import com.nugurang.exception.NotFoundException
+import com.nugurang.mapper.ArticleMapper
 import com.nugurang.mapper.BoardMapper
+import com.nugurang.service.ThreadService
 import graphql.kickstart.tools.GraphQLResolver
-import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.stream.Collectors
 
 @Service
 class ThreadResolver(
     private val articleDao: ArticleDao,
     private val threadDao: ThreadDao,
+    private val threadService: ThreadService,
+    private val articleMapper: ArticleMapper,
     private val boardMapper: BoardMapper
 ) : GraphQLResolver<ThreadDto> {
     fun board(threadDto: ThreadDto): BoardDto {
@@ -43,22 +44,11 @@ class ThreadResolver(
     }
 
     fun firstArticle(threadDto: ThreadDto): ArticleDto {
-        val articles = articleDao
-            .findAllByThreadIdOrderByCreatedAtAsc(threadDto.id, PageRequest.of(0, 1))
-            .content
-            .stream()
-            .collect(Collectors.toList())
-        articles.size == 0 && throw NotFoundException(ArticleEntity::class.java)
-        return articles[0].toDto()
+        return articleMapper.toDto(threadService.getFirstArticle(threadDto.id))
     }
 
     fun getArticles(threadDto: ThreadDto, page: Int, pageSize: Int): List<ArticleDto> {
-        return articleDao.findAllByThreadIdOrderByCreatedAtAsc(
-            threadDto.id,
-            PageRequest.of(page, pageSize)
-        )
-        .content
-        .map { it.toDto() }
+        return threadService.getArticles(threadDto.id, page, pageSize).map(articleMapper::toDto)
     }
 
     fun commentCount(threadDto: ThreadDto): Long {

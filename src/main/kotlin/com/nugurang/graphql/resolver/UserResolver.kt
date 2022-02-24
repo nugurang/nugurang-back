@@ -5,6 +5,7 @@ import com.nugurang.dto.*
 import com.nugurang.entity.BoardEntity
 import com.nugurang.entity.UserEvaluationEntity
 import com.nugurang.exception.NotFoundException
+import com.nugurang.mapper.ArticleMapper
 import com.nugurang.mapper.BoardMapper
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.domain.PageRequest
@@ -21,6 +22,7 @@ class UserResolver(
     private val userDao: UserDao,
     private val userHonorDao: UserHonorDao,
     private val notificationDao: NotificationDao,
+    private val articleMapper: ArticleMapper,
     private val boardMapper: BoardMapper
 ) : GraphQLResolver<UserDto> {
 
@@ -44,7 +46,7 @@ class UserResolver(
         return articleDao
             .findAllByUserId(userDto.id, PageRequest.of(page, pageSize))
             .stream()
-            .map { it.toDto() }
+            .map(articleMapper::toDto)
             .collect(Collectors.toList())
     }
 

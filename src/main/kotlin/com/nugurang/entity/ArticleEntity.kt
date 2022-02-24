@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.ArticleDto
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -39,15 +38,4 @@ class ArticleEntity(
     @ManyToOne
     @JoinColumn(name = "parent")
     var parent: ArticleEntity? = null
-
-) : BaseEntity<ArticleDto> {
-    override fun toDto(): ArticleDto {
-        return ArticleDto(
-            id!!,
-            title,
-            content,
-            createdAt!!,
-            modifiedAt!!
-        )
-    }
-}
+)

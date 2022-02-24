@@ -24,7 +24,7 @@ class ThreadService(
     private val eventDao: EventDao,
     private val threadDao: ThreadDao,
     private val voteTypeDao: VoteTypeDao,
-    private val xrefUserTeamDao: XrefUserTeamDao
+    private val xrefUserTeamDao: XrefUserTeamDao,
 ) {
     @PreAuthorize("hasPermission(#board, 'com.nugurang.entity.BoardEntity', 'WRITE')")
     @Transactional
@@ -46,6 +46,20 @@ class ThreadService(
         )
         articleService.createArticle(threadInputDto.firstArticle, threadEntity.id!!)
         return threadEntity
+    }
+
+    fun getFirstArticle(threadId: Long): ArticleEntity {
+        val articles = getArticles(threadId, 0, 1)
+        articles.isEmpty() && throw NotFoundException(ArticleEntity::class.java)
+        return articles[0]
+    }
+
+    fun getArticles(threadId: Long, page: Int, pageSize: Int): List<ArticleEntity> {
+        return articleDao.findAllByThreadIdOrderByCreatedAtAsc(
+            threadId,
+            PageRequest.of(page, pageSize)
+        )
+        .content
     }
 
     @Transactional
