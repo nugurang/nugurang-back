@@ -7,6 +7,7 @@ import com.nugurang.entity.TeamInvitationEntity
 import com.nugurang.entity.VoteTypeEntity
 import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.InvitationStatusMapper
+import com.nugurang.mapper.MatchRequestMapper
 import com.nugurang.service.OAuth2Service
 import com.nugurang.service.UserService
 import graphql.kickstart.tools.GraphQLQueryResolver
@@ -26,7 +27,8 @@ class Query(
     private val projectInvitationDao: ProjectInvitationDao,
     private val teamInvitationDao: TeamInvitationDao,
     private val voteTypeDao: VoteTypeDao,
-    private val invitationStatusMapper: InvitationStatusMapper
+    private val invitationStatusMapper: InvitationStatusMapper,
+    private val matchRequestMapper: MatchRequestMapper
 ) : GraphQLQueryResolver {
 
     fun ping(): String {
@@ -45,7 +47,7 @@ class Query(
     fun matchRequests(): List<MatchRequestDto> {
         return matchRequestDao
             .findAllByUserId(userService.getCurrentUser().id!!)
-            .map { it.toDto() }
+            .map(matchRequestMapper::toDto)
     }
 
     fun invitationStatus(): List<InvitationStatusDto> {

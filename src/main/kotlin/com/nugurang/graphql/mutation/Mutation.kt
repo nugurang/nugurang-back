@@ -7,6 +7,7 @@ import com.nugurang.dao.*
 import com.nugurang.dto.*
 import com.nugurang.entity.*
 import com.nugurang.exception.NotFoundException
+import com.nugurang.mapper.MatchRequestMapper
 import com.nugurang.service.ImageService
 import com.nugurang.service.NotificationService
 import com.nugurang.service.ProjectService
@@ -45,7 +46,8 @@ class Mutation(
     private val userHonorDao: UserHonorDao,
     private val userReviewDao: UserReviewDao,
     private val xrefUserProjectDao: XrefUserProjectDao,
-    private val xrefUserTeamDao: XrefUserTeamDao
+    private val xrefUserTeamDao: XrefUserTeamDao,
+    private val matchRequestMapper: MatchRequestMapper
 ) : GraphQLMutationResolver {
 
     fun createFollowing(userId: Long): Boolean {
@@ -65,23 +67,24 @@ class Mutation(
     fun createMatchRequest(matchRequestInputDto: MatchRequestInputDto): MatchRequestDto {
         log.info("Creating match request...")
         val now = OffsetDateTime.now()
-        return matchRequestDao.save(
-            MatchRequestEntity(
-                createdAt = now,
-                expiresAt = now
+        return matchRequestMapper.toDto(
+            matchRequestDao.save(
+                MatchRequestEntity(
+                    createdAt = now,
+                    expiresAt = now
                     .plusDays((matchRequestInputDto.days ?: 1) as Long) // TODO: Fix type casting
                     .plusHours((matchRequestInputDto.hours ?: 0) as Long)
                     .plusMinutes((matchRequestInputDto.minutes ?: 0) as Long),
-                minTeamSize = matchRequestInputDto.minTeamSize,
-                maxTeamSize = matchRequestInputDto.maxTeamSize,
-                type = matchTypeDao.findByIdOrNull(matchRequestInputDto.type)
+                    minTeamSize = matchRequestInputDto.minTeamSize,
+                    maxTeamSize = matchRequestInputDto.maxTeamSize,
+                    type = matchTypeDao.findByIdOrNull(matchRequestInputDto.type)
                     ?: throw NotFoundException(MatchTypeEntity::class.java),
-                event = eventDao.findByIdOrNull(matchRequestInputDto.event)
+                    event = eventDao.findByIdOrNull(matchRequestInputDto.event)
                     ?: throw NotFoundException(EventEntity::class.java),
-                user = userService.getCurrentUser()
+                    user = userService.getCurrentUser()
+                )
             )
         )
-        .toDto()
     }
 
     fun createPosition(positionInputDto: PositionInputDto): PositionDto {

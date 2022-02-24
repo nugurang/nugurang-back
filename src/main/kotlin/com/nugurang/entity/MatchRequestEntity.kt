@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.MatchRequestDto
 import java.time.OffsetDateTime
 import javax.persistence.*
 
@@ -35,8 +34,4 @@ class MatchRequestEntity(
     @JoinColumn(name = "user", nullable = false)
     var user: UserEntity
 
-) : BaseEntity<MatchRequestDto> {
-    override fun toDto(): MatchRequestDto {
-        return MatchRequestDto(id!!, createdAt!!, expiresAt!!, minTeamSize, maxTeamSize)
-    }
-}
+)
