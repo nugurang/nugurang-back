@@ -12,6 +12,7 @@ class EventMutation(
     private val eventService: EventService,
     private val eventMapper: EventMapper
 ) : GraphQLMutationResolver {
+
     fun createEvent(eventInputDto: EventInputDto): EventDto {
         return eventMapper.toDto(eventService.createEvent(eventInputDto))
     }

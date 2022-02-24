@@ -13,7 +13,6 @@ class FollowingEntity(
     @JoinColumn(name = "from_user", nullable = false)
     var fromUser: UserEntity,
 
-    //</editor-fold>
     @ManyToOne
     @JoinColumn(name = "to_user", nullable = false)
     var toUser: UserEntity

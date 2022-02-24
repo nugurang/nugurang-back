@@ -7,6 +7,7 @@ import com.nugurang.entity.UserEvaluationEntity
 import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.ArticleMapper
 import com.nugurang.mapper.BoardMapper
+import com.nugurang.mapper.ImageMapper
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -23,7 +24,8 @@ class UserResolver(
     private val userHonorDao: UserHonorDao,
     private val notificationDao: NotificationDao,
     private val articleMapper: ArticleMapper,
-    private val boardMapper: BoardMapper
+    private val boardMapper: BoardMapper,
+    private val imageMapper: ImageMapper
 ) : GraphQLResolver<UserDto> {
 
     fun totalHonor(userDto: UserDto): Int {
@@ -35,11 +37,11 @@ class UserResolver(
     }
 
     fun image(userDto: UserDto): ImageDto? {
-        return userDao.findByIdOrNull(userDto.id)?.image?.toDto()
+        return userDao.findByIdOrNull(userDto.id)?.image?.let(imageMapper::toDto)
     }
 
     fun blog(userDto: UserDto): BoardDto {
-        return userDao.findByIdOrNull(userDto.id)?.blog?.let { boardMapper.toDto(it) } ?: throw NotFoundException(BoardEntity::class.java)
+        return userDao.findByIdOrNull(userDto.id)?.blog?.let(boardMapper::toDto) ?: throw NotFoundException(BoardEntity::class.java)
     }
 
     fun getArticles(userDto: UserDto, page: Int, pageSize: Int): List<ArticleDto> {
