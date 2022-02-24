@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.MatchTypeDto
 import javax.persistence.*
 
 @Entity
@@ -12,9 +11,4 @@ class MatchTypeEntity(
 
     @Column(nullable = false, unique = true)
     var name: String
-    
-): BaseEntity<MatchTypeDto> {
-    override fun toDto(): MatchTypeDto {
-        return MatchTypeDto(id!!, name)
-    }
-}
+)

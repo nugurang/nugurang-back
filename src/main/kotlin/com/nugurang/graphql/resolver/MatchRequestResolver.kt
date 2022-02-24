@@ -10,6 +10,7 @@ import com.nugurang.entity.MatchTypeEntity
 import com.nugurang.entity.UserEntity
 import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.EventMapper
+import com.nugurang.mapper.MatchTypeMapper
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -17,10 +18,11 @@ import org.springframework.stereotype.Service
 @Service
 class MatchRequestResolver(
     private val matchRequestDao: MatchRequestDao,
-    private val eventMapper: EventMapper
+    private val eventMapper: EventMapper,
+    private val matchTypeMapper: MatchTypeMapper
 ) : GraphQLResolver<MatchRequestDto> {
     fun type(matchRequestDto: MatchRequestDto): MatchTypeDto {
-        return matchRequestDao.findByIdOrNull(matchRequestDto.id)?.type?.toDto()
+        return matchRequestDao.findByIdOrNull(matchRequestDto.id)?.type?.let(matchTypeMapper::toDto)
             ?: throw NotFoundException(MatchTypeEntity::class.java)
     }
 
