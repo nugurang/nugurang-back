@@ -9,21 +9,24 @@ import com.nugurang.entity.EventEntity
 import com.nugurang.entity.MatchTypeEntity
 import com.nugurang.entity.UserEntity
 import com.nugurang.exception.NotFoundException
+import com.nugurang.mapper.EventMapper
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class MatchRequestResolver(private val matchRequestDao: MatchRequestDao) : GraphQLResolver<MatchRequestDto> {
+class MatchRequestResolver(
+    private val matchRequestDao: MatchRequestDao,
+    private val eventMapper: EventMapper
+) : GraphQLResolver<MatchRequestDto> {
     fun type(matchRequestDto: MatchRequestDto): MatchTypeDto {
         return matchRequestDao.findByIdOrNull(matchRequestDto.id)?.type?.toDto()
             ?: throw NotFoundException(MatchTypeEntity::class.java)
     }
 
     fun event(matchRequestDto: MatchRequestDto): EventDto {
-        return matchRequestDao.findByIdOrNull(matchRequestDto.id)?.event?.toDto()
+        return matchRequestDao.findByIdOrNull(matchRequestDto.id)?.event?.let(eventMapper::toDto)
             ?: throw NotFoundException(EventEntity::class.java)
-
     }
 
     fun user(matchRequestDto: MatchRequestDto): UserDto {

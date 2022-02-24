@@ -8,6 +8,7 @@ import com.nugurang.entity.UserEntity
 import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.ArticleMapper
 import com.nugurang.mapper.BoardMapper
+import com.nugurang.mapper.EventMapper
 import com.nugurang.service.ThreadService
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.repository.findByIdOrNull
@@ -19,7 +20,8 @@ class ThreadResolver(
     private val threadDao: ThreadDao,
     private val threadService: ThreadService,
     private val articleMapper: ArticleMapper,
-    private val boardMapper: BoardMapper
+    private val boardMapper: BoardMapper,
+    private val eventMapper: EventMapper
 ) : GraphQLResolver<ThreadDto> {
     fun board(threadDto: ThreadDto): BoardDto {
         val board = threadDao.findByIdOrNull(threadDto.id)?.board ?: throw NotFoundException(BoardEntity::class.java)
@@ -36,11 +38,11 @@ class ThreadResolver(
     }
 
     fun event(threadDto: ThreadDto): EventDto? {
-        return threadDao.findByIdOrNull(threadDto.id)?.event?.toDto()
+        return threadDao.findByIdOrNull(threadDto.id)?.event?.let(eventMapper::toDto)
     }
 
-    fun tags(threadDto: ThreadDto?): List<TagDto>? {
-        return null
+    fun tags(threadDto: ThreadDto): List<TagDto> {
+        return listOf()
     }
 
     fun firstArticle(threadDto: ThreadDto): ArticleDto {

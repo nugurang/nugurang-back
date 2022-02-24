@@ -7,6 +7,7 @@ import com.nugurang.dto.*
 import com.nugurang.entity.EventEntity
 import com.nugurang.entity.TeamEntity
 import com.nugurang.exception.NotFoundException
+import com.nugurang.mapper.EventMapper
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -17,7 +18,8 @@ import java.util.stream.Collectors
 class ProjectResolver(
     private val projectDao: ProjectDao,
     private val userDao: UserDao,
-    private val workDao: WorkDao
+    private val workDao: WorkDao,
+    private val eventMapper: EventMapper
 ) : GraphQLResolver<ProjectDto> {
 
     fun team(projectDto: ProjectDto): TeamDto {
@@ -26,14 +28,14 @@ class ProjectResolver(
     }
 
     fun getUsers(projectDto: ProjectDto, page: Int, pageSize: Int): List<UserDto> {
-        return userDao.findAllByProjectId(projectDto.id, PageRequest.of(page!!, pageSize!!))
+        return userDao.findAllByProjectId(projectDto.id, PageRequest.of(page, pageSize))
             .stream()
             .map { it.toDto() }
             .collect(Collectors.toList())
     }
 
     fun event(projectDto: ProjectDto): EventDto {
-        return projectDao.findByIdOrNull(projectDto.id)?.event?.toDto()
+        return projectDao.findByIdOrNull(projectDto.id)?.event?.let(eventMapper::toDto)
         ?: throw NotFoundException(EventEntity::class.java)
     }
 

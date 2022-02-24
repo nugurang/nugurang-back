@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.EventDto
 import java.time.OffsetDateTime
 import javax.persistence.*
 
@@ -27,18 +26,5 @@ class EventEntity(
     var eventStart: OffsetDateTime,
 
     @Column(nullable = false)
-    var eventEnd: OffsetDateTime,
-
-): BaseEntity<EventDto> {
-    override fun toDto(): EventDto {
-        return EventDto(
-            id!!,
-            name,
-            description,
-            recruitingStart,
-            recruitingEnd,
-            eventStart,
-            eventEnd
-        )
-    }
-}
+    var eventEnd: OffsetDateTime
+)
