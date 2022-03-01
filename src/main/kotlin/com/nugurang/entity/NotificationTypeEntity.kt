@@ -12,8 +12,4 @@ class NotificationTypeEntity(
 
     @Column(nullable = false, unique = true)
     var name: String
-): BaseEntity<NotificationTypeDto> {
-    override fun toDto(): NotificationTypeDto {
-        return NotificationTypeDto(id!!, name)
-    }
-}
+)

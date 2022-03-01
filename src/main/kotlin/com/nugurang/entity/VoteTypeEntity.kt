@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.VoteTypeDto
 import javax.persistence.*
 
 @Entity
@@ -12,8 +11,4 @@ class VoteTypeEntity(
 
     @Column(nullable = false, unique = true)
     var name: String
-) : BaseEntity<VoteTypeDto> {
-    override fun toDto(): VoteTypeDto {
-        return VoteTypeDto(id!!, name)
-    }
-}
+)

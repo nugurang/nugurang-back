@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.UserDto
 import javax.persistence.*
 
 @Entity
@@ -31,9 +30,4 @@ class UserEntity(
     @ManyToOne
     @JoinColumn(name = "image")
     var image: ImageEntity? = null
-
-): BaseEntity<UserDto> {
-    override fun toDto(): UserDto {
-        return UserDto(id!!, oauth2Provider, oauth2Id, name, email, biography)
-    }
-}
+)

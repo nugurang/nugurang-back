@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.ImageDto
 import javax.persistence.*
 
 @Entity
@@ -12,9 +11,4 @@ class ImageEntity(
 
     @Column(nullable = false)
     var address: String
-
-): BaseEntity<ImageDto> {
-    override fun toDto(): ImageDto {
-        return ImageDto(id!!, address)
-    }
-}
+)

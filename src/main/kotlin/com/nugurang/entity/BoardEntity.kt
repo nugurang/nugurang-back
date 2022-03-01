@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.BoardDto
 import javax.persistence.*
 
 @Entity
@@ -15,9 +14,4 @@ class BoardEntity(
 
     @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL])
     var xrefUsers: MutableList<XrefUserBoardEntity> = mutableListOf()
-
-): BaseEntity<BoardDto> {
-    override fun toDto(): BoardDto {
-        return BoardDto(id!!, name)
-    }
-}
+)

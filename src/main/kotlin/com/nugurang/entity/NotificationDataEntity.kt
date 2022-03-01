@@ -15,5 +15,4 @@ class NotificationDataEntity(
     @ManyToOne
     @JoinColumn(name = "notification", nullable = false)
     var notification: NotificationEntity
-
 )

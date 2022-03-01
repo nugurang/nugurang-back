@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.ThreadDto
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -45,8 +44,4 @@ class ThreadEntity(
     @OneToMany(mappedBy = "thread", cascade = [CascadeType.ALL])
     var xrefTags: MutableList<XrefThreadTagEntity> = mutableListOf()
 
-) : BaseEntity<ThreadDto> {
-    override fun toDto(): ThreadDto {
-        return ThreadDto(id!!, name, createdAt!!, modifiedAt!!)
-    }
-}
+)

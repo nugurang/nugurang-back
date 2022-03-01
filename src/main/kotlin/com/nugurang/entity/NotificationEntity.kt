@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.NotificationDto
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.OffsetDateTime
@@ -28,9 +27,4 @@ class NotificationEntity(
     @ManyToOne
     @JoinColumn(name = "user", nullable = false)
     var user: UserEntity
-
-) : BaseEntity<NotificationDto> {
-    override fun toDto(): NotificationDto {
-        return NotificationDto(id!!, isRead, createdAt!!)
-    }
-}
+)

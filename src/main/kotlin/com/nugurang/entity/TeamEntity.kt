@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.TeamDto
 import javax.persistence.*
 
 @Entity
@@ -19,8 +18,4 @@ class TeamEntity(
     @OneToMany(mappedBy = "team", cascade = [CascadeType.ALL])
     var xrefUsers: MutableList<XrefUserTeamEntity> = mutableListOf()
 
-) : BaseEntity<TeamDto?> {
-    override fun toDto(): TeamDto {
-        return TeamDto(id!!, name)
-    }
-}
+)
