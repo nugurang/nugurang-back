@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.PositionDto
 import javax.persistence.*
 
 @Entity
@@ -19,9 +18,4 @@ class PositionEntity(
     @ManyToOne
     @JoinColumn(name = "image", nullable = true)
     var image: ImageEntity? = null
-
-): BaseEntity<PositionDto?> {
-    override fun toDto(): PositionDto {
-        return PositionDto(id!!, name, description)
-    }
-}
+)

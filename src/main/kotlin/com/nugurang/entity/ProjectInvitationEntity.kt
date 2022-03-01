@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.ProjectInvitationDto
 import javax.persistence.*
 
 @Entity
@@ -28,8 +27,4 @@ class ProjectInvitationEntity(
     @ManyToOne
     @JoinColumn(name = "to_user", nullable = false)
     var toUser: UserEntity
-): BaseEntity<ProjectInvitationDto> {
-    override fun toDto(): ProjectInvitationDto {
-        return ProjectInvitationDto(id!!)
-    }
-}
+)

@@ -6,9 +6,7 @@ import com.nugurang.entity.MatchTypeEntity
 import com.nugurang.entity.TeamInvitationEntity
 import com.nugurang.entity.VoteTypeEntity
 import com.nugurang.exception.NotFoundException
-import com.nugurang.mapper.InvitationStatusMapper
-import com.nugurang.mapper.MatchRequestMapper
-import com.nugurang.mapper.MatchTypeMapper
+import com.nugurang.mapper.*
 import com.nugurang.service.OAuth2Service
 import com.nugurang.service.UserService
 import graphql.kickstart.tools.GraphQLQueryResolver
@@ -30,7 +28,13 @@ class Query(
     private val voteTypeDao: VoteTypeDao,
     private val invitationStatusMapper: InvitationStatusMapper,
     private val matchRequestMapper: MatchRequestMapper,
-    private val matchTypeMapper: MatchTypeMapper
+    private val matchTypeMapper: MatchTypeMapper,
+    private val notificationTypeMapper: NotificationTypeMapper,
+    private val positionMapper: PositionMapper,
+    private val progressMapper: ProgressMapper,
+    private val projectInvitationMapper: ProjectInvitationMapper,
+    private val teamInvitationMapper: TeamInvitationMapper,
+    private val voteTypeMapper: VoteTypeMapper
 ) : GraphQLQueryResolver {
 
     fun ping(): String {
@@ -61,19 +65,19 @@ class Query(
     }
 
     fun notificationTypes(): List<NotificationTypeDto> {
-        return notificationTypeDao.findAll().map { it.toDto() }
+        return notificationTypeDao.findAll().map(notificationTypeMapper::toDto)
     }
 
     fun positions(): List<PositionDto> {
-        return positionDao.findAll().map { it.toDto() }
+        return positionDao.findAll().map(positionMapper::toDto)
     }
 
     fun progresses(): List<ProgressDto> {
-        return progressDao.findAll().map { it.toDto() }
+        return progressDao.findAll().map(progressMapper::toDto)
     }
 
     fun voteTypes(): List<VoteTypeDto> {
-        return voteTypeDao.findAll().map { it.toDto() }
+        return voteTypeDao.findAll().map(voteTypeMapper::toDto)
     }
 
     fun getMatchTypeByName(name: String): MatchTypeDto {
@@ -82,17 +86,17 @@ class Query(
     }
 
     fun getProjectInvitation(id: Long): ProjectInvitationDto? {
-        return projectInvitationDao.findByIdOrNull(id)?.toDto()
+        return projectInvitationDao.findByIdOrNull(id)?.let(projectInvitationMapper::toDto)
     }
 
     fun getTeamInvitation(id: Long): TeamInvitationDto {
-        return teamInvitationDao.findByIdOrNull(id)?.toDto()
+        return teamInvitationDao.findByIdOrNull(id)?.let(teamInvitationMapper::toDto)
         ?: throw NotFoundException(TeamInvitationEntity::class.java)
 
     }
 
     fun getVoteTypeByName(name: String): VoteTypeDto {
-        return voteTypeDao.findByName(name)?.toDto()
+        return voteTypeDao.findByName(name)?.let(voteTypeMapper::toDto)
         ?: throw NotFoundException(VoteTypeEntity::class.java)
     }
 }

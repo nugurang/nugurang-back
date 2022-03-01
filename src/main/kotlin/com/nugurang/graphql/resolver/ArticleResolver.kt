@@ -11,6 +11,8 @@ import com.nugurang.entity.VoteTypeEntity
 import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.ArticleMapper
 import com.nugurang.mapper.ImageMapper
+import com.nugurang.mapper.ThreadMapper
+import com.nugurang.mapper.UserMapper
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -22,16 +24,18 @@ class ArticleResolver(
     private val voteDao: VoteDao,
     private val voteTypeDao: VoteTypeDao,
     private val articleMapper: ArticleMapper,
-    private val imageMapper: ImageMapper
+    private val imageMapper: ImageMapper,
+    private val threadMapper: ThreadMapper,
+    private val userMapper: UserMapper
 ) : GraphQLResolver<ArticleDto> {
 
     fun thread(articleDto: ArticleDto): ThreadDto {
-        return articleDao.findByIdOrNull(articleDto.id)?.thread?.toDto()
+        return articleDao.findByIdOrNull(articleDto.id)?.thread?.let(threadMapper::toDto)
         ?: throw NotFoundException(ThreadEntity::class.java)
     }
 
     fun user(articleDto: ArticleDto): UserDto {
-        return articleDao.findByIdOrNull(articleDto.id)?.user?.toDto()
+        return articleDao.findByIdOrNull(articleDto.id)?.user?.let(userMapper::toDto)
         ?: throw NotFoundException(UserEntity::class.java)
     }
 

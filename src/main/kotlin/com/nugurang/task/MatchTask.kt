@@ -22,7 +22,8 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.util.*
-import java.util.stream.Collectors
+import kotlin.math.max
+import kotlin.math.min
 
 @Component
 class MatchTask(
@@ -35,7 +36,9 @@ class MatchTask(
     @Scheduled(fixedDelay = 10000)
     @Transactional
     private fun matchRequests() {
+
         val expiredMatchRequestEntities = matchRequestDao.findAllByExpiresAtLessThan(OffsetDateTime.now())
+
         for (expiredMatchRequestEntity in expiredMatchRequestEntities) {
             notificationService.createMatchFailureNotification(
                 expiredMatchRequestEntity.user,
@@ -44,40 +47,52 @@ class MatchTask(
             )
             matchRequestDao.deleteById(expiredMatchRequestEntity.id!!)
         }
+
         // https://github.com/MenoData/Time4J/issues/674
         // should filter by random match and event
-        val matchRequestIntervals = matchRequestDao.findAll().stream().map { matchRequestEntity: MatchRequestEntity ->
-            Optional.ofNullable(matchRequestEntity.maxTeamSize).map { maxTeamSize: Int ->
-                MomentInterval.between(
-                    Instant.ofEpochSecond(matchRequestEntity.minTeamSize.toLong()),
-                    Instant.ofEpochSecond(maxTeamSize.toLong())
-                ).withValue(matchRequestEntity)
+        val matchRequestIntervals = matchRequestDao
+        .findAll()
+        .asSequence()
+        .map { matchRequestEntity ->
+            matchRequestEntity
+            .maxTeamSize
+            ?.let { maxTeamSize ->
+                MomentInterval
+                .between(
+                    Instant.ofEpochSecond(matchRequestEntity.minTeamSize as Long),
+                    Instant.ofEpochSecond(maxTeamSize as Long)
+                )
+                .withValue(matchRequestEntity)
             }
-                .orElseGet {
-                    MomentInterval.since(Instant.ofEpochSecond(matchRequestEntity.minTeamSize.toLong()))
-                        .withValue(matchRequestEntity)
-                }
-        }.collect(Collectors.toList())
-        if (matchRequestIntervals.size < 2) return
-        matchRequestIntervals.shuffle()
+            ?: MomentInterval.since(Instant.ofEpochSecond(matchRequestEntity.minTeamSize as Long))
+            .withValue(matchRequestEntity)
+        }
+        .shuffled()
+        .toList()
+
+        if (matchRequestIntervals.size < 2)
+            return
+
         val intervalTree = IntervalTree.onMomentAxis(matchRequestIntervals)
         val matchRequestInterval = matchRequestIntervals[0]
-        val otherMatchRequestIntervals = intervalTree.findIntersections(matchRequestInterval).stream()
-            .filter { otherMatchRequestInterval: ValueInterval<Moment, MomentInterval, MatchRequestEntity>? -> otherMatchRequestInterval!!.value.id !== matchRequestInterval!!.value.id }
-            .collect(Collectors.toList())
-        otherMatchRequestIntervals.shuffle()
+        val otherMatchRequestIntervals = intervalTree
+            .findIntersections(matchRequestInterval)
+            .asSequence()
+            .filter { it.value.id !== it.value.id }
+            .shuffled()
+            .toList()
+
         log.info("intervals " + otherMatchRequestIntervals.size)
-        val matchRequestEntity = matchRequestInterval!!.value
+        val matchRequestEntity = matchRequestInterval.value
         var min = matchRequestEntity.minTeamSize
         var max = Optional.ofNullable(matchRequestEntity.maxTeamSize).orElse(Int.MAX_VALUE)
-        val matchedRequestIntervals: MutableList<ValueInterval<Moment, MomentInterval, MatchRequestEntity>?> =
-            LinkedList()
+        val matchedRequestIntervals: MutableList<ValueInterval<Moment, MomentInterval, MatchRequestEntity>> = LinkedList()
         for (otherMatchRequestInterval in otherMatchRequestIntervals) {
-            val otherMatchRequestEntity = otherMatchRequestInterval!!.value
+            val otherMatchRequestEntity = otherMatchRequestInterval.value
             val currentMin = otherMatchRequestEntity.minTeamSize
             val currentMax = Optional.ofNullable(otherMatchRequestEntity.maxTeamSize).orElse(Int.MAX_VALUE)
-            min = Math.max(min, currentMin)
-            max = Math.min(max, currentMax)
+            min = max(min, currentMin)
+            max = min(max, currentMax)
             if (matchedRequestIntervals.size + 1 >= max) break
             matchedRequestIntervals.add(otherMatchRequestInterval)
         }
@@ -99,7 +114,7 @@ class MatchTask(
             teamEntity
         )
         for (matchedRequestInterval in matchedRequestIntervals) {
-            val matchedRequestEntity = matchedRequestInterval!!.value
+            val matchedRequestEntity = matchedRequestInterval.value
             notificationService.createMatchSuccessNotification(
                 matchedRequestEntity.user,
                 matchedRequestEntity.type,

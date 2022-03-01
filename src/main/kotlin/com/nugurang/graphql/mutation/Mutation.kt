@@ -8,6 +8,9 @@ import com.nugurang.dto.*
 import com.nugurang.entity.*
 import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.MatchRequestMapper
+import com.nugurang.mapper.PositionMapper
+import com.nugurang.mapper.ProjectInvitationMapper
+import com.nugurang.mapper.TeamInvitationMapper
 import com.nugurang.service.ImageService
 import com.nugurang.service.NotificationService
 import com.nugurang.service.ProjectService
@@ -18,8 +21,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.OffsetDateTime
-import java.util.function.ToIntFunction
-import java.util.stream.Collectors
+import kotlin.math.max
 
 @Service
 class Mutation(
@@ -29,7 +31,6 @@ class Mutation(
     private val projectService: ProjectService,
     private val eventDao: EventDao,
     private val followingDao: FollowingDao,
-    private val imageDao: ImageDao,
     private val invitationStatusDao: InvitationStatusDao,
     private val matchRequestDao: MatchRequestDao,
     private val matchTypeDao: MatchTypeDao,
@@ -47,7 +48,10 @@ class Mutation(
     private val userReviewDao: UserReviewDao,
     private val xrefUserProjectDao: XrefUserProjectDao,
     private val xrefUserTeamDao: XrefUserTeamDao,
-    private val matchRequestMapper: MatchRequestMapper
+    private val matchRequestMapper: MatchRequestMapper,
+    private val positionMapper: PositionMapper,
+    private val projectInvitationMapper: ProjectInvitationMapper,
+    private val teamInvitationMapper: TeamInvitationMapper
 ) : GraphQLMutationResolver {
 
     fun createFollowing(userId: Long): Boolean {
@@ -88,20 +92,22 @@ class Mutation(
     }
 
     fun createPosition(positionInputDto: PositionInputDto): PositionDto {
-        return positionDao.save(
-            PositionEntity(
-                name = positionInputDto.name,
-                description = positionInputDto.description,
-                image = positionInputDto.image?.let { imageId -> imageService.getImage(imageId) }
+        return positionMapper.toDto(
+            positionDao.save(
+                PositionEntity(
+                    name = positionInputDto.name,
+                    description = positionInputDto.description,
+                    image = positionInputDto.image?.let { imageService.getImage(it) }
+                )
             )
         )
-        .toDto()
     }
 
     fun createProjectInvitations(projectInvitationInputDto: ProjectInvitationInputDto): List<ProjectInvitationDto> {
         val currentUserEntity = userService.getCurrentUser()
-        return projectInvitationInputDto.users
-            .map { userId -> userService.getUser(userId) }
+        return projectInvitationInputDto
+            .users
+            .map { userService.getUser(it) }
             .map { userEntity ->
                 val projectEntity = projectService.getProject(projectInvitationInputDto.project)
                 val projectInvitationEntity = projectInvitationDao.save(
@@ -114,7 +120,7 @@ class Mutation(
                     )
                 )
                 notificationService.createProjectInvitationNotification(userEntity, projectInvitationEntity)
-                projectInvitationEntity.toDto()
+                projectInvitationMapper.toDto(projectInvitationEntity)
             }
     }
 
@@ -143,7 +149,7 @@ class Mutation(
             )
 
             notificationService.createTeamInvitationNotification(userEntity, teamInvitationEntity)
-            teamInvitationEntity.toDto()
+            teamInvitationMapper.toDto(teamInvitationEntity)
         }
     }
 
@@ -174,8 +180,10 @@ class Mutation(
 
     fun updateProjectFinish(projectId: Long): Boolean {
         var projectEntity = projectService.getProject(projectId)
+
         if (projectEntity.finished)
             return false
+
         val now = OffsetDateTime.now()
         val userEvaluationEntity = userEvaluationDao.save(
             UserEvaluationEntity(
@@ -186,23 +194,21 @@ class Mutation(
         projectEntity.finished = true
         projectEntity.userEvaluation = userEvaluationEntity
         projectEntity = projectDao.save(projectEntity)
+
         for (taskEntity in taskDao.findAllByProjectId(projectId)) {
             val taskReviewEntities = taskReviewDao.findAllByTaskId(taskEntity.id!!)
             // log.info("task review entities size: " + taskReviewEntities.size());
-            var honorPerPosition = taskReviewEntities.stream()
-                .map { taskReviewEntity: TaskReviewEntity -> taskEntity.difficulty * taskReviewEntity.honor }
-                .collect(
-                    Collectors.summingInt(
-                        ToIntFunction { obj: Int -> obj })
-                )
-            if (taskReviewEntities.size > 0) honorPerPosition /= taskReviewEntities.size
+            var honorPerPosition = taskReviewEntities
+                .sumOf { taskEntity.difficulty * it.honor } / max(1, taskReviewEntities.size)
+
             val userEntities = userDao.findAllByTaskId(taskEntity.id!!)
             // log.info("user entities size: " + userEntities.size());
-            if (userEntities.size > 0) honorPerPosition /= userEntities.size
+            honorPerPosition /= max(1, userEntities.size)
+
             for (userEntity in userEntities) {
                 val positionEntities = positionDao.findAllByTaskId(taskEntity.id!!)
                 // log.info("position entities size: " + positionEntities.size());
-                if (positionEntities.size > 0) honorPerPosition /= positionEntities.size
+                honorPerPosition /= max(1, positionEntities.size)
                 // log.info("honor per position: " + honorPerPosition);
                 for (positionEntity in positionEntities) {
                     val userHonorEntity = userHonorDao.findByUserIdAndPositionId(userEntity.id!!, positionEntity.id!!)
@@ -268,6 +274,7 @@ class Mutation(
                 toUserId
             )
         }
+
         val userReviewEntities = userReviewDao.saveAll(
             userReviewInputDtos.flatMap { (toUser, honors) ->
                 honors.map { (position, honor) ->

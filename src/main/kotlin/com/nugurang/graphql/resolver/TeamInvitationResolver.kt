@@ -8,6 +8,8 @@ import com.nugurang.dto.UserDto
 import com.nugurang.entity.TeamInvitationEntity
 import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.InvitationStatusMapper
+import com.nugurang.mapper.TeamMapper
+import com.nugurang.mapper.UserMapper
 import graphql.kickstart.tools.GraphQLResolver
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -15,13 +17,15 @@ import org.springframework.stereotype.Service
 @Service
 class TeamInvitationResolver(
     private val teamInvitationDao: TeamInvitationDao,
-    private val invitationStatusMapper: InvitationStatusMapper
+    private val invitationStatusMapper: InvitationStatusMapper,
+    private val teamMapper: TeamMapper,
+    private val userMapper: UserMapper
 ) : GraphQLResolver<TeamInvitationDto> {
 
     fun team(teamInvitationDto: TeamInvitationDto): TeamDto {
         return teamInvitationDao.findByIdOrNull(teamInvitationDto.id)
         ?.team
-        ?.toDto()
+        ?.let(teamMapper::toDto)
         ?: throw NotFoundException(TeamInvitationEntity::class.java)
     }
 
@@ -35,14 +39,14 @@ class TeamInvitationResolver(
     fun fromUser(teamInvitationDto: TeamInvitationDto): UserDto {
         return teamInvitationDao.findByIdOrNull(teamInvitationDto.id)
         ?.fromUser
-        ?.toDto()
+        ?.let(userMapper::toDto)
         ?: throw NotFoundException(TeamInvitationEntity::class.java)
     }
 
     fun toUser(teamInvitationDto: TeamInvitationDto): UserDto {
         return teamInvitationDao.findByIdOrNull(teamInvitationDto.id)
         ?.toUser
-        ?.toDto()
+        ?.let(userMapper::toDto)
         ?: throw NotFoundException(TeamInvitationEntity::class.java)
     }
 }

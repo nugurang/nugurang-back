@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.UserReviewDto
 import javax.persistence.*
 
 @Entity
@@ -32,8 +31,4 @@ class UserReviewEntity(
     @JoinColumn(name = "user_evaluation", nullable = false)
     var userEvaluation: UserEvaluationEntity
 
-) : BaseEntity<UserReviewDto> {
-    override fun toDto(): UserReviewDto {
-        return UserReviewDto(id!!, honor)
-    }
-}
+)

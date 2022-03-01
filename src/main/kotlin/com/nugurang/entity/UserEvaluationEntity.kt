@@ -1,6 +1,5 @@
 package com.nugurang.entity
 
-import com.nugurang.dto.UserEvaluationDto
 import java.time.OffsetDateTime
 import javax.persistence.*
 
@@ -19,14 +18,9 @@ class UserEvaluationEntity(
 
     @OneToOne(mappedBy = "userEvaluation")
     var project: ProjectEntity? = null
-) : BaseEntity<UserEvaluationDto> {
-
+) {
     @PreRemove
     private fun preRemove() {
-        if (project != null) project!!.userEvaluation = null
-    }
-
-    override fun toDto(): UserEvaluationDto {
-        return UserEvaluationDto(id!!, createdAt!!, expiresAt!!)
+        project?.let { it.userEvaluation = null }
     }
 }

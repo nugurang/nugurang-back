@@ -33,5 +33,4 @@ class MatchRequestEntity(
     @ManyToOne
     @JoinColumn(name = "user", nullable = false)
     var user: UserEntity
-
 )
