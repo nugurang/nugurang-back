@@ -14,15 +14,15 @@ class UserQuery(
 ) : GraphQLQueryResolver {
 
     fun getCurrentUser(): UserDto {
-        return userMapper.toDto(userService.getCurrentUser())
+        return userService.getCurrentUser().let(userMapper::toDto)
     }
 
     fun getUser(id: Long): UserDto {
-        return userMapper.toDto(userService.getUser(id))
+        return userService.getUser(id).let(userMapper::toDto)
     }
 
     fun getUserByName(name: String): UserDto {
-        return userMapper.toDto(userService.getUser(name))
+        return userService.getUser(name).let(userMapper::toDto)
     }
 
     fun getUsers(page: Int, pageSize: Int): List<UserDto> {

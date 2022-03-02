@@ -12,6 +12,6 @@ class ArticleQuery(
     private val articleMapper: ArticleMapper
 ) : GraphQLQueryResolver {
     fun getArticle(id: Long): ArticleDto {
-        return articleMapper.toDto(articleService.getArticle(id))
+        return articleService.getArticle(id).let(articleMapper::toDto)
     }
 }

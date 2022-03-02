@@ -12,6 +12,6 @@ class NotificationQuery(
     private val notificationMapper: NotificationMapper
 ) : GraphQLQueryResolver {
     fun getNotification(id: Long): NotificationDto {
-        return notificationMapper.toDto(notificationService.getNotification(id))
+        return notificationService.getNotification(id).let(notificationMapper::toDto)
     }
 }

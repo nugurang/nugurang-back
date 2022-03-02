@@ -13,11 +13,11 @@ class ArticleMutation(
     private val articleMapper: ArticleMapper
 ) : GraphQLMutationResolver {
     fun createArticle(articleInputDto: ArticleInputDto, thread: Long, parent: Long?): ArticleDto {
-        return articleMapper.toDto(articleService.createArticle(articleInputDto, thread, parent))
+        return articleService.createArticle(articleInputDto, thread, parent).let(articleMapper::toDto)
     }
 
     fun updateArticle(articleInputDto: ArticleInputDto, id: Long): ArticleDto {
-        return articleMapper.toDto(articleService.updateArticle(articleInputDto, id))
+        return articleService.updateArticle(articleInputDto, id).let(articleMapper::toDto)
     }
 
     fun deleteArticle(id: Long): Long {

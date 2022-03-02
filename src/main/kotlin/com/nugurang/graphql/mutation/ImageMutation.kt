@@ -13,7 +13,7 @@ class ImageMutation(
 ) : GraphQLMutationResolver {
 
     fun createImage(address: String): ImageDto {
-        return imageMapper.toDto(imageService.createImage(address))
+        return imageService.createImage(address).let(imageMapper::toDto)
     }
 
     fun deleteImage(id: Long): Long {

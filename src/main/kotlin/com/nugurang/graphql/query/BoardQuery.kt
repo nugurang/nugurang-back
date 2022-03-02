@@ -13,11 +13,11 @@ class BoardQuery(
 ) : GraphQLQueryResolver {
 
     fun getBoard(id: Long): BoardDto {
-        return boardMapper.toDto(boardService.getBoard(id))
+        return boardService.getBoard(id).let(boardMapper::toDto)
     }
 
     fun getBoardByName(name: String): BoardDto {
-        return boardMapper.toDto(boardService.getBoard(name))
+        return boardService.getBoard(name).let(boardMapper::toDto)
 
     }
 

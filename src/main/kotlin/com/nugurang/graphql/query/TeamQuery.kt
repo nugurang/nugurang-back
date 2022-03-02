@@ -13,11 +13,11 @@ class TeamQuery(
     private val teamMapper: TeamMapper
 ) : GraphQLQueryResolver {
     fun getTeam(id: Long): TeamDto {
-        return teamMapper.toDto(teamService.getTeam(id))
+        return teamService.getTeam(id).let(teamMapper::toDto)
     }
 
     fun getTeamByName(name: String): TeamDto {
-        return teamMapper.toDto(teamService.getTeam(name))
+        return teamService.getTeam(name).let(teamMapper::toDto)
     }
 
     fun getTeamsByName(name: String, page: Int, pageSize: Int): List<TeamDto> {

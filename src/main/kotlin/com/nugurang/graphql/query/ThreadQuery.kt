@@ -12,7 +12,7 @@ class ThreadQuery(
     private val threadMapper: ThreadMapper
 ) : GraphQLQueryResolver {
     fun getThread(id: Long): ThreadDto {
-        return threadMapper.toDto(threadService.getThread(id))
+        return threadService.getThread(id).let(threadMapper::toDto)
     }
 
     fun getThreadsByBoards(boards: List<Long>, page: Int, pageSize: Int): List<ThreadDto> {

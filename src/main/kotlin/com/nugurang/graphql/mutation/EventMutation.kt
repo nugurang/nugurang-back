@@ -14,11 +14,11 @@ class EventMutation(
 ) : GraphQLMutationResolver {
 
     fun createEvent(eventInputDto: EventInputDto): EventDto {
-        return eventMapper.toDto(eventService.createEvent(eventInputDto))
+        return eventService.createEvent(eventInputDto).let(eventMapper::toDto)
     }
 
     fun updateEvent(eventInputDto: EventInputDto, eventId: Long): EventDto {
-        return eventMapper.toDto(eventService.updateEvent(eventInputDto, eventId))
+        return eventService.updateEvent(eventInputDto, eventId).let(eventMapper::toDto)
     }
 
     fun deleteEvent(eventId: Long): Long {

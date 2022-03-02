@@ -18,7 +18,7 @@ class BoardMutation(
     }
 
     fun updateBoard(boardInputDto: BoardInputDto, boardId: Long): BoardDto {
-        return boardMapper.toDto(boardService.updateBoard(boardInputDto, boardId))
+        return boardService.updateBoard(boardInputDto, boardId).let(boardMapper::toDto)
     }
 
     fun deleteBoard(boardId: Long): Long {

@@ -13,6 +13,6 @@ class EventQuery(
 ) : GraphQLQueryResolver {
 
     fun getEvent(id: Long): EventDto {
-        return eventMapper.toDto(eventService.getEvent(id))
+        return eventService.getEvent(id).let(eventMapper::toDto)
     }
 }

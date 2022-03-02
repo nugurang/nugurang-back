@@ -13,10 +13,10 @@ class ImageQuery(
 ) : GraphQLQueryResolver {
 
     fun getImage(id: Long): ImageDto {
-        return imageMapper.toDto(imageService.getImage(id))
+        return imageService.getImage(id).let(imageMapper::toDto)
     }
 
     fun getImageByAddress(address: String): ImageDto {
-        return imageMapper.toDto(imageService.getImage(address))
+        return imageService.getImage(address).let(imageMapper::toDto)
     }
 }

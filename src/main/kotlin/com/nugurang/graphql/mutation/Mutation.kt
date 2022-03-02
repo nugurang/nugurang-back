@@ -107,7 +107,7 @@ class Mutation(
         val currentUserEntity = userService.getCurrentUser()
         return projectInvitationInputDto
             .users
-            .map { userService.getUser(it) }
+            .map(userService::getUser)
             .map { userEntity ->
                 val projectEntity = projectService.getProject(projectInvitationInputDto.project)
                 val projectInvitationEntity = projectInvitationDao.save(

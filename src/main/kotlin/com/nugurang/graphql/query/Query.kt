@@ -3,6 +3,7 @@ package com.nugurang.graphql.query
 import com.nugurang.dao.*
 import com.nugurang.dto.*
 import com.nugurang.entity.MatchTypeEntity
+import com.nugurang.entity.ProjectInvitationEntity
 import com.nugurang.entity.TeamInvitationEntity
 import com.nugurang.entity.VoteTypeEntity
 import com.nugurang.exception.NotFoundException
@@ -85,8 +86,9 @@ class Query(
         ?: throw NotFoundException(MatchTypeEntity::class.java)
     }
 
-    fun getProjectInvitation(id: Long): ProjectInvitationDto? {
+    fun getProjectInvitation(id: Long): ProjectInvitationDto {
         return projectInvitationDao.findByIdOrNull(id)?.let(projectInvitationMapper::toDto)
+            ?: throw NotFoundException(ProjectInvitationEntity::class.java)
     }
 
     fun getTeamInvitation(id: Long): TeamInvitationDto {
