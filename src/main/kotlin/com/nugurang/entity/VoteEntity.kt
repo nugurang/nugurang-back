@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*
 
 @Entity
@@ -15,6 +17,7 @@ class VoteEntity(
 
     @ManyToOne
     @JoinColumn(name = "article", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var article: ArticleEntity,
 
     @ManyToOne
