@@ -362,7 +362,6 @@ type Query {
     getEvent(id: ID!): Event
     getImage(id: ID!): Image
     getImageByAddress(address: String!): Image
-    getMatchTypeByName(name: String!): MatchType
     getNotification(id: ID!): Notification
     getProject(id: ID!): Project
     getProjectInvitation(id: ID!): ProjectInvitation
@@ -380,7 +379,6 @@ type Query {
     getUserByName(name: String!): User
     getUsers(page: Int!, pageSize: Int!): [User]!
     getUsersByName(name: String!, page: Int!, pageSize: Int!): [User]!
-    getVoteTypeByName(name: String!): VoteType
     getWork(id: ID!): Work
 }
 

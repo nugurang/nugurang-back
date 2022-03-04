@@ -18,6 +18,11 @@ class VoteService(
     private val voteDao: VoteDao,
     private val voteTypeDao: VoteTypeDao
 ) {
+
+    fun getVoteTypes(): List<VoteTypeEntity> {
+        return voteTypeDao.findAll()
+    }
+
     fun getVote(userId: Long, articleId: Long, voteTypeName: String): VoteEntity {
         return voteDao.findByUserIdAndArticleIdAndVoteTypeName(
             userId,
