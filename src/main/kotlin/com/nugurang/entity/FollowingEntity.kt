@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -11,9 +13,11 @@ class FollowingEntity(
 
     @ManyToOne
     @JoinColumn(name = "from_user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var fromUser: UserEntity,
 
     @ManyToOne
     @JoinColumn(name = "to_user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var toUser: UserEntity
 )

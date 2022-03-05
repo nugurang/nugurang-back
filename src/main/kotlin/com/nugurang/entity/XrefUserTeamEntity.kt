@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -15,9 +17,11 @@ class XrefUserTeamEntity(
 
     @ManyToOne
     @JoinColumn(name = "team", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var team: TeamEntity,
 
     @ManyToOne
     @JoinColumn(name = "role", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var role: RoleEntity
 )

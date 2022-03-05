@@ -36,9 +36,10 @@ class ArticleEntity(
 
     @ManyToOne
     @JoinColumn(name = "user", nullable = false)
-    var user: UserEntity? = null,
+    var user: UserEntity,
 
     @ManyToOne
     @JoinColumn(name = "parent")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var parent: ArticleEntity? = null
 )

@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -14,9 +16,11 @@ class TaskReviewEntity(
 
     @ManyToOne
     @JoinColumn(name = "user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
     @ManyToOne
     @JoinColumn(name = "task", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var task: TaskEntity
 )

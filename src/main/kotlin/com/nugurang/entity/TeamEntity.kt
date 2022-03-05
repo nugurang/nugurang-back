@@ -17,5 +17,4 @@ class TeamEntity(
 
     @OneToMany(mappedBy = "team", cascade = [CascadeType.ALL])
     var xrefUsers: MutableList<XrefUserTeamEntity> = mutableListOf()
-
 )

@@ -13,6 +13,7 @@ class VoteEntity(
 
     @ManyToOne
     @JoinColumn(name = "user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
     @ManyToOne
@@ -22,6 +23,7 @@ class VoteEntity(
 
     @ManyToOne
     @JoinColumn(name = "vote_type", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var voteType: VoteTypeEntity
 
 )

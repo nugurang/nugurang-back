@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -23,6 +25,7 @@ class WorkEntity(
 
     @ManyToOne
     @JoinColumn(name = "project", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var project: ProjectEntity
 
 )

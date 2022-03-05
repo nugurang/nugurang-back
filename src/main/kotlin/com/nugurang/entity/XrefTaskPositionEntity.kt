@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -11,9 +13,11 @@ class XrefTaskPositionEntity(
 
     @ManyToOne
     @JoinColumn(name = "task", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var task: TaskEntity,
 
     @ManyToOne
     @JoinColumn(name = "position", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var position: PositionEntity
 )

@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -11,18 +13,22 @@ class TeamInvitationEntity(
 
     @ManyToOne
     @JoinColumn(name = "status", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var status: InvitationStatusEntity,
 
     @ManyToOne
     @JoinColumn(name = "team", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var team: TeamEntity,
 
     @ManyToOne
     @JoinColumn(name = "from_user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var fromUser: UserEntity,
 
     @ManyToOne
     @JoinColumn(name = "to_user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var toUser: UserEntity,
 
 )

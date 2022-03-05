@@ -15,6 +15,7 @@ class PositionEntity(
     @Column(nullable = true)
     var description: String? = null,
 
+    // TODO: ON DELETE SET NULL
     @ManyToOne
     @JoinColumn(name = "image", nullable = true)
     var image: ImageEntity? = null
