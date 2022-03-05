@@ -23,7 +23,7 @@ class WorkEntity(
     @Column(nullable = false)
     var opened: Boolean,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "project", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var project: ProjectEntity

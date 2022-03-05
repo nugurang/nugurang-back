@@ -29,12 +29,12 @@ class ArticleEntity(
     @Column(nullable = false)
     var modifiedAt: OffsetDateTime? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "thread", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var thread: ThreadEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user", nullable = false)
     var user: UserEntity,
 

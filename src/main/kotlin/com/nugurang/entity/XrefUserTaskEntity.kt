@@ -11,12 +11,12 @@ class XrefUserTaskEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "task", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var task: TaskEntity

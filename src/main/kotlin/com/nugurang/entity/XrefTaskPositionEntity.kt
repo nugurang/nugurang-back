@@ -11,12 +11,12 @@ class XrefTaskPositionEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "task", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var task: TaskEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "position", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var position: PositionEntity

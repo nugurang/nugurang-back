@@ -11,16 +11,16 @@ class XrefUserTeamEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user", nullable = false)
     var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "team", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var team: TeamEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "role", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var role: RoleEntity

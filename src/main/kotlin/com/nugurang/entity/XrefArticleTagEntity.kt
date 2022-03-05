@@ -11,12 +11,12 @@ class XrefArticleTagEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "article", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var article: ArticleEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "tag", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var tag: TagEntity

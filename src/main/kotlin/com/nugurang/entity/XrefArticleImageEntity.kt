@@ -11,12 +11,12 @@ class XrefArticleImageEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "article", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var article: ArticleEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "image", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var image: ImageEntity

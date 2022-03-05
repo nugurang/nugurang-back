@@ -14,7 +14,7 @@ class NotificationDataEntity(
     @Column(nullable = false)
     var value: String,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "notification", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var notification: NotificationEntity

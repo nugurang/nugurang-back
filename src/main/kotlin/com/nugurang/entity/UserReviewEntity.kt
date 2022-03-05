@@ -17,22 +17,22 @@ class UserReviewEntity(
     @Column(nullable = false)
     var honor: Int,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "position", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var position: PositionEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "from_user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var fromUser: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "to_user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var toUser: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user_evaluation", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var userEvaluation: UserEvaluationEntity

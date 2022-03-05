@@ -9,7 +9,7 @@ class AclEntryEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "acl_object_identity", nullable = false)
     var aclObjectIdentity: AclObjectIdentityEntity,
 

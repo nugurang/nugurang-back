@@ -11,17 +11,17 @@ class XrefUserBoardEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "board", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var board: BoardEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "role", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var role: RoleEntity

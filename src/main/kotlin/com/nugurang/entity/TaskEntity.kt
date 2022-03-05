@@ -23,12 +23,12 @@ class TaskEntity(
     @Column(nullable = false)
     var difficulty: Int,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "work", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var work: WorkEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "progress", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var progress: ProgressEntity

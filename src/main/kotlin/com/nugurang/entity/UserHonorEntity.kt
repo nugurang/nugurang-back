@@ -14,12 +14,12 @@ class UserHonorEntity(
     @Column(nullable = false)
     var honor: Int,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "position", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var position: PositionEntity

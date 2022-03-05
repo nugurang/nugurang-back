@@ -27,12 +27,12 @@ class ThreadEntity(
     @Column(nullable = false)
     var modifiedAt: OffsetDateTime? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "board", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var board: BoardEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,

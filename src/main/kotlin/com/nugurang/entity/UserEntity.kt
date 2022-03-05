@@ -23,8 +23,8 @@ class UserEntity(
 
     var biography: String? = null,
 
-    @OneToOne
-    @JoinColumn(name = "blog")
+    @OneToOne(optional = false)
+    @JoinColumn(name = "blog", nullable = false)
     var blog: BoardEntity,
 
     @ManyToOne

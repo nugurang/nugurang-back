@@ -11,17 +11,17 @@ class XrefUserProjectEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "project", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var project: ProjectEntity,
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "role", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var role: RoleEntity
