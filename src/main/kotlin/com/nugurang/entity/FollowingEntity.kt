@@ -11,12 +11,12 @@ class FollowingEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var fromUser: UserEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var toUser: UserEntity

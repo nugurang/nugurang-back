@@ -11,12 +11,12 @@ class XrefThreadTagEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var thread: ThreadEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var tag: TagEntity

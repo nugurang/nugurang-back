@@ -11,12 +11,12 @@ class XrefArticleTagEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var article: ArticleEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var tag: TagEntity

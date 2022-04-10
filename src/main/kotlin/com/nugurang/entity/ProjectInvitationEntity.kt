@@ -14,22 +14,22 @@ class ProjectInvitationEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var status: InvitationStatusEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var project: ProjectEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var fromUser: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var toUser: UserEntity

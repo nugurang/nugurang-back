@@ -11,12 +11,12 @@ class XrefEventTagEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var event: EventEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var tag: TagEntity

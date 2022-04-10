@@ -11,17 +11,17 @@ class VoteEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var article: ArticleEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vote_type", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var voteType: VoteTypeEntity

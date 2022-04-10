@@ -22,12 +22,12 @@ class NotificationEntity(
     @Column(nullable = false, updatable = false)
     var createdAt: OffsetDateTime? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification_type", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var notificationType: NotificationTypeEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity

@@ -27,22 +27,22 @@ class ThreadEntity(
     @Column(nullable = false)
     var modifiedAt: OffsetDateTime? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var board: BoardEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "xref_user_team")
     @OnDelete(action = OnDeleteAction.CASCADE)
     var xrefUserTeam: XrefUserTeamEntity? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event")
     var event: EventEntity? = null,
 

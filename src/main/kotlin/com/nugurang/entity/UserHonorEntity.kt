@@ -14,12 +14,12 @@ class UserHonorEntity(
     @Column(nullable = false)
     var honor: Int,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var position: PositionEntity

@@ -17,22 +17,22 @@ class UserReviewEntity(
     @Column(nullable = false)
     var honor: Int,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var position: PositionEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var fromUser: UserEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var toUser: UserEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_evaluation", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var userEvaluation: UserEvaluationEntity

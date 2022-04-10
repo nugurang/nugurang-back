@@ -23,12 +23,12 @@ class TaskEntity(
     @Column(nullable = false)
     var difficulty: Int,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "work", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var work: WorkEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "progress", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var progress: ProgressEntity

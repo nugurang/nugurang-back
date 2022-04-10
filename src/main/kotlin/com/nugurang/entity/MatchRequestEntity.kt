@@ -24,17 +24,17 @@ class MatchRequestEntity(
     @Column(nullable = true)
     var maxTeamSize: Int? = null,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var type: MatchTypeEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var event: EventEntity,
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity
