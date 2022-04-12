@@ -5,10 +5,6 @@ import javax.persistence.*
 @Entity
 @Table(name = "team")
 class TeamEntity(
-    @Id
-    @GeneratedValue
-    var id: Long? = null,
-
     @Column(nullable = false, unique = true)
     var name: String,
 
@@ -17,4 +13,4 @@ class TeamEntity(
 
     @OneToMany(mappedBy = "team", cascade = [CascadeType.ALL])
     var xrefUsers: MutableList<XrefUserTeamEntity> = mutableListOf()
-)
+) : GroupEntity()

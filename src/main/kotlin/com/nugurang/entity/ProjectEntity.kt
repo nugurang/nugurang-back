@@ -5,10 +5,6 @@ import javax.persistence.*
 @Entity
 @Table(name = "project", uniqueConstraints = [UniqueConstraint(columnNames = ["team", "name"])])
 class ProjectEntity(
-    @Id
-    @GeneratedValue
-    var id: Long? = null,
-
     @Column(nullable = false)
     var name: String,
 
@@ -26,5 +22,4 @@ class ProjectEntity(
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_evaluation", unique = true)
     var userEvaluation: UserEvaluationEntity? = null
-
-)
+) : GroupEntity()

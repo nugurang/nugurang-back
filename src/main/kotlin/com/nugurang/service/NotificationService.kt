@@ -42,26 +42,15 @@ class NotificationService(
         return notificationEntity
     }
 
-    fun createProjectInvitationNotification(
+    fun createInvitationNotification(
         userEntity: UserEntity,
-        projectInvitationEntity: ProjectInvitationEntity
+        invitationEntity: InvitationEntity
     ): NotificationEntity {
 
         return createNotification(
             userEntity,
-            NotificationTypeName.PROJECT_INVITATION,
-            listOf(projectInvitationEntity.id.toString())
-        )
-    }
-
-    fun createTeamInvitationNotification(
-        userEntity: UserEntity,
-        teamInvitationEntity: TeamInvitationEntity
-    ): NotificationEntity {
-        return createNotification(
-            userEntity,
-            NotificationTypeName.TEAM_INVITATION,
-            listOf(teamInvitationEntity.id.toString())
+            NotificationTypeName.INVITATION,
+            listOf(invitationEntity.id.toString())
         )
     }
 

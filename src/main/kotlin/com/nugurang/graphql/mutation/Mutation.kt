@@ -7,10 +7,9 @@ import com.nugurang.dao.*
 import com.nugurang.dto.*
 import com.nugurang.entity.*
 import com.nugurang.exception.NotFoundException
+import com.nugurang.mapper.InvitationMapper
 import com.nugurang.mapper.MatchRequestMapper
 import com.nugurang.mapper.PositionMapper
-import com.nugurang.mapper.ProjectInvitationMapper
-import com.nugurang.mapper.TeamInvitationMapper
 import com.nugurang.service.ImageService
 import com.nugurang.service.NotificationService
 import com.nugurang.service.ProjectService
@@ -31,27 +30,26 @@ class Mutation(
     private val projectService: ProjectService,
     private val eventDao: EventDao,
     private val followingDao: FollowingDao,
+    private val groupDao: GroupDao,
+    private val invitationDao: InvitationDao,
     private val invitationStatusDao: InvitationStatusDao,
     private val matchRequestDao: MatchRequestDao,
     private val matchTypeDao: MatchTypeDao,
     private val positionDao: PositionDao,
     private val projectDao: ProjectDao,
-    private val projectInvitationDao: ProjectInvitationDao,
     private val roleDao: RoleDao,
     private val taskDao: TaskDao,
     private val taskReviewDao: TaskReviewDao,
     private val teamDao: TeamDao,
-    private val teamInvitationDao: TeamInvitationDao,
     private val userDao: UserDao,
     private val userEvaluationDao: UserEvaluationDao,
     private val userHonorDao: UserHonorDao,
     private val userReviewDao: UserReviewDao,
     private val xrefUserProjectDao: XrefUserProjectDao,
     private val xrefUserTeamDao: XrefUserTeamDao,
+    private val invitationMapper: InvitationMapper,
     private val matchRequestMapper: MatchRequestMapper,
     private val positionMapper: PositionMapper,
-    private val projectInvitationMapper: ProjectInvitationMapper,
-    private val teamInvitationMapper: TeamInvitationMapper
 ) : GraphQLMutationResolver {
 
     fun createFollowing(userId: Long): Boolean {
@@ -66,6 +64,27 @@ class Mutation(
             )
         )
         return true
+    }
+
+    @Transactional
+    fun createInvitations(invitationInputDto: InvitationInputDto): List<InvitationDto> {
+        val currentUserEntity = userService.getCurrentUser()
+        return invitationInputDto.users
+            .map { userId -> userService.getUser(userId) }
+            .map { userEntity ->
+                val invitationEntity = invitationDao.save(
+                    InvitationEntity(
+                        status = invitationStatusDao.findByName(InvitationStatusName.UNACCEPTED.name)
+                            ?: throw NotFoundException(InvitationStatusEntity::class.java),
+                        group = groupDao.findByIdOrNull(invitationInputDto.group)
+                            ?: throw NotFoundException(GroupEntity::class.java),
+                        fromUser = currentUserEntity,
+                        toUser = userEntity
+                    )
+                )
+                notificationService.createInvitationNotification(userEntity, invitationEntity)
+                invitationMapper.toDto(invitationEntity)
+            }
     }
 
     fun createMatchRequest(matchRequestInputDto: MatchRequestInputDto): MatchRequestDto {
@@ -103,80 +122,52 @@ class Mutation(
         )
     }
 
-    fun createProjectInvitations(projectInvitationInputDto: ProjectInvitationInputDto): List<ProjectInvitationDto> {
-        val currentUserEntity = userService.getCurrentUser()
-        return projectInvitationInputDto
-            .users
-            .map(userService::getUser)
-            .map { userEntity ->
-                val projectEntity = projectService.getProject(projectInvitationInputDto.project)
-                val projectInvitationEntity = projectInvitationDao.save(
-                    ProjectInvitationEntity(
-                        status = invitationStatusDao.findByName(InvitationStatusName.UNACCEPTED.name)
-                        ?: throw NotFoundException(InvitationStatusEntity::class.java),
-                        project = projectEntity,
-                        fromUser = currentUserEntity,
-                        toUser = userEntity,
-                    )
-                )
-                notificationService.createProjectInvitationNotification(userEntity, projectInvitationEntity)
-                projectInvitationMapper.toDto(projectInvitationEntity)
-            }
-    }
-
     fun createTag(tagInputDto: TagInputDto): TagDto {
         // TODO: implement this method
         return object {} as TagDto
     }
 
     @Transactional
-    fun createTeamInvitations(teamInvitationInputDto: TeamInvitationInputDto): List<TeamInvitationDto> {
-        val currentUserEntity = userService.getCurrentUser()
-        return teamInvitationInputDto.users
-        .map { userId -> userService.getUser(userId) }
-        .map { userEntity ->
-            val teamEntity = teamDao.findByIdOrNull(teamInvitationInputDto.team)
-            ?: throw NotFoundException(TeamEntity::class.java)
-
-            val teamInvitationEntity = teamInvitationDao.save(
-                TeamInvitationEntity(
-                    status = invitationStatusDao.findByName(InvitationStatusName.UNACCEPTED.name)
-                        ?: throw NotFoundException(InvitationStatusEntity::class.java),
-                    team = teamEntity,
-                    fromUser = currentUserEntity,
-                    toUser = userEntity
-                )
-            )
-
-            notificationService.createTeamInvitationNotification(userEntity, teamInvitationEntity)
-            teamInvitationMapper.toDto(teamInvitationEntity)
-        }
-    }
-
-    @Transactional
-    fun updateProjectInvitationAccepted(projectInvitationId: Long): Boolean {
-        val projectInvitationEntity = projectInvitationDao.findByIdOrNull(projectInvitationId)
-        ?: throw NotFoundException(ProjectInvitationEntity::class.java)
-        projectInvitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.ACCEPTED.name)
-        ?: throw NotFoundException(InvitationStatusEntity::class.java)
-        projectInvitationDao.save(projectInvitationEntity)
-        xrefUserProjectDao.save(
-            XrefUserProjectEntity(
-                user = projectInvitationEntity.toUser,
-                project = projectInvitationEntity.project,
-                role = roleDao.findByName(RoleName.MEMBER.name) ?: throw NotFoundException(RoleEntity::class.java)
-            )
-        )
-        return true
-    }
-
-    fun updateProjectInvitationDenied(projectInvitation: Long): Boolean {
-        val projectInvitationEntity = projectInvitationDao.findById(projectInvitation).get()
-        projectInvitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.DENIED.name)
+    fun updateInvitationAccepted(invitationId: Long): Boolean {
+        val invitationEntity = invitationDao.findByIdOrNull(invitationId)
+            ?: throw NotFoundException(InvitationEntity::class.java)
+        invitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.ACCEPTED.name)
             ?: throw NotFoundException(InvitationStatusEntity::class.java)
-        projectInvitationDao.save(projectInvitationEntity)
+        invitationDao.save(invitationEntity)
+        when (invitationEntity.group) {
+            is ProjectEntity -> {
+                xrefUserProjectDao.save(
+                    XrefUserProjectEntity(
+                        user = invitationEntity.toUser,
+                        project = invitationEntity.group as ProjectEntity,
+                        role = roleDao.findByName(RoleName.MEMBER.name) ?: throw NotFoundException(RoleEntity::class.java)
+                    )
+                )
+            }
+            is TeamEntity -> {
+                xrefUserTeamDao.save (
+                    XrefUserTeamEntity(
+                        user = invitationEntity.toUser,
+                        team = invitationEntity.group as TeamEntity,
+                        role = roleDao.findByName(RoleName.MEMBER.name) ?: throw NotFoundException(RoleEntity::class.java)
+                    )
+                )
+            }
+            else -> {
+                throw RuntimeException("Unknown Group Type")
+            }
+        }
         return true
     }
+
+    fun updateInvitationDenied(invitationId: Long): Boolean {
+        val invitationEntity = invitationDao.findByIdOrNull(invitationId) ?: throw NotFoundException(InvitationEntity::class.java)
+        invitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.DENIED.name)
+            ?: throw NotFoundException(InvitationStatusEntity::class.java)
+        invitationDao.save(invitationEntity)
+        return true
+    }
+
 
     fun updateProjectFinish(projectId: Long): Boolean {
         var projectEntity = projectService.getProject(projectId)
@@ -233,31 +224,6 @@ class Mutation(
                 user = userEntity
             )
         )
-        return true
-    }
-
-    fun updateTeamInvitationAccepted(teamInvitation: Long): Boolean {
-        val teamInvitationEntity = teamInvitationDao.findByIdOrNull(teamInvitation)
-            ?: throw NotFoundException(TeamInvitationEntity::class.java)
-        teamInvitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.ACCEPTED.name)
-            ?: throw NotFoundException(InvitationStatusEntity::class.java)
-        teamInvitationDao.save(teamInvitationEntity)
-        xrefUserTeamDao.save(
-            XrefUserTeamEntity(
-                user = teamInvitationEntity.toUser,
-                team = teamInvitationEntity.team,
-                role = roleDao.findByName(RoleName.MEMBER.name) ?: throw NotFoundException(RoleEntity::class.java)
-            )
-        )
-        return true
-    }
-
-    fun updateTeamInvitationDenied(teamInvitation: Long): Boolean {
-        val teamInvitationEntity = teamInvitationDao.findByIdOrNull(teamInvitation)
-            ?: throw NotFoundException(TeamInvitationEntity::class.java)
-        teamInvitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.DENIED.name)
-            ?: throw NotFoundException(InvitationStatusEntity::class.java)
-        teamInvitationDao.save(teamInvitationEntity)
         return true
     }
 

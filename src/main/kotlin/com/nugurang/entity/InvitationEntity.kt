@@ -5,8 +5,13 @@ import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
-@Table(name = "team_invitation", uniqueConstraints = [UniqueConstraint(columnNames = ["team", "from_user", "to_user"])])
-class TeamInvitationEntity(
+@Table(
+    name = "invitation",
+    uniqueConstraints = [
+        UniqueConstraint(columnNames = ["from_user", "to_user", "group"])
+    ]
+)
+class InvitationEntity(
     @Id
     @GeneratedValue
     var id: Long? = null,
@@ -15,11 +20,6 @@ class TeamInvitationEntity(
     @JoinColumn(name = "status", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     var status: InvitationStatusEntity,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    var team: TeamEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user", nullable = false)
@@ -31,4 +31,8 @@ class TeamInvitationEntity(
     @OnDelete(action = OnDeleteAction.CASCADE)
     var toUser: UserEntity,
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "group", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    var group: GroupEntity,
 )
