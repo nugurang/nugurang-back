@@ -1,7 +1,5 @@
 package com.nugurang.graphql.mutation
 
-import com.nugurang.constant.InvitationStatusName
-import com.nugurang.constant.RoleName
 import com.nugurang.constant.UserEvaluationConstant
 import com.nugurang.dao.*
 import com.nugurang.dto.*
@@ -10,10 +8,7 @@ import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.InvitationMapper
 import com.nugurang.mapper.MatchRequestMapper
 import com.nugurang.mapper.PositionMapper
-import com.nugurang.service.ImageService
-import com.nugurang.service.NotificationService
-import com.nugurang.service.ProjectService
-import com.nugurang.service.UserService
+import com.nugurang.service.*
 import graphql.kickstart.tools.GraphQLMutationResolver
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
@@ -25,9 +20,10 @@ import kotlin.math.max
 @Service
 class Mutation(
     private val imageService: ImageService,
+    private val invitationService: InvitationService,
     private val notificationService: NotificationService,
-    private val userService: UserService,
     private val projectService: ProjectService,
+    private val userService: UserService,
     private val eventDao: EventDao,
     private val followingDao: FollowingDao,
     private val groupDao: GroupDao,
@@ -37,16 +33,12 @@ class Mutation(
     private val matchTypeDao: MatchTypeDao,
     private val positionDao: PositionDao,
     private val projectDao: ProjectDao,
-    private val roleDao: RoleDao,
     private val taskDao: TaskDao,
     private val taskReviewDao: TaskReviewDao,
-    private val teamDao: TeamDao,
     private val userDao: UserDao,
     private val userEvaluationDao: UserEvaluationDao,
     private val userHonorDao: UserHonorDao,
     private val userReviewDao: UserReviewDao,
-    private val xrefUserProjectDao: XrefUserProjectDao,
-    private val xrefUserTeamDao: XrefUserTeamDao,
     private val invitationMapper: InvitationMapper,
     private val matchRequestMapper: MatchRequestMapper,
     private val positionMapper: PositionMapper,
@@ -66,25 +58,8 @@ class Mutation(
         return true
     }
 
-    @Transactional
     fun createInvitations(invitationInputDto: InvitationInputDto): List<InvitationDto> {
-        val currentUserEntity = userService.getCurrentUser()
-        return invitationInputDto.users
-            .map { userId -> userService.getUser(userId) }
-            .map { userEntity ->
-                val invitationEntity = invitationDao.save(
-                    InvitationEntity(
-                        status = invitationStatusDao.findByName(InvitationStatusName.UNACCEPTED.name)
-                            ?: throw NotFoundException(InvitationStatusEntity::class.java),
-                        group = groupDao.findByIdOrNull(invitationInputDto.group)
-                            ?: throw NotFoundException(GroupEntity::class.java),
-                        fromUser = currentUserEntity,
-                        toUser = userEntity
-                    )
-                )
-                notificationService.createInvitationNotification(userEntity, invitationEntity)
-                invitationMapper.toDto(invitationEntity)
-            }
+        return invitationService.createInvitations(invitationInputDto).map(invitationMapper::toDto)
     }
 
     fun createMatchRequest(matchRequestInputDto: MatchRequestInputDto): MatchRequestDto {
@@ -127,47 +102,15 @@ class Mutation(
         return object {} as TagDto
     }
 
-    @Transactional
     fun updateInvitationAccepted(invitationId: Long): Boolean {
-        val invitationEntity = invitationDao.findByIdOrNull(invitationId)
-            ?: throw NotFoundException(InvitationEntity::class.java)
-        invitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.ACCEPTED.name)
-            ?: throw NotFoundException(InvitationStatusEntity::class.java)
-        invitationDao.save(invitationEntity)
-        when (invitationEntity.group) {
-            is ProjectEntity -> {
-                xrefUserProjectDao.save(
-                    XrefUserProjectEntity(
-                        user = invitationEntity.toUser,
-                        project = invitationEntity.group as ProjectEntity,
-                        role = roleDao.findByName(RoleName.MEMBER.name) ?: throw NotFoundException(RoleEntity::class.java)
-                    )
-                )
-            }
-            is TeamEntity -> {
-                xrefUserTeamDao.save (
-                    XrefUserTeamEntity(
-                        user = invitationEntity.toUser,
-                        team = invitationEntity.group as TeamEntity,
-                        role = roleDao.findByName(RoleName.MEMBER.name) ?: throw NotFoundException(RoleEntity::class.java)
-                    )
-                )
-            }
-            else -> {
-                throw RuntimeException("Unknown Group Type")
-            }
-        }
+        invitationService.updateInvitationAccepted(invitationId)
         return true
     }
 
     fun updateInvitationDenied(invitationId: Long): Boolean {
-        val invitationEntity = invitationDao.findByIdOrNull(invitationId) ?: throw NotFoundException(InvitationEntity::class.java)
-        invitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.DENIED.name)
-            ?: throw NotFoundException(InvitationStatusEntity::class.java)
-        invitationDao.save(invitationEntity)
+        invitationService.updateInvitationDenied(invitationId)
         return true
     }
-
 
     fun updateProjectFinish(projectId: Long): Boolean {
         var projectEntity = projectService.getProject(projectId)
