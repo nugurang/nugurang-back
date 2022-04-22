@@ -6,21 +6,20 @@ import javax.persistence.*
 
 @Entity
 @Table(
-    name = "user_review",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["position", "from_user", "to_user", "user_evaluation"])]
+    name = "invitation",
+    uniqueConstraints = [
+        UniqueConstraint(columnNames = ["from_user", "to_user", "group"])
+    ]
 )
-class UserReviewEntity(
+class InvitationEntity(
     @Id
     @GeneratedValue
     var id: Long? = null,
 
-    @Column(nullable = false)
-    var honor: Int,
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "position", nullable = false)
+    @JoinColumn(name = "status", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    var position: PositionEntity,
+    var status: InvitationStatusEntity,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user", nullable = false)
@@ -32,9 +31,8 @@ class UserReviewEntity(
     @OnDelete(action = OnDeleteAction.CASCADE)
     var toUser: UserEntity,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_evaluation", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "group", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    var userEvaluation: UserEvaluationEntity
-
+    var group: GroupEntity,
 )

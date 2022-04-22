@@ -2,8 +2,7 @@ package com.nugurang.graphql.query
 
 import com.nugurang.dao.*
 import com.nugurang.dto.*
-import com.nugurang.entity.ProjectInvitationEntity
-import com.nugurang.entity.TeamInvitationEntity
+import com.nugurang.entity.InvitationEntity
 import com.nugurang.exception.NotFoundException
 import com.nugurang.mapper.*
 import com.nugurang.service.MatchService
@@ -22,16 +21,14 @@ class Query(
     private val notificationTypeDao: NotificationTypeDao,
     private val positionDao: PositionDao,
     private val progressDao: ProgressDao,
-    private val projectInvitationDao: ProjectInvitationDao,
-    private val teamInvitationDao: TeamInvitationDao,
+    private val invitationDao: InvitationDao,
+    private val invitationMapper: InvitationMapper,
     private val invitationStatusMapper: InvitationStatusMapper,
     private val matchRequestMapper: MatchRequestMapper,
     private val matchTypeMapper: MatchTypeMapper,
     private val notificationTypeMapper: NotificationTypeMapper,
     private val positionMapper: PositionMapper,
     private val progressMapper: ProgressMapper,
-    private val projectInvitationMapper: ProjectInvitationMapper,
-    private val teamInvitationMapper: TeamInvitationMapper,
     private val voteTypeMapper: VoteTypeMapper
 ) : GraphQLQueryResolver {
 
@@ -76,13 +73,8 @@ class Query(
         return voteService.getVoteTypes().map(voteTypeMapper::toDto)
     }
 
-    fun getProjectInvitation(id: Long): ProjectInvitationDto {
-        return projectInvitationDao.findByIdOrNull(id)?.let(projectInvitationMapper::toDto)
-        ?: throw NotFoundException(ProjectInvitationEntity::class.java)
-    }
-
-    fun getTeamInvitation(id: Long): TeamInvitationDto {
-        return teamInvitationDao.findByIdOrNull(id)?.let(teamInvitationMapper::toDto)
-        ?: throw NotFoundException(TeamInvitationEntity::class.java)
+    fun getInvitation(id: Long): InvitationDto {
+        return invitationDao.findByIdOrNull(id)?.let(invitationMapper::toDto)
+        ?: throw NotFoundException(InvitationEntity::class.java)
     }
 }

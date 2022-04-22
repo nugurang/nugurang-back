@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -27,15 +29,17 @@ class ArticleEntity(
     @Column(nullable = false)
     var modifiedAt: OffsetDateTime? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var thread: ThreadEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
-    var user: UserEntity? = null,
+    var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var parent: ArticleEntity? = null
 )

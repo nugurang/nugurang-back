@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -21,12 +23,13 @@ class TaskEntity(
     @Column(nullable = false)
     var difficulty: Int,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "work", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var work: WorkEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "progress", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var progress: ProgressEntity
-
 )

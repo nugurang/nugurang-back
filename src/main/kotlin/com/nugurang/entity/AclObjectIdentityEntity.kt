@@ -12,18 +12,18 @@ class AclObjectIdentityEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "object_id_class", nullable = false)
     var objectIdClass: AclClassEntity,
 
     @Column(name = "object_id_identity", nullable = false)
     var objectIdIdentity: Long,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_object")
     var parentObject: AclObjectIdentityEntity? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_sid")
     var ownerSid: AclSidEntity? = null,
 

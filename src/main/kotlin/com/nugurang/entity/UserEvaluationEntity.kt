@@ -16,7 +16,7 @@ class UserEvaluationEntity(
     @Column(nullable = false)
     var expiresAt: OffsetDateTime? = null,
 
-    @OneToOne(mappedBy = "userEvaluation")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "userEvaluation")
     var project: ProjectEntity? = null
 ) {
     @PreRemove

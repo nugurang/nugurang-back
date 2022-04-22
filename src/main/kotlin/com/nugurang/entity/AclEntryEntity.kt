@@ -9,14 +9,14 @@ class AclEntryEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acl_object_identity", nullable = false)
     var aclObjectIdentity: AclObjectIdentityEntity,
 
     @Column(name = "ace_order", nullable = false)
     var aceOrder: Int,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sid", nullable = false)
     var sid: AclSidEntity,
 

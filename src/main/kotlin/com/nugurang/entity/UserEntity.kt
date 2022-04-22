@@ -23,11 +23,11 @@ class UserEntity(
 
     var biography: String? = null,
 
-    @OneToOne
-    @JoinColumn(name = "blog")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blog", nullable = false)
     var blog: BoardEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image")
     var image: ImageEntity? = null
 )

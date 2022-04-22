@@ -1,5 +1,5 @@
 package com.nugurang.dto;
 
-data class ProjectInvitationDto(
+data class InvitationDto(
     val id: Long
 )
