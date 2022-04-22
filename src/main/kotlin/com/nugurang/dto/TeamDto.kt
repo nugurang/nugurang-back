@@ -1,6 +1,6 @@
 package com.nugurang.dto;
 
 data class TeamDto(
-    val id: Long,
+    override val id: Long,
     val name: String
-)
+) : GroupDto

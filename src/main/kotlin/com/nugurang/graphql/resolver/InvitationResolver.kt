@@ -18,11 +18,11 @@ import org.springframework.stereotype.Service
 
 @Service
 class InvitationResolver(
-    private val groupMapper: GroupMapper,
     private val invitationDao: InvitationDao,
     private val invitationStatusMapper: InvitationStatusMapper,
-    private val userMapper: UserMapper
-) : GraphQLResolver<InvitationDto> {
+    private val userMapper: UserMapper,
+    private val groupMapper: GroupMapper
+    ) : GraphQLResolver<InvitationDto> {
 
     fun group(invitationDto: InvitationDto): GroupDto {
         return invitationDao.findByIdOrNull(invitationDto.id)

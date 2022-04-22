@@ -156,7 +156,7 @@ type MatchType {
     name: String!
 }
 
-type Group {
+interface Group {
     id: ID!
 }
 
@@ -211,7 +211,7 @@ type Progress {
     name: String!
 }
 
-type Project {
+type Project implements Group {
     id: ID!
     name: String!
     finished: Boolean!
@@ -242,7 +242,7 @@ type Task {
     users: [User]!
 }
 
-type Team {
+type Team implements Group {
     id: ID!
     name: String!
     projects: [Project]!
