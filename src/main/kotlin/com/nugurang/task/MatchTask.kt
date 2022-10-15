@@ -16,7 +16,6 @@ import net.time4j.range.IntervalTree
 import net.time4j.range.MomentInterval
 import net.time4j.range.ValueInterval
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -33,7 +32,7 @@ class MatchTask(
     private val teamDao: TeamDao,
     private val xrefUserTeamDao: XrefUserTeamDao
 ) {
-    @Scheduled(fixedDelay = 10000)
+    //@Scheduled(fixedDelay = 10000)
     @Transactional
     private fun matchRequests() {
 
