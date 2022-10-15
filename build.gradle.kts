@@ -9,9 +9,10 @@ version = "0.0.1-SNAPSHOT"
 plugins {
     java
     `java-library`
+    id("io.freefair.aspectj.post-compile-weaving") version "6.5.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.springframework.boot") version "2.6.2"
-    val kotlinVersion = "1.6.10"
+    val kotlinVersion = "1.7.20"
     kotlin("jvm") version kotlinVersion
     kotlin("kapt") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -69,6 +70,8 @@ dependencies {
         "net.time4j:time4j-sqlxml:5.8",
         "net.time4j:time4j-tzdata:5.0-2020a",
         "net.sf.ehcache:ehcache-core:2.6.11",
+        "org.aspectj:aspectjweaver:1.9.9.1",
+        "org.aspectj:aspectjrt:1.9.9.1",
         "org.ehcache:ehcache",
         "org.jetbrains.kotlin:kotlin-reflect",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
@@ -80,10 +83,10 @@ dependencies {
         "org.springframework.boot:spring-boot-starter-data-jpa",
         "org.springframework.boot:spring-boot-starter-oauth2-client",
         "org.springframework.boot:spring-boot-starter-security",
+        "org.springframework.boot:spring-boot-starter-test",
         "org.springframework.boot:spring-boot-starter-validation",
         "org.springframework.boot:spring-boot-starter-web",
-        "org.springframework.security:spring-security-acl",
-        "org.springframework.boot:spring-boot-starter-test"
+        "org.springframework.security:spring-security-acl"
     ).map(::implementation)
 
     arrayOf(
