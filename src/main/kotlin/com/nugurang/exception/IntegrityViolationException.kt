@@ -1,6 +1,6 @@
 package com.nugurang.exception
 
-class DataIntegrityViolationException : RuntimeException {
+class IntegrityViolationException : RuntimeException {
     val className: String
 
     constructor(`class`: Class<*>) : super(`class`.canonicalName) {

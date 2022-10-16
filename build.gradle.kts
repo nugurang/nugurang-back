@@ -42,6 +42,8 @@ configurations {
     }
 }
 
+val runtimeAgent by configurations.creating
+
 repositories {
     mavenCentral()
 }
@@ -70,8 +72,9 @@ dependencies {
         "net.time4j:time4j-sqlxml:5.8",
         "net.time4j:time4j-tzdata:5.0-2020a",
         "net.sf.ehcache:ehcache-core:2.6.11",
-        "org.aspectj:aspectjweaver:1.9.9.1",
-        "org.aspectj:aspectjrt:1.9.9.1",
+//        "org.aspectj:aspectjweaver:1.9.9.1",
+//        "org.aspectj:aspectjrt:1.9.9.1",
+        "org.aspectj:aspectjrt",
         "org.ehcache:ehcache",
         "org.jetbrains.kotlin:kotlin-reflect",
         "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
@@ -88,6 +91,9 @@ dependencies {
         "org.springframework.boot:spring-boot-starter-web",
         "org.springframework.security:spring-security-acl"
     ).map(::implementation)
+
+    runtimeAgent("org.springframework:spring-instrument")
+    runtimeAgent("org.aspectj:aspectjweaver")
 
     arrayOf(
         "org.springframework.boot:spring-boot-devtools"
@@ -118,10 +124,6 @@ dependencies {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
@@ -131,4 +133,17 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<JavaCompile> {
     options.compilerArgs.addAll(arrayOf("-Xlint:deprecation", "-Xlint:unchecked"))
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    runtimeAgent.forEach {
+        jvmArgs("-javaagent:${it.absolutePath}")
+    }
+}
+
+tasks.withType<org.springframework.boot.gradle.tasks.run.BootRun> {
+    runtimeAgent.forEach {
+        jvmArgs("-javaagent:${it.absolutePath}")
+    }
 }

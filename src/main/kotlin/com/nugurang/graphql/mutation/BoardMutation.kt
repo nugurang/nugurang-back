@@ -13,13 +13,12 @@ class BoardMutation(
     private val boardMapper: BoardMapper
 ) : GraphQLMutationResolver {
 
-    fun createBoard(boardInputDto: BoardInputDto): BoardDto {
-        return boardMapper.toDto(boardService.createBoard(boardInputDto))
-    }
+    fun createBoard(boardInputDto: BoardInputDto): BoardDto = boardMapper
+        .toDto(boardService.createBoard(boardInputDto))
 
-    fun updateBoard(boardInputDto: BoardInputDto, boardId: Long): BoardDto {
-        return boardService.updateBoard(boardInputDto, boardId).let(boardMapper::toDto)
-    }
+    fun updateBoard(boardInputDto: BoardInputDto, boardId: Long): BoardDto = boardService
+        .updateBoard(boardInputDto, boardId)
+        .let(boardMapper::toDto)
 
     fun deleteBoard(boardId: Long): Long {
         boardService.deleteBoard(boardId)

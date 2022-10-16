@@ -7,9 +7,11 @@ import com.nugurang.dto.UserInputDto
 import com.nugurang.entity.BoardEntity
 import com.nugurang.entity.ImageEntity
 import com.nugurang.entity.UserEntity
+import com.nugurang.exception.IntegrityViolationException
 import com.nugurang.exception.NotFoundException
 import com.nugurang.graphql.mutation.Mutation
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -26,8 +28,8 @@ class UserService(
         private val log = LoggerFactory.getLogger(Mutation::class.java)
     }
     fun createUser(userInputDto: UserInputDto): UserEntity {
-        try {
-            return userDao.save(
+        return try {
+            userDao.save(
                 UserEntity(
                     oauth2Provider = oauth2Service.getProvider(),
                     oauth2Id = oauth2Service.getId(),
@@ -44,10 +46,8 @@ class UserService(
                     )
                 )
             )
-        } catch (e: org.springframework.dao.DataIntegrityViolationException) {
-            // https://www.baeldung.com/spring-dataIntegrityviolationexception
-            log.info(e.cause!!::class.simpleName) // best but nullable
-            throw com.nugurang.exception.DataIntegrityViolationException(`class` = UserEntity::class.java)
+        } catch (e: DataIntegrityViolationException) {
+            throw IntegrityViolationException(UserEntity::class.java)
         }
     }
 
