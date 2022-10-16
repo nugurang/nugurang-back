@@ -10,7 +10,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.MutableAclService
 import org.springframework.stereotype.Service
-import javax.transaction.Transactional
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class BoardService(

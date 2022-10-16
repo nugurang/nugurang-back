@@ -47,7 +47,7 @@ class UserService(
         } catch (e: org.springframework.dao.DataIntegrityViolationException) {
             // https://www.baeldung.com/spring-dataIntegrityviolationexception
             log.info(e.cause!!::class.simpleName) // best but nullable
-            throw com.nugurang.exception.DataIntegrityViolationException(`class` = UserEntity::class.java)
+            throw com.nugurang.exception.IntegrityViolationException(`class` = UserEntity::class.java)
         }
     }
 
