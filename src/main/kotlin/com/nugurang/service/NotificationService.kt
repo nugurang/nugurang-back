@@ -87,6 +87,6 @@ class NotificationService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(NotificationService::class.java)
+        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }

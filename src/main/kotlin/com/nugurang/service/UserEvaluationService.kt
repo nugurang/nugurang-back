@@ -56,6 +56,6 @@ class UserEvaluationService(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(UserEvaluationService::class.java)
+        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }

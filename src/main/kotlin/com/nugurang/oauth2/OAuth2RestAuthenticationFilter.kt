@@ -107,7 +107,7 @@ class OAuth2RestAuthenticationFilter(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(OAuth2RestAuthenticationFilter::class.java)
+        private val log = LoggerFactory.getLogger(this::class.java)
         private const val DEFAULT_FILTER_PROCESSES_URL = "/login"
         private const val CLIENT_REGISTRATION_NOT_FOUND_ERROR_CODE = "client_registration_not_found"
     }

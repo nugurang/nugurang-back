@@ -133,6 +133,6 @@ class MatchTask(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(MatchTask::class.java)
+        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }
