@@ -101,8 +101,7 @@ class ThreadService(
     }
 
     fun updateThread(threadInputDto: ThreadInputDto, id: Long): ThreadEntity {
-        // TODO: Implement this method
-        return null as ThreadEntity
+        throw Exception("Not yet implemented")
     }
 
     fun deleteThread(id: Long) {
