@@ -75,6 +75,7 @@ dependencies {
         "org.mapstruct:mapstruct:1.5.0.RC1",
         "org.reflections:reflections:0.10.+",
         "org.springframework.boot:spring-boot-starter-actuator",
+        "org.springframework.boot:spring-boot-starter-aop",
         "org.springframework.boot:spring-boot-starter-batch",
         "org.springframework.boot:spring-boot-starter-cache",
         "org.springframework.boot:spring-boot-starter-data-jpa",
