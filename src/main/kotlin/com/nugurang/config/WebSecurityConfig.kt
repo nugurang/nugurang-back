@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.web.authentication.logout.LogoutFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -55,6 +56,10 @@ class WebSecurityConfig(
             .accessDeniedHandler(oauth2RestAccessDeniedHandler)
             .and()
             .oauth2Login()
+            /*
+            .userInfoEndpoint()
+            .userService(DefaultOAuth2UserService())
+            */
             .and()
             .logout()
             .permitAll()
