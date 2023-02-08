@@ -61,10 +61,4 @@ class ThreadResolver(
     fun commentCount(threadDto: ThreadDto): Long {
         return articleDao.countByThreadId(threadDto.id) - 1
     }
-
-    fun test(t: Test?) {
-        val x = t?.x
-        println(x!!)
-    }
 }
-class Test(val x: Int)

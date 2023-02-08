@@ -59,5 +59,6 @@ class BoardService(
         return boardDao.save(boardEntity)
     }
 
+    @DaoOp
     fun deleteBoard(id: Long) = boardDao.deleteById(id)
 }
