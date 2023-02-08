@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.constant.InvitationStatusName
 import com.nugurang.constant.RoleName
 import com.nugurang.dao.*
@@ -8,7 +9,6 @@ import com.nugurang.entity.*
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class InvitationService(
@@ -21,7 +21,7 @@ class InvitationService(
     val xrefUserProjectDao: XrefUserProjectDao,
     val xrefUserTeamDao: XrefUserTeamDao
 ) {
-    @Transactional
+    @DaoOp
     fun createInvitations(invitationInputDto: InvitationInputDto): List<InvitationEntity> {
         val currentUserEntity = userService.getCurrentUser()
         return invitationInputDto.users
@@ -42,7 +42,7 @@ class InvitationService(
         }
     }
 
-    @Transactional
+    @DaoOp
     fun updateInvitationAccepted(invitationId: Long) {
         val invitationEntity = invitationDao.findByIdOrNull(invitationId)
             ?: throw NotFoundException(InvitationEntity::class.java)
@@ -74,6 +74,7 @@ class InvitationService(
         }
     }
 
+    @DaoOp
     fun updateInvitationDenied(invitationId: Long) {
         val invitationEntity = invitationDao.findByIdOrNull(invitationId) ?: throw NotFoundException(InvitationEntity::class.java)
         invitationEntity.status = invitationStatusDao.findByName(InvitationStatusName.DENIED.name)

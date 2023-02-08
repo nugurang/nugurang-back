@@ -1,12 +1,12 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.dao.*
 import com.nugurang.entity.ProjectEntity
 import com.nugurang.entity.UserHonorEntity
 import com.nugurang.exception.NotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.time.OffsetDateTime
 
 @Component
@@ -18,7 +18,7 @@ class UserEvaluationService(
     private val userReviewDao: UserReviewDao
 ) {
 
-    @Transactional
+    @DaoOp
     fun evaluateUsers() {
         log.info("user evaluation task")
         val userEvaluationEntities = userEvaluationDao.findAllByExpiresAtLessThanEqual(OffsetDateTime.now())

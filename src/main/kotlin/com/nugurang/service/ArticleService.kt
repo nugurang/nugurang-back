@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.dao.ArticleDao
 import com.nugurang.dao.ImageDao
 import com.nugurang.dao.ThreadDao
@@ -12,7 +13,6 @@ import com.nugurang.entity.XrefArticleImageEntity
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ArticleService(
@@ -22,7 +22,7 @@ class ArticleService(
     private val threadDao: ThreadDao,
     private val xrefArticleImageDao: XrefArticleImageDao
 ) {
-    @Transactional
+    @DaoOp
     fun createArticle(articleInputDto: ArticleInputDto, threadId: Long, parentId: Long? = null): ArticleEntity {
         val articleEntity = articleDao.save(
             ArticleEntity(
@@ -48,11 +48,16 @@ class ArticleService(
         return articleDao.findByIdOrNull(articleId) ?: throw NotFoundException(ArticleEntity::class.java);
     }
 
+    @DaoOp
     fun updateArticle(articleInputDto: ArticleInputDto, articleId: Long): ArticleEntity {
-        // TODO: Implement correctly
-        return getArticle(articleId)
+        // TODO: Implement updating images
+        val articleEntity = articleDao.getById(articleId)
+        articleEntity.title = articleInputDto.title
+        articleEntity.content = articleInputDto.content
+        return articleDao.save(articleEntity)
     }
 
+    @DaoOp
     fun deleteArticle(articleId: Long): Long {
         articleDao.deleteById(articleId)
         return articleId

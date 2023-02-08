@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.dao.EventDao
 import com.nugurang.dto.EventInputDto
 import com.nugurang.entity.EventEntity
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class EventService(private val eventDao: EventDao) {
+    @DaoOp
     fun createEvent(eventInputDto: EventInputDto): EventEntity {
         return eventDao.save(
             EventEntity(
@@ -26,6 +28,7 @@ class EventService(private val eventDao: EventDao) {
         return eventDao.findByIdOrNull(eventId) ?: throw NotFoundException(EventEntity::class.java)
     }
 
+    @DaoOp
     fun updateEvent(eventInputDto: EventInputDto, eventId: Long): EventEntity {
         val eventEntity = eventDao.findByIdOrNull(eventId) ?: throw NotFoundException(EventEntity::class.java)
         eventEntity.name = eventInputDto.name
@@ -37,6 +40,7 @@ class EventService(private val eventDao: EventDao) {
         return eventDao.save(eventEntity)
     }
 
+    @DaoOp
     fun deleteEvent(eventId: Long) {
         eventDao.deleteById(eventId)
     }

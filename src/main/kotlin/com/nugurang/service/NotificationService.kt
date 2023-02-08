@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.constant.NotificationTypeName
 import com.nugurang.dao.NotificationDao
 import com.nugurang.dao.NotificationDataDao
@@ -9,7 +10,6 @@ import com.nugurang.exception.NotFoundException
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class NotificationService(
@@ -17,7 +17,7 @@ class NotificationService(
     private val notificationDataDao: NotificationDataDao,
     private val notificationTypeDao: NotificationTypeDao
 ) {
-    @Transactional
+    @DaoOp
     private fun createNotification(
         userEntity: UserEntity,
         type: NotificationTypeName,
@@ -42,6 +42,7 @@ class NotificationService(
         return notificationEntity
     }
 
+    @DaoOp
     fun createInvitationNotification(
         userEntity: UserEntity,
         invitationEntity: InvitationEntity
@@ -54,6 +55,7 @@ class NotificationService(
         )
     }
 
+    @DaoOp
     fun createMatchSuccessNotification(
         userEntity: UserEntity,
         matchTypeEntity: MatchTypeEntity,
@@ -68,6 +70,7 @@ class NotificationService(
         )
     }
 
+    @DaoOp
     fun createMatchFailureNotification(
         userEntity: UserEntity,
         matchTypeEntity: MatchTypeEntity,
