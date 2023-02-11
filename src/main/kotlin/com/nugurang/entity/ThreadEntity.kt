@@ -48,5 +48,4 @@ class ThreadEntity(
 
     @OneToMany(mappedBy = "thread", cascade = [CascadeType.ALL])
     var xrefTags: MutableList<XrefThreadTagEntity> = mutableListOf()
-
 )
