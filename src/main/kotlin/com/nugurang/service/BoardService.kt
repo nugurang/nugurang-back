@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.dao.BoardDao
 import com.nugurang.dto.BoardInputDto
 import com.nugurang.entity.BoardEntity
@@ -10,15 +11,14 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.MutableAclService
 import org.springframework.stereotype.Service
-import javax.transaction.Transactional
 
 @Service
 class BoardService(
     private val boardDao: BoardDao,
     private val mutableAclService: MutableAclService,
-    private val oauth2Service: OAuth2Service
+    private val oauth2Service: OAuth2Service,
 ) {
-    @Transactional
+    @DaoOp
     fun createBoard(boardInputDto: BoardInputDto): BoardEntity {
         val board = boardDao.save(
             BoardEntity(
@@ -52,11 +52,13 @@ class BoardService(
 
     fun getBoards(names: List<String>): List<BoardEntity> = boardDao.findAllByNameIn(names)
 
+    @DaoOp
     fun updateBoard(boardInputDto: BoardInputDto, boardId: Long): BoardEntity {
         val boardEntity = boardDao.getById(boardId)
         boardEntity.name = boardInputDto.name
         return boardDao.save(boardEntity)
     }
 
+    @DaoOp
     fun deleteBoard(id: Long) = boardDao.deleteById(id)
 }

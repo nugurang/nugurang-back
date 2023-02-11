@@ -70,9 +70,9 @@ class Mutation(
                 MatchRequestEntity(
                     createdAt = now,
                     expiresAt = now
-                    .plusDays((matchRequestInputDto.days ?: 1) as Long) // TODO: Fix type casting
-                    .plusHours((matchRequestInputDto.hours ?: 0) as Long)
-                    .plusMinutes((matchRequestInputDto.minutes ?: 0) as Long),
+                    .plusDays((matchRequestInputDto.days ?: 1).toLong()) // TODO: Fix type casting
+                    .plusHours((matchRequestInputDto.hours ?: 0).toLong())
+                    .plusMinutes((matchRequestInputDto.minutes ?: 0).toLong()),
                     minTeamSize = matchRequestInputDto.minTeamSize,
                     maxTeamSize = matchRequestInputDto.maxTeamSize,
                     type = matchTypeDao.findByIdOrNull(matchRequestInputDto.type)
@@ -98,8 +98,7 @@ class Mutation(
     }
 
     fun createTag(tagInputDto: TagInputDto): TagDto {
-        // TODO: implement this method
-        return object {} as TagDto
+        throw NotImplementedError()
     }
 
     fun updateInvitationAccepted(invitationId: Long): Boolean {
@@ -219,6 +218,6 @@ class Mutation(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(Mutation::class.java)
+        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }

@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.dao.ProjectDao
 import com.nugurang.dao.WorkDao
 import com.nugurang.dto.WorkInputDto
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class WorkService(private val projectDao: ProjectDao, private val workDao: WorkDao) {
 
+    @DaoOp
     fun createWork(workInputDto: WorkInputDto, projectId: Long): WorkEntity {
         return workDao.save(
             WorkEntity(
@@ -31,6 +33,7 @@ class WorkService(private val projectDao: ProjectDao, private val workDao: WorkD
         return workDao.findByIdOrNull(workId) ?: throw NotFoundException(WorkEntity::class.java)
     }
 
+    @DaoOp
     fun updateWork(workInputDto: WorkInputDto, workId: Long): WorkEntity {
         return workDao.save(
             workDao.findByIdOrNull(workId)?.let { workEntity ->
@@ -46,6 +49,7 @@ class WorkService(private val projectDao: ProjectDao, private val workDao: WorkD
         )
     }
 
+    @DaoOp
     fun deleteWork(workId: Long) {
         workDao.deleteById(workId)
     }

@@ -84,12 +84,12 @@ class MatchTask(
         log.info("intervals " + otherMatchRequestIntervals.size)
         val matchRequestEntity = matchRequestInterval.value
         var min = matchRequestEntity.minTeamSize
-        var max = Optional.ofNullable(matchRequestEntity.maxTeamSize).orElse(Int.MAX_VALUE)
+        var max = matchRequestEntity.maxTeamSize ?: Int.MAX_VALUE
         val matchedRequestIntervals: MutableList<ValueInterval<Moment, MomentInterval, MatchRequestEntity>> = LinkedList()
         for (otherMatchRequestInterval in otherMatchRequestIntervals) {
             val otherMatchRequestEntity = otherMatchRequestInterval.value
             val currentMin = otherMatchRequestEntity.minTeamSize
-            val currentMax = Optional.ofNullable(otherMatchRequestEntity.maxTeamSize).orElse(Int.MAX_VALUE)
+            val currentMax = otherMatchRequestEntity.maxTeamSize ?: Int.MAX_VALUE
             min = max(min, currentMin)
             max = min(max, currentMax)
             if (matchedRequestIntervals.size + 1 >= max) break
@@ -133,6 +133,6 @@ class MatchTask(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(MatchTask::class.java)
+        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }
