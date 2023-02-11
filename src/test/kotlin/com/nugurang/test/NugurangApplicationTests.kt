@@ -1,4 +1,4 @@
-package com.nugurang.nugurang
+package com.nugurang.test
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

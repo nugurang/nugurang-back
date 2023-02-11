@@ -100,7 +100,8 @@ dependencies {
     arrayOf(
         "com.graphql-java-kickstart:graphql-spring-boot-starter-test:12.+",
         "org.springframework.batch:spring-batch-test",
-        "org.springframework.security:spring-security-test"
+        "org.springframework.security:spring-security-test",
+        kotlin("test")
     ).map(::testImplementation)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
