@@ -44,8 +44,5 @@ class ThreadEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event")
-    var event: EventEntity? = null,
-
-    @OneToMany(mappedBy = "thread", cascade = [CascadeType.ALL])
-    var xrefTags: MutableList<XrefThreadTagEntity> = mutableListOf()
+    var event: EventEntity? = null
 )
