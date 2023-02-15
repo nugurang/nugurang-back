@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -12,12 +14,14 @@ class UserHonorEntity(
     @Column(nullable = false)
     var honor: Int,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var position: PositionEntity
 
 )

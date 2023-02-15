@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.constant.ProgressName
 import com.nugurang.dao.*
 import com.nugurang.dto.TaskInputDto
@@ -54,6 +55,7 @@ class TaskService(
         return taskDao.findByIdOrNull(taskId) ?: throw NotFoundException(TaskEntity::class.java)
     }
 
+    @DaoOp
     fun updateTask(taskInputDto: TaskInputDto, taskId: Long): TaskEntity {
         val taskEntity = taskDao.findById(taskId).get()
         taskEntity.name = taskInputDto.name
@@ -66,6 +68,7 @@ class TaskService(
         return taskDao.save(taskEntity)
     }
 
+    @DaoOp
     fun deleteTask(taskId: Long): Long {
         taskDao.deleteById(taskId)
         return taskId

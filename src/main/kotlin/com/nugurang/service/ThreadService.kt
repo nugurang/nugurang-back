@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.constant.VoteTypeName
 import com.nugurang.dao.*
 import com.nugurang.dto.ThreadInputDto
@@ -12,7 +13,6 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ThreadService(
@@ -27,7 +27,7 @@ class ThreadService(
     private val xrefUserTeamDao: XrefUserTeamDao,
 ) {
     @PreAuthorize("hasPermission(#board, 'com.nugurang.entity.BoardEntity', 'WRITE')")
-    @Transactional
+    @DaoOp
     fun createThread(threadInputDto: ThreadInputDto, board: Long): ThreadEntity {
         val userEntity = userService.getCurrentUser()
         val threadEntity = threadDao.save(
@@ -62,7 +62,7 @@ class ThreadService(
         .content
     }
 
-    @Transactional
+    @DaoOp
     fun getThread(id: Long): ThreadEntity {
         val threadEntity = threadDao.findByIdOrNull(id)
             ?: throw NotFoundException(ThreadEntity::class.java)
@@ -101,8 +101,7 @@ class ThreadService(
     }
 
     fun updateThread(threadInputDto: ThreadInputDto, id: Long): ThreadEntity {
-        // TODO: Implement this method
-        return null as ThreadEntity
+        throw NotImplementedError()
     }
 
     fun deleteThread(id: Long) {

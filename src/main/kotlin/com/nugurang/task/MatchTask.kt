@@ -16,7 +16,6 @@ import net.time4j.range.IntervalTree
 import net.time4j.range.MomentInterval
 import net.time4j.range.ValueInterval
 import org.slf4j.LoggerFactory
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -33,7 +32,7 @@ class MatchTask(
     private val teamDao: TeamDao,
     private val xrefUserTeamDao: XrefUserTeamDao
 ) {
-    @Scheduled(fixedDelay = 10000)
+    //@Scheduled(fixedDelay = 10000)
     @Transactional
     private fun matchRequests() {
 
@@ -85,12 +84,12 @@ class MatchTask(
         log.info("intervals " + otherMatchRequestIntervals.size)
         val matchRequestEntity = matchRequestInterval.value
         var min = matchRequestEntity.minTeamSize
-        var max = Optional.ofNullable(matchRequestEntity.maxTeamSize).orElse(Int.MAX_VALUE)
+        var max = matchRequestEntity.maxTeamSize ?: Int.MAX_VALUE
         val matchedRequestIntervals: MutableList<ValueInterval<Moment, MomentInterval, MatchRequestEntity>> = LinkedList()
         for (otherMatchRequestInterval in otherMatchRequestIntervals) {
             val otherMatchRequestEntity = otherMatchRequestInterval.value
             val currentMin = otherMatchRequestEntity.minTeamSize
-            val currentMax = Optional.ofNullable(otherMatchRequestEntity.maxTeamSize).orElse(Int.MAX_VALUE)
+            val currentMax = otherMatchRequestEntity.maxTeamSize ?: Int.MAX_VALUE
             min = max(min, currentMin)
             max = min(max, currentMax)
             if (matchedRequestIntervals.size + 1 >= max) break
@@ -134,6 +133,6 @@ class MatchTask(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(MatchTask::class.java)
+        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }

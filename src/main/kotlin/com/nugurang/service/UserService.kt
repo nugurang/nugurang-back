@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.dao.BoardDao
 import com.nugurang.dao.ImageDao
 import com.nugurang.dao.UserDao
@@ -8,6 +9,7 @@ import com.nugurang.entity.BoardEntity
 import com.nugurang.entity.ImageEntity
 import com.nugurang.entity.UserEntity
 import com.nugurang.exception.NotFoundException
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -20,6 +22,11 @@ class UserService(
     private val userDao: UserDao,
     private val oauth2Service: OAuth2Service
 ) {
+    companion object {
+        private val log = LoggerFactory.getLogger(this::class.java)
+    }
+
+    @DaoOp
     fun createUser(userInputDto: UserInputDto): UserEntity {
         return userDao.save(
             UserEntity(
@@ -62,6 +69,7 @@ class UserService(
         return userDao.findAllByNameContainingIgnoreCase(userName, pageable).content
     }
 
+    @DaoOp
     private fun updateUser(userInputDto: UserInputDto, userEntity: UserEntity): UserEntity {
         userEntity.name = userInputDto.name
         userEntity.email = userInputDto.email
@@ -72,6 +80,7 @@ class UserService(
         return userDao.save(userEntity)
     }
 
+    @DaoOp
     fun updateUser(userInputDto: UserInputDto, userId: Long): UserEntity {
         return updateUser(
             userInputDto,
@@ -79,21 +88,25 @@ class UserService(
         )
     }
 
+    @DaoOp
     fun updateCurrentUser(userInputDto: UserInputDto): UserEntity {
         return updateUser(userInputDto, getCurrentUser())
     }
 
+    @DaoOp
     fun deleteUser(userEntity: UserEntity): Long {
         val userId = userEntity.id!!
         userDao.delete(userEntity)
         return userId
     }
 
+    @DaoOp
     fun deleteUser(userId: Long): Long {
         userDao.deleteById(userId)
         return userId
     }
 
+    @DaoOp
     fun deleteCurrentUser(): Long {
         return deleteUser(getCurrentUser())
     }

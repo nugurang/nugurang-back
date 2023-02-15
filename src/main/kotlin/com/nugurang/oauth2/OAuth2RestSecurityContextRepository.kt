@@ -8,8 +8,7 @@ import javax.servlet.http.HttpServletResponse
 
 class OAuth2RestSecurityContextRepository : SecurityContextRepository {
     override fun loadContext(requestResponseHolder: HttpRequestResponseHolder): SecurityContext {
-        // TODO: Implement this
-        return null as SecurityContext
+        throw NotImplementedError()
     }
 
     override fun saveContext(context: SecurityContext, request: HttpServletRequest, response: HttpServletResponse) {}

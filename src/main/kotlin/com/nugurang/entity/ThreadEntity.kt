@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -25,23 +27,22 @@ class ThreadEntity(
     @Column(nullable = false)
     var modifiedAt: OffsetDateTime? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var board: BoardEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var user: UserEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "xref_user_team")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var xrefUserTeam: XrefUserTeamEntity? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event")
-    var event: EventEntity? = null,
-
-    @OneToMany(mappedBy = "thread", cascade = [CascadeType.ALL])
-    var xrefTags: MutableList<XrefThreadTagEntity> = mutableListOf()
-
+    var event: EventEntity? = null
 )

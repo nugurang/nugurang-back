@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.dao.ArticleDao
 import com.nugurang.dao.VoteDao
 import com.nugurang.dao.VoteTypeDao
@@ -31,6 +32,7 @@ class VoteService(
         ) ?: throw NotFoundException(VoteEntity::class.java)
     }
 
+    @DaoOp
     fun createVote(voteInputDto: VoteInputDto): VoteEntity {
         // TODO: Prevent users vote their own articles
         return voteDao.save(
@@ -42,6 +44,7 @@ class VoteService(
         )
     }
 
+    @DaoOp
     fun updateVote(voteInputDto: VoteInputDto, voteId: Long): VoteEntity {
         val voteEntity = voteDao.findByIdOrNull(voteId) ?: throw NotFoundException(VoteEntity::class.java)
         voteEntity.user = userService.getCurrentUser()
@@ -52,6 +55,7 @@ class VoteService(
         return voteDao.save(voteEntity)
     }
 
+    @DaoOp
     fun deleteVote(id: Long) {
         voteDao.deleteById(id)
     }

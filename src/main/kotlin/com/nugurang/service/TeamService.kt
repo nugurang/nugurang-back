@@ -1,5 +1,6 @@
 package com.nugurang.service
 
+import com.nugurang.annotation.DaoOp
 import com.nugurang.constant.RoleName
 import com.nugurang.dao.RoleDao
 import com.nugurang.dao.TeamDao
@@ -12,7 +13,6 @@ import com.nugurang.exception.NotFoundException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class TeamService(
@@ -21,7 +21,7 @@ class TeamService(
     private val teamDao: TeamDao,
     private val xrefUserTeamDao: XrefUserTeamDao
 ) {
-    @Transactional
+    @DaoOp
     fun createTeam(teamInputDto: TeamInputDto): TeamEntity {
         val teamEntity = teamDao.save(TeamEntity(name = teamInputDto.name))
         xrefUserTeamDao.save(
@@ -46,12 +46,14 @@ class TeamService(
         return teamDao.findAllByNameContainingIgnoreCase(teamName, pageable).content
     }
 
+    @DaoOp
     fun updateTeam(teamInputDto: TeamInputDto, id: Long): TeamEntity {
         val teamEntity = teamDao.findByIdOrNull(id) ?: throw NotFoundException(TeamEntity::class.java)
         teamEntity.name = teamInputDto.name
         return teamDao.save(teamEntity)
     }
 
+    @DaoOp
     fun deleteTeam(teamId: Long) {
         teamDao.deleteById(teamId)
     }

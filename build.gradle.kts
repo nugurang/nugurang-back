@@ -53,7 +53,7 @@ dependencies {
     arrayOf(
         "javax.persistence:javax.persistence-api",
         "javax.annotation:javax.annotation-api",
-        "org.mapstruct:mapstruct-processor:1.4.2.Final",
+        "org.mapstruct:mapstruct-processor:1.5.0.RC1",
         "org.springframework.boot:spring-boot-configuration-processor"
     ).map(::annotationProcessor)
 
@@ -65,9 +65,17 @@ dependencies {
         "com.graphql-java:graphql-java-spring-boot-starter-webmvc:2.0",
         "com.vladmihalcea:hibernate-types-52:2.14.0",
         "javax.cache:cache-api",
+        "net.time4j:time4j-base:5.8",
+        "net.time4j:time4j-sqlxml:5.8",
+        "net.time4j:time4j-tzdata:5.0-2020a",
+        "net.sf.ehcache:ehcache-core:2.6.11",
         "org.ehcache:ehcache",
-        "org.mapstruct:mapstruct:1.4.2.Final",
+        "org.jetbrains.kotlin:kotlin-reflect",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
+        "org.mapstruct:mapstruct:1.5.0.RC1",
+        "org.reflections:reflections:0.10.+",
         "org.springframework.boot:spring-boot-starter-actuator",
+        "org.springframework.boot:spring-boot-starter-aop",
         "org.springframework.boot:spring-boot-starter-batch",
         "org.springframework.boot:spring-boot-starter-cache",
         "org.springframework.boot:spring-boot-starter-data-jpa",
@@ -76,12 +84,6 @@ dependencies {
         "org.springframework.boot:spring-boot-starter-validation",
         "org.springframework.boot:spring-boot-starter-web",
         "org.springframework.security:spring-security-acl",
-        "net.time4j:time4j-base:5.8",
-        "net.time4j:time4j-sqlxml:5.8",
-        "net.time4j:time4j-tzdata:5.0-2020a",
-        "net.sf.ehcache:ehcache-core:2.6.11",
-        "org.jetbrains.kotlin:kotlin-reflect",
-        "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
         "org.springframework.boot:spring-boot-starter-test"
     ).map(::implementation)
 
@@ -98,7 +100,8 @@ dependencies {
     arrayOf(
         "com.graphql-java-kickstart:graphql-spring-boot-starter-test:12.+",
         "org.springframework.batch:spring-batch-test",
-        "org.springframework.security:spring-security-test"
+        "org.springframework.security:spring-security-test",
+        kotlin("test")
     ).map(::testImplementation)
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

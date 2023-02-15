@@ -11,7 +11,4 @@ class BoardEntity(
 
     @Column(nullable = false, unique = true)
     var name: String,
-
-    @OneToMany(mappedBy = "board", cascade = [CascadeType.ALL])
-    var xrefUsers: MutableList<XrefUserBoardEntity> = mutableListOf()
 )

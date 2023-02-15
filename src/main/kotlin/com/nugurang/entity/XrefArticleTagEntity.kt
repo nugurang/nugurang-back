@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -9,11 +11,13 @@ class XrefArticleTagEntity(
     @GeneratedValue
     var id: Long? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var article: ArticleEntity,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var tag: TagEntity
 )

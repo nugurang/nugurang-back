@@ -15,7 +15,8 @@ class PositionEntity(
     @Column(nullable = true)
     var description: String? = null,
 
-    @ManyToOne
+    // TODO: ON DELETE SET NULL
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image", nullable = true)
     var image: ImageEntity? = null
 )

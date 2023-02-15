@@ -1,5 +1,7 @@
 package com.nugurang.entity
 
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import javax.persistence.*
 
 @Entity
@@ -12,7 +14,8 @@ class NotificationDataEntity(
     @Column(nullable = false)
     var value: String,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "notification", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var notification: NotificationEntity
 )

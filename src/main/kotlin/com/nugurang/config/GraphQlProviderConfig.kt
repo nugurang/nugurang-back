@@ -2,6 +2,7 @@ package com.nugurang.config
 
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
+import com.nugurang.dto.GroupDto
 import graphql.GraphQL
 import graphql.scalars.ExtendedScalars
 import graphql.schema.GraphQLScalarType
@@ -9,6 +10,8 @@ import graphql.schema.GraphQLSchema
 import graphql.schema.idl.RuntimeWiring
 import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
+import graphql.schema.idl.TypeRuntimeWiring
+import org.reflections.Reflections
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.io.IOException
@@ -35,7 +38,25 @@ class GraphQlProviderConfig {
     }
 
     private fun buildWiring(): RuntimeWiring {
-        return RuntimeWiring.newRuntimeWiring().scalar(ExtendedScalars.DateTime).build()
+        return RuntimeWiring
+        .newRuntimeWiring()
+        .scalar(ExtendedScalars.DateTime)
+        .type(
+            TypeRuntimeWiring
+            .newTypeWiring("Group")
+            .typeResolver { env ->
+                val objClass = env.getObject<GroupDto>()::class.java
+                val objClassName = objClass.toString()
+                val subTypes = Reflections("com.nugurang.dto").getSubTypesOf(GroupDto::class.java)
+                if (subTypes.contains(objClass) && objClassName.endsWith("Dto")) {
+                    return@typeResolver env.schema.getObjectType(objClassName.dropLast("Dto".length))
+                } else {
+                    throw RuntimeException("Unknown Type")
+                }
+            }
+            .build()
+        )
+        .build()
     }
 
     @Bean

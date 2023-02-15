@@ -1,5 +1,5 @@
 package com.nugurang.dto;
 
-data class TeamInvitationDto(
+interface GroupDto {
     val id: Long
-)
+}
