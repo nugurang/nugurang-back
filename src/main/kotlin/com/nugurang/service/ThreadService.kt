@@ -100,8 +100,12 @@ class ThreadService(
         return threadDao.findAllByBoardNameInOrderByCreatedAtDesc(boards, PageRequest.of(page, pageSize)).content
     }
 
+    @DaoOp
     fun updateThread(threadInputDto: ThreadInputDto, id: Long): ThreadEntity {
-        throw NotImplementedError()
+        val threadEntity = threadDao.findByIdOrNull(id) ?: throw NotFoundException(ThreadEntity::class.java)
+	threadEntity.name = threadInputDto.name
+	// currently ignore other fields in threadInputDto
+	return threadDao.save(threadEntity)
     }
 
     fun deleteThread(id: Long) {
