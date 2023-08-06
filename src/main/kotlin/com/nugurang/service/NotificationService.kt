@@ -7,7 +7,7 @@ import com.nugurang.dao.NotificationDataDao
 import com.nugurang.dao.NotificationTypeDao
 import com.nugurang.entity.*
 import com.nugurang.exception.NotFoundException
-import org.slf4j.LoggerFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -17,6 +17,7 @@ class NotificationService(
     private val notificationDataDao: NotificationDataDao,
     private val notificationTypeDao: NotificationTypeDao
 ) {
+    private val logger = KotlinLogging.logger {}
     @DaoOp
     private fun createNotification(
         userEntity: UserEntity,
@@ -62,7 +63,7 @@ class NotificationService(
         eventEntity: EventEntity,
         teamEntity: TeamEntity
     ): NotificationEntity {
-        log.info("Match " + eventEntity.id + " successfully created matchmaking.")
+        logger.info { "Match ${eventEntity.id} successfully created matchmaking." }
         return createNotification(
             userEntity,
             NotificationTypeName.MATCH_SUCCESS,
@@ -76,7 +77,7 @@ class NotificationService(
         matchTypeEntity: MatchTypeEntity,
         eventEntity: EventEntity
     ): NotificationEntity {
-        log.info("Match " + eventEntity.id + " failed to create matchmaking.")
+        logger.info { "Match ${eventEntity.id} failed to create matchmaking." }
         return createNotification(
             userEntity,
             NotificationTypeName.MATCH_FAILURE,
@@ -87,9 +88,5 @@ class NotificationService(
     fun getNotification(notificationId: Long): NotificationEntity {
         return notificationDao.findByIdOrNull(notificationId)
             ?: throw NotFoundException(NotificationEntity::class.java)
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }

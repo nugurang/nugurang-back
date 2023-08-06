@@ -5,7 +5,7 @@ import com.nugurang.dao.*
 import com.nugurang.entity.ProjectEntity
 import com.nugurang.entity.UserHonorEntity
 import com.nugurang.exception.NotFoundException
-import org.slf4j.LoggerFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Component
 import java.time.OffsetDateTime
 
@@ -18,9 +18,11 @@ class UserEvaluationService(
     private val userReviewDao: UserReviewDao
 ) {
 
+    private val logger = KotlinLogging.logger {}
+
     @DaoOp
     fun evaluateUsers() {
-        log.info("user evaluation task")
+        logger.info { "user evaluation task" }
         val userEvaluationEntities = userEvaluationDao.findAllByExpiresAtLessThanEqual(OffsetDateTime.now())
         // should fix
         val userReviewEntities = userReviewDao.findAllByToUserIdIn(
@@ -52,10 +54,5 @@ class UserEvaluationService(
         userReviewDao.deleteAllByIdIn(userReviewEntities.map { it.id!! })
 
         userEvaluationDao.deleteAllByIdIn(userEvaluationEntities.map { it.id!! })
-
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }
