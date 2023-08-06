@@ -10,7 +10,7 @@ import com.nugurang.mapper.MatchRequestMapper
 import com.nugurang.mapper.PositionMapper
 import com.nugurang.service.*
 import graphql.kickstart.tools.GraphQLMutationResolver
-import org.slf4j.LoggerFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -43,7 +43,7 @@ class Mutation(
     private val matchRequestMapper: MatchRequestMapper,
     private val positionMapper: PositionMapper,
 ) : GraphQLMutationResolver {
-
+    private val logger = KotlinLogging.logger {}
     fun createFollowing(userId: Long): Boolean {
         val fromUser = userService.getCurrentUser()
         val toUser = userService.getUser(userId)
@@ -63,7 +63,7 @@ class Mutation(
     }
 
     fun createMatchRequest(matchRequestInputDto: MatchRequestInputDto): MatchRequestDto {
-        log.info("Creating match request...")
+        logger.info { "Creating match request..." }
         val now = OffsetDateTime.now()
         return matchRequestMapper.toDto(
             matchRequestDao.save(
@@ -215,9 +215,5 @@ class Mutation(
 
     fun deleteVoteType(id: Long): Long {
         return id
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(this::class.java)
     }
 }

@@ -11,11 +11,11 @@ import com.nugurang.entity.TeamEntity
 import com.nugurang.entity.XrefUserTeamEntity
 import com.nugurang.exception.NotFoundException
 import com.nugurang.service.NotificationService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import net.time4j.Moment
 import net.time4j.range.IntervalTree
 import net.time4j.range.MomentInterval
 import net.time4j.range.ValueInterval
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
@@ -32,6 +32,8 @@ class MatchTask(
     private val teamDao: TeamDao,
     private val xrefUserTeamDao: XrefUserTeamDao
 ) {
+    private val logger = KotlinLogging.logger {}
+
     //@Scheduled(fixedDelay = 10000)
     @Transactional
     private fun matchRequests() {
@@ -81,7 +83,7 @@ class MatchTask(
             .shuffled()
             .toList()
 
-        log.info("intervals " + otherMatchRequestIntervals.size)
+        logger.info { "intervals: ${otherMatchRequestIntervals.size}" }
         val matchRequestEntity = matchRequestInterval.value
         var min = matchRequestEntity.minTeamSize
         var max = matchRequestEntity.maxTeamSize ?: Int.MAX_VALUE
@@ -95,7 +97,7 @@ class MatchTask(
             if (matchedRequestIntervals.size + 1 >= max) break
             matchedRequestIntervals.add(otherMatchRequestInterval)
         }
-        log.info("matched " + matchedRequestIntervals.size + " users and min is " + min)
+        logger.info { "matched ${matchedRequestIntervals.size} users and min is $min" }
         if (matchedRequestIntervals.size + 1 < min) return
         val teamEntity = teamDao.save(TeamEntity(name = UUID.randomUUID().toString()))
         xrefUserTeamDao.save(
@@ -129,10 +131,6 @@ class MatchTask(
             )
             matchRequestDao.deleteById(matchedRequestEntity.id!!)
         }
-        log.info("match task")
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(this::class.java)
+        logger.info { "match task" }
     }
 }

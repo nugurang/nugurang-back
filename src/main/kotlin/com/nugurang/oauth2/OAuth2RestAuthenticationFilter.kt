@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.nugurang.dto.LoginRequestDto
 import com.nugurang.http.MultiReadableHttpServletRequest
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
@@ -57,10 +56,10 @@ class OAuth2RestAuthenticationFilter(
         val loginRequestDto: LoginRequestDto = try {
             objectMapper.readValue(request.inputStream.readAllBytes(), LoginRequestDto::class.java)
         } catch (jme: JsonMappingException) {
-            log.error(jme.message)
+            logger.error { jme.message }
             throw BadCredentialsException("Bad credentials", jme)
         }
-        log.info(loginRequestDto.accessToken.issuedAt.toString())
+        logger.info { loginRequestDto.accessToken.issuedAt.toString() }
         val registrationId = loginRequestDto.clientRegistrationId
         val clientRegistration = clientRegistrationRepository!!.findByRegistrationId(registrationId)
         if (clientRegistration == null) {
@@ -107,7 +106,6 @@ class OAuth2RestAuthenticationFilter(
     }
 
     companion object {
-        private val log = LoggerFactory.getLogger(this::class.java)
         private const val DEFAULT_FILTER_PROCESSES_URL = "/login"
         private const val CLIENT_REGISTRATION_NOT_FOUND_ERROR_CODE = "client_registration_not_found"
     }

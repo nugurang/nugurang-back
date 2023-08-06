@@ -9,7 +9,6 @@ import com.nugurang.entity.BoardEntity
 import com.nugurang.entity.ImageEntity
 import com.nugurang.entity.UserEntity
 import com.nugurang.exception.NotFoundException
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -22,10 +21,6 @@ class UserService(
     private val userDao: UserDao,
     private val oauth2Service: OAuth2Service
 ) {
-    companion object {
-        private val log = LoggerFactory.getLogger(this::class.java)
-    }
-
     @DaoOp
     fun createUser(userInputDto: UserInputDto): UserEntity {
         return userDao.save(
