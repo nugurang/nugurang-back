@@ -11,7 +11,7 @@ plugins {
     `java-library`
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.springframework.boot") version "2.6.2"
-    val kotlinVersion = "1.6.10"
+    val kotlinVersion = "1.8.20"
     kotlin("jvm") version kotlinVersion
     kotlin("kapt") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -38,6 +38,10 @@ noArg {
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
+    }
+
+    all {
+        exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
     }
 }
 
@@ -69,9 +73,10 @@ dependencies {
         "net.time4j:time4j-sqlxml:5.8",
         "net.time4j:time4j-tzdata:5.0-2020a",
         "net.sf.ehcache:ehcache-core:2.6.11",
+        "io.github.oshai:kotlin-logging-jvm:5.0.1",
         "org.ehcache:ehcache",
         "org.jetbrains.kotlin:kotlin-reflect",
-        "org.jetbrains.kotlin:kotlin-stdlib-jdk8",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3",
         "org.mapstruct:mapstruct:1.5.0.RC1",
         "org.reflections:reflections:0.10.+",
         "org.springframework.boot:spring-boot-starter-actuator",
@@ -79,12 +84,14 @@ dependencies {
         "org.springframework.boot:spring-boot-starter-batch",
         "org.springframework.boot:spring-boot-starter-cache",
         "org.springframework.boot:spring-boot-starter-data-jpa",
+        "org.springframework.boot:spring-boot-starter-log4j2",
         "org.springframework.boot:spring-boot-starter-oauth2-client",
         "org.springframework.boot:spring-boot-starter-security",
         "org.springframework.boot:spring-boot-starter-validation",
         "org.springframework.boot:spring-boot-starter-web",
         "org.springframework.security:spring-security-acl",
         "org.springframework.boot:spring-boot-starter-test"
+
     ).map(::implementation)
 
     arrayOf(
