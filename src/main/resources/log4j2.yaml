@@ -1,0 +1,12 @@
+Configuration:
+  status: info
+  appenders:
+    Console:
+      name: ConsoleAppender
+      PatternLayout:
+        Pattern: "%sn %d{yyyy/MM/dd HH:mm:ss,SSS} %r [%-6p] [%t] %c{3} %C{3}.%M(%F:%L) - %m%n"
+
+    Root:
+      level: info
+      AppenderRef:
+        ref: ConsoleAppender
