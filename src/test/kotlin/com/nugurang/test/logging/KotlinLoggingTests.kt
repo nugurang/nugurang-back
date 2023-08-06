@@ -5,8 +5,12 @@ import kotlin.test.Test
 
 internal class KotlinLoggingTests {
     @Test
-    fun `Should show a log message`() {
+    fun `Show which logging levels are enabled in a unit test`() {
         val logger = KotlinLogging.logger {}
-        logger.info { "Should show a log message" }
+        logger.trace { "TRACE log" }
+        logger.debug { "DEBUG log" }
+        logger.info { "INFO log" }
+        logger.warn { "WARN log" }
+        logger.error { "ERROR log" }
     }
 }
