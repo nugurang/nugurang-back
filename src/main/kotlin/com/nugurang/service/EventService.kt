@@ -7,11 +7,14 @@ import com.nugurang.entity.EventEntity
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
 
+@Validated
 @Service
 class EventService(private val eventDao: EventDao) {
     @DaoOp
-    fun createEvent(eventInputDto: EventInputDto): EventEntity {
+    fun createEvent(@Valid eventInputDto: EventInputDto): EventEntity {
         return eventDao.save(
             EventEntity(
                 name = eventInputDto.name,
@@ -29,7 +32,7 @@ class EventService(private val eventDao: EventDao) {
     }
 
     @DaoOp
-    fun updateEvent(eventInputDto: EventInputDto, eventId: Long): EventEntity {
+    fun updateEvent(@Valid eventInputDto: EventInputDto, eventId: Long): EventEntity {
         val eventEntity = eventDao.findByIdOrNull(eventId) ?: throw NotFoundException(EventEntity::class.java)
         eventEntity.name = eventInputDto.name
         eventEntity.description = eventInputDto.description

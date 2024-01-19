@@ -11,7 +11,11 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.MutableAclService
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
+import javax.validation.constraints.NotEmpty
 
+@Validated
 @Service
 class BoardService(
     private val boardDao: BoardDao,
@@ -19,7 +23,7 @@ class BoardService(
     private val oauth2Service: OAuth2Service,
 ) {
     @DaoOp
-    fun createBoard(boardInputDto: BoardInputDto): BoardEntity {
+    fun createBoard(@Valid boardInputDto: BoardInputDto): BoardEntity {
         val board = boardDao.save(
             BoardEntity(
                 name = boardInputDto.name
@@ -44,7 +48,7 @@ class BoardService(
         BoardEntity::class.java,
     )
 
-    fun getBoard(name: String): BoardEntity = boardDao.findByName(name) ?: throw NotFoundException(
+    fun getBoard(@NotEmpty name: String): BoardEntity = boardDao.findByName(name) ?: throw NotFoundException(
         BoardEntity::class.java,
     )
 
@@ -53,7 +57,7 @@ class BoardService(
     fun getBoards(names: List<String>): List<BoardEntity> = boardDao.findAllByNameIn(names)
 
     @DaoOp
-    fun updateBoard(boardInputDto: BoardInputDto, boardId: Long): BoardEntity {
+    fun updateBoard(@Validated boardInputDto: BoardInputDto, boardId: Long): BoardEntity {
         val boardEntity = boardDao.getById(boardId)
         boardEntity.name = boardInputDto.name
         return boardDao.save(boardEntity)

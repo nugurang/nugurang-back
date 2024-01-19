@@ -9,12 +9,15 @@ import com.nugurang.entity.WorkEntity
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
 
+@Validated
 @Service
 class WorkService(private val projectDao: ProjectDao, private val workDao: WorkDao) {
 
     @DaoOp
-    fun createWork(workInputDto: WorkInputDto, projectId: Long): WorkEntity {
+    fun createWork(@Valid workInputDto: WorkInputDto, projectId: Long): WorkEntity {
         return workDao.save(
             WorkEntity(
                 name = workInputDto.name,
@@ -34,7 +37,7 @@ class WorkService(private val projectDao: ProjectDao, private val workDao: WorkD
     }
 
     @DaoOp
-    fun updateWork(workInputDto: WorkInputDto, workId: Long): WorkEntity {
+    fun updateWork(@Valid workInputDto: WorkInputDto, workId: Long): WorkEntity {
         return workDao.save(
             workDao.findByIdOrNull(workId)?.let { workEntity ->
                 workEntity.name = workInputDto.name

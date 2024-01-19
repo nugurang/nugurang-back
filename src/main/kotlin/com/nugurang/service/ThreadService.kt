@@ -13,7 +13,11 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
+import javax.validation.constraints.NotEmpty
 
+@Validated
 @Service
 class ThreadService(
     private val articleService: ArticleService,
@@ -28,7 +32,7 @@ class ThreadService(
 ) {
     @PreAuthorize("hasPermission(#board, 'com.nugurang.entity.BoardEntity', 'WRITE')")
     @DaoOp
-    fun createThread(threadInputDto: ThreadInputDto, board: Long): ThreadEntity {
+    fun createThread(@Valid threadInputDto: ThreadInputDto, board: Long): ThreadEntity {
         val userEntity = userService.getCurrentUser()
         val threadEntity = threadDao.save(
             ThreadEntity(
@@ -88,20 +92,20 @@ class ThreadService(
         }
     }
 
-    fun getThreadsByBoards(boards: List<Long>, page: Int, pageSize: Int): List<ThreadEntity> {
+    fun getThreadsByBoards(@NotEmpty boards: List<Long>, page: Int, pageSize: Int): List<ThreadEntity> {
         return threadDao.findAllByBoardIdInOrderByCreatedAtDesc(boards, PageRequest.of(page, pageSize)).content
     }
 
-    fun getThreadsByBoardNames(boards: List<String>, page: Int, pageSize: Int): List<ThreadEntity> {
+    fun getThreadsByBoardNames(@NotEmpty boards: List<String>, page: Int, pageSize: Int): List<ThreadEntity> {
         return threadDao.findAllByBoardNameInOrderByCreatedAtDesc(boards, PageRequest.of(page, pageSize)).content
     }
 
-    fun getHotThreadsByBoardNames(boards: List<String>, page: Int, pageSize: Int): List<ThreadEntity> {
+    fun getHotThreadsByBoardNames(@NotEmpty boards: List<String>, page: Int, pageSize: Int): List<ThreadEntity> {
         return threadDao.findAllByBoardNameInOrderByCreatedAtDesc(boards, PageRequest.of(page, pageSize)).content
     }
 
     @DaoOp
-    fun updateThread(threadInputDto: ThreadInputDto, id: Long): ThreadEntity {
+    fun updateThread(@Valid threadInputDto: ThreadInputDto, id: Long): ThreadEntity {
         val threadEntity = threadDao.findByIdOrNull(id) ?: throw NotFoundException(ThreadEntity::class.java)
 	threadEntity.name = threadInputDto.name
 	// currently ignore other fields in threadInputDto

@@ -12,8 +12,13 @@ import com.nugurang.exception.NotFoundException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import java.util.*
+import javax.validation.Valid
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotEmpty
 
+@Validated
 @Service
 class UserService(
     private val boardDao: BoardDao,
@@ -22,7 +27,7 @@ class UserService(
     private val oauth2Service: OAuth2Service
 ) {
     @DaoOp
-    fun createUser(userInputDto: UserInputDto): UserEntity {
+    fun createUser(@Valid userInputDto: UserInputDto): UserEntity {
         return userDao.save(
             UserEntity(
                 oauth2Provider = oauth2Service.getProvider(),
@@ -46,7 +51,7 @@ class UserService(
         return userDao.findByIdOrNull(userId) ?: throw NotFoundException(UserEntity::class.java)
     }
 
-    fun getUser(userName: String): UserEntity {
+    fun getUser(@NotBlank userName: String): UserEntity {
         return userDao.findByName(userName) ?: throw NotFoundException(UserEntity::class.java)
     }
 
@@ -60,12 +65,12 @@ class UserService(
         return userDao.findAll(pageable).content
     }
 
-    fun getUsers(userName: String, pageable: Pageable): List<UserEntity> {
+    fun getUsers(@NotEmpty userName: String, pageable: Pageable): List<UserEntity> {
         return userDao.findAllByNameContainingIgnoreCase(userName, pageable).content
     }
 
     @DaoOp
-    private fun updateUser(userInputDto: UserInputDto, userEntity: UserEntity): UserEntity {
+    private fun updateUser(@Valid userInputDto: UserInputDto, userEntity: UserEntity): UserEntity {
         userEntity.name = userInputDto.name
         userEntity.email = userInputDto.email
         userEntity.biography = userInputDto.biography
@@ -76,7 +81,7 @@ class UserService(
     }
 
     @DaoOp
-    fun updateUser(userInputDto: UserInputDto, userId: Long): UserEntity {
+    fun updateUser(@Valid userInputDto: UserInputDto, userId: Long): UserEntity {
         return updateUser(
             userInputDto,
             userDao.findByIdOrNull(userId) ?: throw NotFoundException(UserEntity::class.java)
@@ -84,23 +89,21 @@ class UserService(
     }
 
     @DaoOp
-    fun updateCurrentUser(userInputDto: UserInputDto): UserEntity {
+    fun updateCurrentUser(@Valid userInputDto: UserInputDto): UserEntity {
         return updateUser(userInputDto, getCurrentUser())
     }
-
-    @DaoOp
-    fun deleteUser(userEntity: UserEntity): Long {
-        val userId = userEntity.id!!
-        userDao.delete(userEntity)
-        return userId
-    }
-
     @DaoOp
     fun deleteUser(userId: Long): Long {
         userDao.deleteById(userId)
         return userId
     }
 
+    @DaoOp
+    private fun deleteUser(userEntity: UserEntity): Long {
+        val userId = userEntity.id!!
+        userDao.delete(userEntity)
+        return userId
+    }
     @DaoOp
     fun deleteCurrentUser(): Long {
         return deleteUser(getCurrentUser())

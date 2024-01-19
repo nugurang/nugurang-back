@@ -13,7 +13,12 @@ import com.nugurang.exception.NotFoundException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
+import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotEmpty
 
+@Validated
 @Service
 class TeamService(
     private val userService: UserService,
@@ -22,7 +27,7 @@ class TeamService(
     private val xrefUserTeamDao: XrefUserTeamDao
 ) {
     @DaoOp
-    fun createTeam(teamInputDto: TeamInputDto): TeamEntity {
+    fun createTeam(@Valid teamInputDto: TeamInputDto): TeamEntity {
         val teamEntity = teamDao.save(TeamEntity(name = teamInputDto.name))
         xrefUserTeamDao.save(
             XrefUserTeamEntity(
@@ -38,16 +43,16 @@ class TeamService(
         return teamDao.findByIdOrNull(teamId) ?: throw NotFoundException(TeamEntity::class.java)
     }
 
-    fun getTeam(teamName: String): TeamEntity {
+    fun getTeam(@NotBlank teamName: String): TeamEntity {
         return teamDao.findByName(teamName) ?: throw NotFoundException(TeamEntity::class.java)
     }
 
-    fun getTeams(teamName: String, pageable: Pageable): List<TeamEntity> {
+    fun getTeams(@NotBlank teamName: String, pageable: Pageable): List<TeamEntity> {
         return teamDao.findAllByNameContainingIgnoreCase(teamName, pageable).content
     }
 
     @DaoOp
-    fun updateTeam(teamInputDto: TeamInputDto, id: Long): TeamEntity {
+    fun updateTeam(@Valid teamInputDto: TeamInputDto, id: Long): TeamEntity {
         val teamEntity = teamDao.findByIdOrNull(id) ?: throw NotFoundException(TeamEntity::class.java)
         teamEntity.name = teamInputDto.name
         return teamDao.save(teamEntity)
