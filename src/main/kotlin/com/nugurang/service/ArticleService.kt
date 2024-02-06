@@ -13,7 +13,10 @@ import com.nugurang.entity.XrefArticleImageEntity
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
 
+@Validated
 @Service
 class ArticleService(
     private val userService: UserService,
@@ -23,7 +26,7 @@ class ArticleService(
     private val xrefArticleImageDao: XrefArticleImageDao
 ) {
     @DaoOp
-    fun createArticle(articleInputDto: ArticleInputDto, threadId: Long, parentId: Long? = null): ArticleEntity {
+    fun createArticle(@Valid articleInputDto: ArticleInputDto, threadId: Long, parentId: Long? = null): ArticleEntity {
         val articleEntity = articleDao.save(
             ArticleEntity(
                 title = articleInputDto.title,
@@ -49,7 +52,7 @@ class ArticleService(
     }
 
     @DaoOp
-    fun updateArticle(articleInputDto: ArticleInputDto, articleId: Long): ArticleEntity {
+    fun updateArticle(@Valid articleInputDto: ArticleInputDto, articleId: Long): ArticleEntity {
         // TODO: Implement updating images
         val articleEntity = articleDao.getById(articleId)
         articleEntity.title = articleInputDto.title

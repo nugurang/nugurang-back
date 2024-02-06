@@ -9,7 +9,10 @@ import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
 
+@Validated
 @Service
 class TaskService(
     private val userService: UserService,
@@ -21,7 +24,7 @@ class TaskService(
     private val xrefUserTaskDao: XrefUserTaskDao,
 ) {
     @Transactional
-    fun createTask(taskInputDto: TaskInputDto, work: Long): TaskEntity {
+    fun createTask(@Valid taskInputDto: TaskInputDto, work: Long): TaskEntity {
         val taskEntity = taskDao.save(
             TaskEntity(
                 name = taskInputDto.name,
@@ -56,7 +59,7 @@ class TaskService(
     }
 
     @DaoOp
-    fun updateTask(taskInputDto: TaskInputDto, taskId: Long): TaskEntity {
+    fun updateTask(@Valid taskInputDto: TaskInputDto, taskId: Long): TaskEntity {
         val taskEntity = taskDao.findById(taskId).get()
         taskEntity.name = taskInputDto.name
         taskInputDto.order?.let { taskEntity.order = it }

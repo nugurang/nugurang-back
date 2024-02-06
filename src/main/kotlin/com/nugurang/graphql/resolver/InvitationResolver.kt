@@ -22,7 +22,7 @@ class InvitationResolver(
     private val invitationStatusMapper: InvitationStatusMapper,
     private val userMapper: UserMapper,
     private val groupMapper: GroupMapper
-    ) : GraphQLResolver<InvitationDto> {
+) : GraphQLResolver<InvitationDto> {
 
     fun group(invitationDto: InvitationDto): GroupDto {
         return invitationDao.findByIdOrNull(invitationDto.id)

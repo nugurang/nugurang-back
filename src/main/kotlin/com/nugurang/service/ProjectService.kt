@@ -11,7 +11,10 @@ import com.nugurang.entity.XrefUserProjectEntity
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
 
+@Validated
 @Service
 class ProjectService(
     private val eventDao: EventDao,
@@ -23,7 +26,7 @@ class ProjectService(
 ) {
 
     @DaoOp
-    fun createProject(projectInputDto: ProjectInputDto, teamId: Long): ProjectEntity {
+    fun createProject(@Valid projectInputDto: ProjectInputDto, teamId: Long): ProjectEntity {
         val projectEntity = projectDao.save(
             ProjectEntity(
                 name = projectInputDto.name,
@@ -49,7 +52,7 @@ class ProjectService(
     }
 
     @DaoOp
-    fun updateProject(projectInputDto: ProjectInputDto, projectId: Long): ProjectEntity {
+    fun updateProject(@Valid projectInputDto: ProjectInputDto, projectId: Long): ProjectEntity {
         return projectDao.save(
             projectDao.findByIdOrNull(projectId)?.let { projectEntity ->
                 projectEntity.name = projectInputDto.name

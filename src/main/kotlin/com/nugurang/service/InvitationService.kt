@@ -9,7 +9,10 @@ import com.nugurang.entity.*
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
 
+@Validated
 @Service
 class InvitationService(
     val notificationService: NotificationService,
@@ -22,7 +25,7 @@ class InvitationService(
     val xrefUserTeamDao: XrefUserTeamDao
 ) {
     @DaoOp
-    fun createInvitations(invitationInputDto: InvitationInputDto): List<InvitationEntity> {
+    fun createInvitations(@Valid invitationInputDto: InvitationInputDto): List<InvitationEntity> {
         val currentUserEntity = userService.getCurrentUser()
         return invitationInputDto.users
         .map { userId -> userService.getUser(userId) }

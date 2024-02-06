@@ -11,7 +11,11 @@ import com.nugurang.entity.VoteTypeEntity
 import com.nugurang.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
+import javax.validation.Valid
+import javax.validation.constraints.NotBlank
 
+@Validated
 @Service
 class VoteService(
     private val userService: UserService,
@@ -24,7 +28,7 @@ class VoteService(
         return voteTypeDao.findAll()
     }
 
-    fun getVote(userId: Long, articleId: Long, voteTypeName: String): VoteEntity {
+    fun getVote(userId: Long, articleId: Long, @NotBlank voteTypeName: String): VoteEntity {
         return voteDao.findByUserIdAndArticleIdAndVoteTypeName(
             userId,
             articleId,
@@ -33,7 +37,7 @@ class VoteService(
     }
 
     @DaoOp
-    fun createVote(voteInputDto: VoteInputDto): VoteEntity {
+    fun createVote(@Valid voteInputDto: VoteInputDto): VoteEntity {
         // TODO: Prevent users vote their own articles
         return voteDao.save(
             VoteEntity(
@@ -45,7 +49,7 @@ class VoteService(
     }
 
     @DaoOp
-    fun updateVote(voteInputDto: VoteInputDto, voteId: Long): VoteEntity {
+    fun updateVote(@Valid voteInputDto: VoteInputDto, voteId: Long): VoteEntity {
         val voteEntity = voteDao.findByIdOrNull(voteId) ?: throw NotFoundException(VoteEntity::class.java)
         voteEntity.user = userService.getCurrentUser()
         voteEntity.article = articleDao.findByIdOrNull(voteInputDto.article)
